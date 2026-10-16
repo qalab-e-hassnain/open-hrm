@@ -1,6 +1,21 @@
 from datetime import datetime, timedelta
 from typing import Optional
-from jose import JWTError, jwt
+# PyJWT rather than python-jose.
+#
+# python-jose is effectively unmaintained and carries an advisory with no
+# fix: it accepts DER-encoded public keys during HMAC initialisation, so an
+# attacker holding the service's public key can forge HS256 tokens "when
+# algorithms are not explicitly restricted". They are restricted below, and
+# this deployment signs with a symmetric secret rather than a key pair, so
+# the hole was not reachable here — but the advisory is itself described as
+# an incomplete fix for an earlier CVE, and that is not a library to keep
+# underneath the only thing standing between a stranger and everyone's
+# salary.
+#
+# It also drags in `ecdsa`, whose maintainers state that side-channel
+# attacks are out of scope and that the Minerva timing attack on P-256 will
+# not be fixed. Nothing here uses ECDSA; the dependency left with jose.
+import jwt
 from passlib.context import CryptContext
 from app.config import settings
 
@@ -45,5 +60,5 @@ def decode_access_token(token: str) -> Optional[dict]:
     try:
         payload = jwt.decode(token, settings.SECRET_KEY, algorithms=[settings.ALGORITHM])
         return payload
-    except JWTError:
+    except jwt.PyJWTError:
         return None

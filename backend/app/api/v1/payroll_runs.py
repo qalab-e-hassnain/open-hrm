@@ -52,8 +52,26 @@ ADJUSTABLE_NUMERIC_FIELDS = (
 )
 
 
-def _get_run(db: Session, run_id: int) -> PayrollRun:
-    run = db.query(PayrollRun).filter(PayrollRun.id == run_id).first()
+def _get_run(db: Session, run_id: int, *, lock: bool = False) -> PayrollRun:
+    """
+    One payroll run, optionally locked for the rest of this transaction.
+
+    `lock=True` takes a row lock, and every path that changes a run uses it.
+    Without one, two people finalizing the same month both read it as a draft,
+    both pass the draft check, and both generate a payslip per employee: one
+    transaction wins, the other dies on the unique index with a 500, and
+    whoever pressed the button is left not knowing whether anybody got paid.
+
+    With the lock the second request waits for the first to commit, then reads
+    the run as finalized and is told so plainly.
+
+    SQLite ignores FOR UPDATE, which is why this is also covered by a test
+    that runs against PostgreSQL.
+    """
+    query = db.query(PayrollRun).filter(PayrollRun.id == run_id)
+    if lock:
+        query = query.with_for_update()
+    run = query.first()
     if not run:
         raise HTTPException(
             status_code=status.HTTP_404_NOT_FOUND,
@@ -247,7 +265,7 @@ def update_entry(
 ):
     """Partial update of adjustable fields. 409 on a non-draft run.
     Writes one audit_log row per field actually changed."""
-    run = _get_run(db, run_id)
+    run = _get_run(db, run_id, lock=True)
     _require_draft(run)
 
     entry = (
@@ -316,7 +334,7 @@ def add_entry(
     current_user: User = Depends(require_admin_or_hr),
 ):
     """Add an employee to an existing draft run."""
-    run = _get_run(db, run_id)
+    run = _get_run(db, run_id, lock=True)
     _require_draft(run)
 
     employee = db.query(User).filter(User.id == payload.employee_id).first()
@@ -359,7 +377,7 @@ def delete_entry(
     current_user: User = Depends(require_admin_or_hr),
 ):
     """Remove a row from a draft run."""
-    run = _get_run(db, run_id)
+    run = _get_run(db, run_id, lock=True)
     _require_draft(run)
 
     entry = (
@@ -527,7 +545,7 @@ def finalize_run(
     current_user: User = Depends(require_admin_or_hr),
 ):
     """Close the run for editing."""
-    run = _get_run(db, run_id)
+    run = _get_run(db, run_id, lock=True)
     _require_draft(run)
 
     run.status = PayrollRunStatusEnum.FINALIZED
@@ -563,7 +581,7 @@ def reopen_run(
     current_user: User = Depends(require_admin_or_hr),
 ):
     """Reopen a finalized run for editing. The reason is audited."""
-    run = _get_run(db, run_id)
+    run = _get_run(db, run_id, lock=True)
     if run.status == PayrollRunStatusEnum.DRAFT:
         raise HTTPException(
             status_code=status.HTTP_409_CONFLICT,
@@ -593,7 +611,7 @@ def delete_run(
     current_user: User = Depends(require_admin_or_hr),
 ):
     """Delete a run — drafts only."""
-    run = _get_run(db, run_id)
+    run = _get_run(db, run_id, lock=True)
     _require_draft(run)
 
     # Audit rows point at the run/entries being removed; clear them first so the
