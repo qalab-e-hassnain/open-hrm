@@ -136,13 +136,23 @@ _pg_engine = None
 
 
 def _postgres_engine():
-    """One engine for the session; the schema is built once."""
+    """
+    One engine for the session, against whatever schema is already there.
+
+    Deliberately does NOT drop and recreate. CI builds this database with the
+    real migrations, and testing against the schema the migrations produce is
+    the entire reason for running on PostgreSQL at all — recreating it from
+    the models would test the models against themselves and quietly hide any
+    drift between the two.
+
+    create_all with checkfirst only fills in what is missing, so pointing the
+    suite at an empty database still works; it just tells you less.
+    """
     global _pg_engine
     if _pg_engine is None:
         _pg_engine = create_engine(TEST_DATABASE_URL, pool_pre_ping=True)
         from app import models as _models  # noqa: F401
-        Base.metadata.drop_all(_pg_engine)
-        Base.metadata.create_all(_pg_engine)
+        Base.metadata.create_all(_pg_engine, checkfirst=True)
     return _pg_engine
 
 
@@ -150,14 +160,26 @@ def _truncate_all(engine) -> None:
     """
     Empty every table between tests, identities included.
 
-    RESTART IDENTITY matters: tests assert on ids, and a sequence that keeps
-    climbing across tests makes a passing test depend on the order it ran in.
+    Reads the table list from the database rather than from the models: the
+    migrations create things the models do not describe — alembic_version
+    among them — and a table this does not know about keeps its rows into the
+    next test.
+
+    alembic_version is the one table that must survive, since dropping the
+    recorded revision would make the schema look unmigrated.
+
+    RESTART IDENTITY matters too: tests assert on ids, and a sequence that
+    keeps climbing across tests makes a passing test depend on what ran first.
     """
     from sqlalchemy import text
-    names = ", ".join(f'"{t.name}"' for t in reversed(Base.metadata.sorted_tables))
-    if not names:
-        return
     with engine.begin() as conn:
+        rows = conn.execute(text("""
+            SELECT tablename FROM pg_tables
+            WHERE schemaname = 'public' AND tablename <> 'alembic_version'
+        """)).scalars().all()
+        if not rows:
+            return
+        names = ", ".join(f'public."{name}"' for name in rows)
         conn.execute(text(f"TRUNCATE {names} RESTART IDENTITY CASCADE"))
 
 
