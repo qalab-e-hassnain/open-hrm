@@ -1,5 +1,5 @@
 import { apiClient } from './api';
-import { API_ENDPOINTS } from '../config/constants';
+import { API_ENDPOINTS, STORAGE_KEYS } from '../config/constants';
 import { type User } from '../types';
 
 export interface LoginCredentials {
@@ -168,12 +168,37 @@ export const authService = {
     newPassword: string;
     confirmPassword: string;
   }) => {
-    const response = await apiClient.post<{ message: string }>(API_ENDPOINTS.CHANGE_PASSWORD, {
+    const response = await apiClient.post<{
+      message: string;
+      sessions_ended?: number;
+      refresh_token?: string | null;
+    }>(API_ENDPOINTS.CHANGE_PASSWORD, {
       current_password: data.currentPassword,
       new_password: data.newPassword,
       confirm_password: data.confirmPassword,
     });
+    // Changing a password revokes every remembered session, including this
+    // one, and the server hands back a replacement so this device stays
+    // signed in. Without storing it the user is silently signed out when
+    // their access token expires a few minutes later.
+    if (response.data?.refresh_token) {
+      localStorage.setItem(STORAGE_KEYS.REFRESH_TOKEN, response.data.refresh_token);
+    }
     return response.data;
+  },
+
+  // Best-effort: the session is cleared locally whatever happens here, since
+  // a user who clicked "sign out" must end up signed out even if the network
+  // is down. Without the call the server would keep honouring the refresh
+  // token this browser was given until it expired on its own.
+  revokeSession: async () => {
+    const refreshToken = localStorage.getItem(STORAGE_KEYS.REFRESH_TOKEN);
+    if (!refreshToken) return;
+    try {
+      await apiClient.post(API_ENDPOINTS.LOGOUT, { refresh_token: refreshToken });
+    } catch {
+      // Deliberately ignored — see above.
+    }
   },
 
   updateProfile: async (

@@ -543,9 +543,21 @@ const Profile = () => {
     setPasswordMessage(null);
     setIsChangingPassword(true);
     try {
-      await authService.changePassword(passwordForm);
+      const result = await authService.changePassword(passwordForm);
       setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      setPasswordMessage({ type: 'success', text: 'Your password has been changed.' });
+      // Changing a password signs out every other remembered device. Said
+      // out loud, because a silent sign-out looks like a fault on whichever
+      // device it happens to — and because someone changing their password
+      // because they think it is known wants to be told it worked.
+      const endedElsewhere = result?.sessions_ended ?? 0;
+      setPasswordMessage({
+        type: 'success',
+        text: endedElsewhere > 0
+          ? `Your password has been changed, and ${endedElsewhere} other signed-in ${
+              endedElsewhere === 1 ? 'device was' : 'devices were'
+            } signed out.`
+          : 'Your password has been changed.',
+      });
     } catch (error: unknown) {
       const passwordError = error as { response?: { data?: { detail?: string } }; message?: string };
       setPasswordMessage({

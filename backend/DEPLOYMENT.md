@@ -46,6 +46,9 @@ cp .env.example .env
 
 Fill it in. Every value is explained in the file. The ones people get wrong:
 
+- **`ENVIRONMENT`** — leave it as `production`. Set it to `development` only
+  on a machine you are working on. See below: in production the API refuses
+  to start rather than run with settings that leave it exposed.
 - **`COMPANY_UTC_OFFSET_HOURS`** — attendance is stored in UTC and shown in
   local time. Wrong value, and every check-in reads at the wrong hour.
 - **`PORTAL_URL`** — emails link here. Wrong value sends your staff to
@@ -58,6 +61,36 @@ Fill it in. Every value is explained in the file. The ones people get wrong:
 ```bash
 python -c "import secrets; print(secrets.token_urlsafe(48))"
 ```
+
+### It will not start if any of that is wrong
+
+With `ENVIRONMENT=production`, the API exits at startup — printing exactly
+what to fix — rather than serving when:
+
+| | |
+|---|---|
+| `DEBUG` is on | tracebacks naming your tables and file paths go to callers |
+| `ALLOWED_ORIGINS` is `*` | any website can call your API with a signed-in employee's browser and their session |
+| `SECRET_KEY` is missing or under 32 characters | tokens can be forged by guessing it |
+| `SECRET_KEY` looks copied (`change-me`, `your-secret-key`, one repeated character) | worse: the key is published, so anyone who has read this repository can sign a token for any account |
+| `PORTAL_URL` is plain `http` | the sign-in links you email staff are not encrypted |
+
+This used to be a warning in the log. It is a refusal now because every item
+on that list is invisible from the outside: the portal loads, people sign in,
+payroll runs, and nothing degrades — so nobody investigates. A deployment
+that will not start gets looked at within minutes; one that starts insecurely
+gets looked at after the incident.
+
+The default is `production`, so a deployment that never sets `ENVIRONMENT`
+gets the checks. Anything unrecognised — `prod`, `staging`, a typo — also
+counts as production, so a misspelling makes it stricter rather than
+switching it off. `development`, `dev`, `local` and `test` turn the refusals
+back into warnings.
+
+It also prints advisories at startup, which do **not** stop it: no
+`CRON_SECRET` (scheduled work will not run), no SMTP settings (no mail at
+all, including the credentials new joiners need), no object storage (uploads
+will fail). Those are things somebody notices. The list above is not.
 
 ### Create the schema
 
@@ -189,7 +222,50 @@ see `scripts/backup.sh`.
 CI exercises the rollback down to that revision and back up on every push, so
 everything above the line stays reversible.
 
-## 6. Things worth knowing
+## 6. Backups, and proving they work
+
+```bash
+BACKUP_DIR=/mnt/backups ./scripts/backup.sh
+BACKUP_PASSPHRASE=... BACKUP_DIR=/mnt/backups ./scripts/backup.sh   # encrypted
+```
+
+Two things about this system make backups easy to get wrong.
+
+**The database dump is not a backup of this system.** Profile pictures, CNIC
+scans, receipts and signed documents live in object storage, and the database
+holds only their names. Restore the database alone and every document in the
+system is a broken link. `backup.sh` backs up both and says so loudly if it
+cannot reach the storage.
+
+**A backup nobody has restored is not a backup, it is a file.** Restore into
+a scratch database on a schedule, so the first time you do it is not during
+an incident:
+
+```bash
+./scripts/restore.sh /mnt/backups/hrm-20261016T030000Z.dump \
+    --into postgresql://postgres@localhost:5432/hrm_restore_drill
+```
+
+It verifies the dump's checksum before starting, refuses to restore over a
+database that already has tables unless you pass `--force`, **fails on any
+pg_restore error** rather than reporting success over a half-restored
+database, and then checks what came back: row counts, that the core tables
+exist, and that the migration version matches the code in your checkout — a
+dump taken before a migration restores perfectly and then fails on the first
+request with a missing column.
+
+A crontab that does both, with the drill on Sundays:
+
+```cron
+15 3 * * *  cd /srv/hrm/backend && BACKUP_DIR=/mnt/backups BACKUP_PASSPHRASE=... ./scripts/backup.sh >> /var/log/hrm-backup.log 2>&1
+40 4 * * 0  cd /srv/hrm/backend && ./scripts/restore.sh "$(ls -t /mnt/backups/hrm-*.dump* | head -1)" --into postgresql://postgres@localhost:5432/hrm_restore_drill --force >> /var/log/hrm-restore-drill.log 2>&1
+```
+
+Both scripts exit non-zero on failure, so whatever runs them can alert. The
+drill is the half people skip, and it is the half that tells you whether the
+other half works.
+
+## 7. Things worth knowing
 
 **Background jobs run on portal traffic.** Reminder sweeps, device syncs and
 exit completions ride on incoming requests rather than a scheduler, so
@@ -212,7 +288,7 @@ quietly discards that person's punches, and nothing will tell you.
 
 ---
 
-## 7. Where to look when something is wrong
+## 8. Where to look when something is wrong
 
 | Symptom | Usually |
 |---|---|
@@ -222,5 +298,8 @@ quietly discards that person's punches, and nothing will tell you.
 | Everyone's hours look shifted | `COMPANY_UTC_OFFSET_HOURS` |
 | `relation "users" does not exist` | `alembic upgrade head` has not run |
 | Intermittent 503s under load | Pool exceeds what the database allows — see `app/database.py` |
+| API exits at startup, logs "REFUSING TO START" | One of the settings in section 2 is unsafe for production; the message lists each one and its fix |
+| Everyone signed out after a password change | Expected — changing a password revokes every remembered session. The device that changed it is handed a replacement |
+| A user signed out and says they did nothing | A refresh token was presented twice, so that session was revoked. Look for `auth.refresh.reuse_detected` in the audit log |
 
 The API logs to stdout; `docker compose logs -f api`.

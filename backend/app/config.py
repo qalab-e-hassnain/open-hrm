@@ -1,9 +1,39 @@
 from pydantic_settings import BaseSettings
 from typing import List
+
+# Values people reach for when a setting demands something and they have not
+# decided yet, plus the ones this repository's own examples and tests use.
+# Matched loosely: a secret is suspect if it merely contains any of these.
+PLACEHOLDER_MARKERS = (
+    "change", "changeme", "replace", "example", "placeholder", "your-",
+    "your_", "secret-key-here", "supersecret", "insecure", "testing",
+    "dummy", "sample", "xxxx", "todo", "fixme", "0000000000",
+)
+
+
+def looks_like_a_placeholder(value: str) -> bool:
+    lowered = value.strip().lower()
+    return any(marker in lowered for marker in PLACEHOLDER_MARKERS)
+
+
 class Settings(BaseSettings):
     # Application
     APP_NAME: str = "HRM"
-    DEBUG: bool = True
+
+    # Which set of rules this process is held to.
+    #
+    # Defaults to production, and the default is the whole point: a
+    # deployment that never sets this gets the strict checks rather than the
+    # permissive ones. The convenient settings have to be asked for by name,
+    # because the failure being guarded against is nobody asking for anything.
+    #
+    # Anything other than development/dev/local/test is production.
+    ENVIRONMENT: str = "production"
+
+    # Returns tracebacks to callers, which is how a stack trace naming your
+    # tables and file paths ends up in somebody's browser. Off unless asked
+    # for; refused outright in production.
+    DEBUG: bool = False
     API_V1_STR: str = "/api/v1"
     
     # Database
@@ -14,6 +44,12 @@ class Settings(BaseSettings):
     ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 15   # short-lived access token
     REFRESH_TOKEN_EXPIRE_DAYS: int = 7      # long-lived refresh token
+
+    # How long a chain of refreshes may run before the user has to type their
+    # password again, counted from the first sign-in and not reset by
+    # refreshing. Without a ceiling, a seven-day token refreshed every sixth
+    # day never expires, and "remember this device" quietly means for ever.
+    REFRESH_TOKEN_FAMILY_MAX_DAYS: int = 30
     
     # CORS
     ALLOWED_ORIGINS: str = "*"
@@ -217,6 +253,21 @@ class Settings(BaseSettings):
         return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")
                 if origin.strip()]
 
+    @property
+    def is_production(self) -> bool:
+        """
+        Everything that is not explicitly a development environment.
+
+        Written this way round deliberately. An unrecognised value — a typo,
+        `prod`, `staging`, an empty string — counts as production and gets the
+        strict checks. The alternative spelling, where only the exact word
+        "production" is strict, means `ENVIRONMENT=prodcution` silently
+        disables every guard below.
+        """
+        return self.ENVIRONMENT.strip().lower() not in {
+            "development", "develop", "dev", "local", "test", "testing",
+        }
+
     def unsafe_for_production(self) -> List[str]:
         """
         Settings that are fine on a laptop and dangerous on the internet.
@@ -224,7 +275,8 @@ class Settings(BaseSettings):
         Checked at startup rather than left to a warning in a document,
         because the person deploying is rarely the person who read the
         document, and every one of these fails silently: the system works
-        perfectly while being wide open.
+        perfectly while being wide open. In production the process refuses to
+        start; in development it says so and carries on.
         """
         problems = []
         if self.ALLOWED_ORIGINS.strip() == "*":
@@ -235,15 +287,54 @@ class Settings(BaseSettings):
         if self.DEBUG:
             problems.append(
                 "DEBUG is on, which returns tracebacks to callers. Set DEBUG=False")
+        generate = ('python -c "import secrets; '
+                    'print(secrets.token_urlsafe(48))"')
         if not self.SECRET_KEY or len(self.SECRET_KEY) < 32:
             problems.append(
                 "SECRET_KEY is missing or too short to resist guessing. "
-                "Generate one: python -c \"import secrets; print(secrets.token_urlsafe(48))\"")
+                f"Generate one: {generate}")
+        elif looks_like_a_placeholder(self.SECRET_KEY):
+            # Worse than a short key, because it is a key an attacker already
+            # has: it is sitting in this repository and in every copy of it.
+            # Anyone holding it can mint a token for any employee, including
+            # an administrator, without touching a password.
+            problems.append(
+                "SECRET_KEY is a placeholder or example value, which means it "
+                "is public. Anyone who has read this repository can sign a "
+                f"token for any account. Generate your own: {generate}")
         if self.PORTAL_URL.startswith("http://") and "localhost" not in self.PORTAL_URL:
             problems.append(
                 f"PORTAL_URL is plain http ({self.PORTAL_URL}), so the links "
                 "emailed to staff are not encrypted")
         return problems
+
+    def production_advisories(self) -> List[str]:
+        """
+        Worth saying out loud, but not worth refusing to start over.
+
+        The distinction from unsafe_for_production is whether the setting
+        leaves the system *exposed* or merely *diminished*. A missing
+        CRON_SECRET means scheduled work does not run, which someone will
+        notice. ALLOWED_ORIGINS='*' means any website can act as a signed-in
+        employee, which nobody will notice. Only the second kind blocks
+        startup.
+        """
+        notes = []
+        if not self.CRON_SECRET:
+            notes.append(
+                "CRON_SECRET is not set, so POST /api/v1/cron/run-due refuses "
+                "every request. Reminder sweeps and device syncs will only run "
+                "when somebody opens the portal.")
+        if not self.SMTP_HOST or not self.SMTP_FROM_EMAIL:
+            notes.append(
+                "No mail provider is configured, so the system will send no "
+                "email at all — including the credentials new employees need "
+                "to sign in for the first time.")
+        if not self.SUPABASE_URL or not self.SUPABASE_SERVICE_ROLE_KEY:
+            notes.append(
+                "Object storage is not configured, so uploads will fail: "
+                "profile pictures, ID scans and receipts have nowhere to go.")
+        return notes
 
 
 settings = Settings()

@@ -9,7 +9,7 @@ logo, the colours, the working day, the leave entitlements and the email
 sender all come from configuration, so making it yours is filling in two
 `.env` files rather than editing source.
 
-**260 API endpoints. 500+ tests, run against SQLite and PostgreSQL on every push. Deployable in an afternoon.**
+**260 API endpoints. 600+ tests, run against SQLite and PostgreSQL on every push. Deployable in an afternoon.**
 
 ```
 backend/     FastAPI + PostgreSQL        → your server
@@ -120,10 +120,10 @@ frontend/    React + TypeScript + Vite   → any static host
 |---|---|
 | **API** | Python 3.12, FastAPI, SQLAlchemy 2.0, Alembic, PostgreSQL |
 | **Portal** | React 19, TypeScript, Vite, Zustand |
-| **Auth** | JWT access and refresh tokens, role-based access |
+| **Auth** | JWT access tokens; refresh tokens rotated per use, tracked server-side, revoked on sign-out, password change and deactivation, with reuse detection |
 | **Files** | Supabase Storage, served through the API so access follows the same permissions as everything else |
 | **Email** | Any SMTP provider (Resend, SES, Postmark, Gmail) |
-| **Tests** | 500+, run twice in CI: in-memory SQLite and a real PostgreSQL server, plus migrations up, down and up again |
+| **Tests** | 600+, run twice in CI: in-memory SQLite and a real PostgreSQL server, plus migrations up, down and up again |
 
 Four roles — employee, manager, HR, administrator — with HR holding
 admin-level reach over everything except admin accounts themselves.
@@ -150,6 +150,16 @@ alembic upgrade head
 python scripts/bootstrap.py --admin-email you@yourcompany.com --admin-name "Your Name"
 uvicorn app.main:app --reload
 ```
+
+**The API refuses to start if production is configured unsafely.** With
+`ENVIRONMENT=production` — the default, so forgetting to set it gets you the
+strict checks rather than the lax ones — it exits rather than serving when
+`DEBUG` is on, when `ALLOWED_ORIGINS` is `*`, when `SECRET_KEY` is missing,
+short or copied from an example, or when `PORTAL_URL` is plain http. Every
+one of those is invisible from outside: the portal loads and people sign in
+while the system is wide open, so nothing degrades and nobody investigates.
+A deployment that will not start gets looked at in minutes. Set
+`ENVIRONMENT=development` on your own machine and they become warnings.
 
 `bootstrap.py` creates the first administrator — there is no other way in,
 since every other account is made from inside the portal — along with a
@@ -207,11 +217,18 @@ Honest answer, by use:
 What CI proves on every push:
 
 - the full suite against **PostgreSQL**, not only SQLite
+- that two simultaneous payroll finalizations produce one payslip and one
+  clear conflict, using two real connections to a real PostgreSQL server —
+  not an assertion that the code asks for a lock
 - migrations apply, roll back and re-apply (down to the one deliberately
   irreversible migration, which is documented)
 - `bootstrap.py` takes an empty database to a working deployment, twice, without duplicating anything
 - the portal type-checks and builds from a clean clone
-- dependency audits for Python and npm
+- **dependency audits that fail the build.** Python and npm, with no
+  `|| true`: a vulnerability nobody has decided about breaks CI. Ones that
+  genuinely cannot be fixed are accepted in
+  `.github/dependency-audit-allowlist.txt` with a reason and a review date,
+  and an entry past its date fails too.
 
 What it does **not** prove, and what you must do yourself before trusting it
 with real money or real employment records:
@@ -225,9 +242,14 @@ with real money or real employment records:
 - **A security review.** Authentication, role checks, object-level
   authorization, file access and the public verification endpoints deserve a
   look by someone who does this for a living. They have not had one.
-- **Backup and restore.** Automate it, encrypt it, and *test a full restore* —
-  including uploaded documents, which live in object storage and not in your
-  database dump.
+- **Backup and restore.** `scripts/backup.sh` and `scripts/restore.sh` are
+  here, they checksum what they write and verify what comes back, and the
+  restore fails loudly rather than reporting success over a half-restored
+  database. What is *not* here is the schedule: nobody has run a drill
+  against your data, on your storage, at your size. Put both on a timer,
+  encrypt the output, and restore into a scratch database on a schedule —
+  including the uploaded documents, which live in object storage and not in
+  your database dump.
 - **A pilot.** Run it alongside whatever you use today and reconcile the
   output before you switch.
 
@@ -250,6 +272,16 @@ will tell you.
 portal ships a strict Content-Security-Policy, which narrows the ways that
 could happen, but moving tokens to httpOnly cookies with CSRF protection is
 the real fix and is not done.
+
+What *is* done is limiting what a stolen refresh token is worth. Refresh
+tokens are tracked server-side and rotate on every use, so the one that was
+copied stops working as soon as the real client refreshes. Presenting a
+superseded token means two parties hold one session, and the response is to
+revoke the whole chain — the thief loses access and the user is signed out,
+which is how they find out. Signing out, changing a password and
+deactivating an account all revoke sessions server-side, and a chain cannot
+be refreshed indefinitely: 30 days from the first sign-in and the password
+is needed again. An access token is still bearer-only for its 15 minutes.
 
 **Time zones are a fixed UTC offset**, not a named zone. Fine where the
 offset never changes, which covers Pakistan; wrong anywhere that observes

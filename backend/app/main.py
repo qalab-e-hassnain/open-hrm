@@ -40,21 +40,82 @@ from app.config import settings
 from app.api.deps import require_admin_or_hr
 from app.api.v1 import auth, users, teams, leaves, reimbursements, payroll, payroll_runs, payslips, attendance, notifications, upload, announcements, cron, time_logs, documents, onboarding, offboarding, biometric, jobs, assets, inventory, loans, settlements, probation, shifts, performance, analytics
 
-# Settings that are fine on a laptop and dangerous on the internet, reported
-# the moment the process starts.
-#
-# Every one of them fails silently: the system works perfectly while being
-# wide open, so nobody finds out until somebody else does. A log line at
-# startup is seen by whoever deployed it, which a warning in a document is
-# not.
-_unsafe = settings.unsafe_for_production()
-if _unsafe:
-    _log = logging.getLogger("app.startup")
-    _log.warning("=" * 68)
-    _log.warning("INSECURE CONFIGURATION — %d problem(s)", len(_unsafe))
-    for _problem in _unsafe:
-        _log.warning("  * %s", _problem)
-    _log.warning("=" * 68)
+class InsecureConfiguration(RuntimeError):
+    """Production was asked to start with settings that leave it exposed."""
+
+
+def _check_configuration() -> None:
+    """
+    Refuse to serve a production deployment that is wide open.
+
+    This used to log a warning and carry on. That was not enough, and the
+    reason is worth stating: every problem it reports is invisible from the
+    outside. The portal loads, people sign in, payroll runs — and meanwhile
+    any website can act as a signed-in employee, or the signing key is one
+    that is published in this repository. Nothing degrades, so nobody
+    investigates. A warning in a log nobody is reading at 2am on the day of
+    deployment is indistinguishable from no warning at all.
+
+    So in production the process exits instead. A deployment that will not
+    start gets looked at within minutes; one that starts insecurely gets
+    looked at after the incident.
+
+    Development is left alone — `ENVIRONMENT=development` keeps the warning
+    and carries on, because a laptop with permissive CORS is not a breach and
+    refusing to start would only teach people to delete the check.
+    """
+    log = logging.getLogger("app.startup")
+
+    for note in settings.production_advisories():
+        log.warning("%s", note)
+
+    problems = settings.unsafe_for_production()
+    if not problems:
+        return
+
+    if not settings.is_production:
+        log.warning("=" * 68)
+        log.warning("INSECURE CONFIGURATION — %d problem(s)", len(problems))
+        for problem in problems:
+            log.warning("  * %s", problem)
+        log.warning("ENVIRONMENT=%s, so this is a warning. In production it "
+                    "would refuse to start.", settings.ENVIRONMENT)
+        log.warning("=" * 68)
+        return
+
+    # Printed as well as raised. The traceback goes wherever the process
+    # manager sends stderr, and the part that matters is the list, not the
+    # stack — so put the list where it cannot be scrolled past.
+    lines = [
+        "=" * 68,
+        f"REFUSING TO START — {len(problems)} insecure setting(s) "
+        f"with ENVIRONMENT={settings.ENVIRONMENT!r}",
+        "",
+    ]
+    for problem in problems:
+        lines += [f"  * {problem}", ""]
+    lines += [
+        "Fix these in the environment or in backend/.env.",
+        "",
+        "If this is a development machine, say so explicitly:",
+        "",
+        "    ENVIRONMENT=development",
+        "",
+        "and these become warnings instead. Do not set that in production;",
+        "the settings above are what an attacker needs, not style points.",
+        "=" * 68,
+    ]
+    message = "\n".join(lines)
+    print(message, file=sys.stderr, flush=True)
+    for problem in problems:
+        log.critical("insecure configuration: %s", problem)
+    raise InsecureConfiguration(
+        f"{len(problems)} insecure setting(s) for ENVIRONMENT="
+        f"{settings.ENVIRONMENT!r}: " + "; ".join(
+            p.split(",")[0].split(".")[0] for p in problems))
+
+
+_check_configuration()
 
 
 app = FastAPI(

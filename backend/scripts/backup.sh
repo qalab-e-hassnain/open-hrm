@@ -78,6 +78,24 @@ else
   echo "sure whatever you copy it to is encrypted at rest." >&2
 fi
 
+# ---- checksums ------------------------------------------------------------
+# A sidecar per artefact, so restore.sh can tell "this dump is damaged" from
+# "this dump restored badly". Bit rot and a truncated upload both produce a
+# file that pg_restore fails on with no indication of which it was, and the
+# answer changes what you do next: fetch it again, or go to an older backup.
+echo "Checksumming"
+for f in "$BACKUP_DIR"/hrm-$STAMP.dump "$BACKUP_DIR"/hrm-$STAMP.dump.gpg \
+         "$BACKUP_DIR"/files-$STAMP.tar.gz "$BACKUP_DIR"/files-$STAMP.tar.gz.gpg; do
+  [[ -f "$f" ]] || continue
+  if command -v sha256sum >/dev/null 2>&1; then
+    (cd "$(dirname "$f")" && sha256sum "$(basename "$f")" > "$(basename "$f").sha256")
+  else
+    # macOS
+    (cd "$(dirname "$f")" && shasum -a 256 "$(basename "$f")" > "$(basename "$f").sha256")
+  fi
+  echo "  $(basename "$f").sha256"
+done
+
 # ---- retention ------------------------------------------------------------
 find "$BACKUP_DIR" -maxdepth 1 -name 'hrm-*' -mtime "+$KEEP_DAYS" -delete 2>/dev/null || true
 find "$BACKUP_DIR" -maxdepth 1 -name 'files-*' -mtime "+$KEEP_DAYS" -delete 2>/dev/null || true

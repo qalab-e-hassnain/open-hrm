@@ -26,6 +26,13 @@ USING_POSTGRES = TEST_DATABASE_URL.startswith("postgres")
 os.environ.setdefault("DATABASE_URL", TEST_DATABASE_URL or "sqlite://")
 os.environ.setdefault("SECRET_KEY", "testing-secret-not-a-real-one")
 
+# Importing app.main runs the startup configuration check, and that check
+# refuses to start a production deployment with permissive CORS, DEBUG on or
+# a published signing key — all three of which describe the settings above.
+# Saying which environment this is keeps them warnings. Without it, every
+# test module that imports the app would fail at collection.
+os.environ.setdefault("ENVIRONMENT", "test")
+
 import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine

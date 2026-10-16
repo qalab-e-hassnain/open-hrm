@@ -628,7 +628,8 @@ class TestOrgChartAndJobs:
         names = {j["name"] for j in r.json()}
         assert names == {"leave_reminders", "complete_due_exits", "biometric_sync",
                          "inventory_digest",
-                         "probation_reminders", "profile_reminders", "leave_accrual"}
+                         "probation_reminders", "profile_reminders", "leave_accrual",
+                         "prune_refresh_tokens"}
         # Never run on this database, so everything is due and nothing running.
         assert all(j["is_due"] and not j["is_running"] for j in r.json())
 

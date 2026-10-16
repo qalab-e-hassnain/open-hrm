@@ -7,6 +7,10 @@ export const API_BASE_URL = import.meta.env.VITE_API_BASE_URL || '/api/v1';
 export const API_ENDPOINTS = {
   // Auth
   LOGIN: '/auth/login-json',
+  // Tells the server to revoke the refresh token's whole session. Signing out
+  // used to be purely local, which left the refresh token this browser had
+  // been given working for another week.
+  LOGOUT: '/auth/logout',
 
   // User
   PROFILE: '/users/me',

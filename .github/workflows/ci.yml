@@ -156,14 +156,22 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Python packages with known vulnerabilities
-        run: |
-          pip install pip-audit
-          pip-audit -r backend/requirements.txt --strict || \
-            echo "::warning::pip-audit reported findings — see the log"
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: npm packages with known vulnerabilities
+      - name: Install the portal's dependencies from the lockfile
         working-directory: frontend
-        run: npm audit --audit-level=high || echo "::warning::npm audit reported findings"
+        run: npm ci
+      # Fails the build. This step used to end in `|| echo "::warning::"`,
+      # which meant it could not fail and so said nothing — it was reporting
+      # 46 high-severity findings in the portal's dependency tree as a
+      # warning nobody read, every one of which had a fix released.
+      #
+      # Findings that genuinely cannot be fixed are accepted by name, with a
+      # reason and a review date, in dependency-audit-allowlist.txt. An entry
+      # whose review date has passed fails too, so the allowlist cannot decay
+      # into the suppression it replaced.
+      - name: Python and npm packages with known vulnerabilities
+        run: |
+          pip install pip-audit
+          python .github/scripts/audit_dependencies.py

@@ -18,6 +18,7 @@ from app.api.deps import (
 from app.core.security import get_password_hash, verify_password
 from app.models.notification import NotificationTypeEnum
 from app.utils.notifications import create_notification
+from app.api.v1.auth import issue_refresh_token, revoke_all_sessions
 from app.utils import audit
 
 router = APIRouter()
@@ -190,18 +191,47 @@ def get_current_user_info(current_user: User = Depends(get_current_user)):
 @router.post("/me/change-password")
 def change_current_user_password(
     password_data: ChangePasswordRequest,
+    request: Request,
     db: Session = Depends(get_db),
     current_user: User = Depends(get_current_user),
 ):
-    """Allow any signed-in user to securely change their own password."""
+    """
+    Allow any signed-in user to securely change their own password.
+
+    Changing a password ends every remembered session, on this device and any
+    other. The reason is the case this feature is used for: somebody who
+    thinks another person knows their password. If the sessions that password
+    opened survive the change, the change has achieved nothing — whoever was
+    already signed in stays signed in for another week.
+
+    The caller is then given a fresh refresh token so that *this* device stays
+    signed in, which is the behaviour people expect and the only reason it is
+    safe to be this aggressive with the others. It is returned only if they
+    had a remembered session to begin with; handing one to a caller who never
+    asked to be remembered would create a persistent session out of nothing.
+    """
     if not verify_password(password_data.current_password, current_user.hashed_password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="Current password is incorrect")
     if verify_password(password_data.new_password, current_user.hashed_password):
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail="New password must be different from the current password")
 
     current_user.hashed_password = get_password_hash(password_data.new_password)
+    ended = revoke_all_sessions(db, current_user.id, "password_changed")
+    replacement = (issue_refresh_token(db, current_user, request=request)
+                   if ended else None)
     db.commit()
-    return {"message": "Password changed successfully"}
+
+    audit.record(db, "user.password_changed", actor=current_user, request=request,
+                 target_type="user", target_id=current_user.id,
+                 detail={"sessions_ended": ended})
+
+    return {
+        "message": "Password changed successfully",
+        # How many other remembered devices were signed out, so the portal can
+        # say so rather than leaving it a silent side effect.
+        "sessions_ended": max(ended - (1 if replacement else 0), 0),
+        "refresh_token": replacement,
+    }
 
 
 @router.put("/me", response_model=UserResponse)
@@ -581,6 +611,11 @@ def admin_reset_user_password(
     assert_can_manage(current_user, user)
 
     user.hashed_password = get_password_hash(password_data.new_password)
+    # A password reset exists to lock somebody out — either the employee who
+    # forgot theirs, or whoever else had it. Leaving their refresh tokens
+    # alive would mean the new password changes nothing for a session already
+    # open somewhere.
+    revoke_all_sessions(db, user.id, "password_reset")
     db.commit()
 
     create_notification(
@@ -631,11 +666,18 @@ def delete_user(
     
     # Soft delete: deactivate instead of removing the row
     user.is_active = False
+    # And take away the sessions they already hold. Without this, a
+    # deactivated account's phone goes on minting fresh access tokens from
+    # its refresh token for the rest of the week — so "we removed their
+    # access" and "they can no longer read anything" are days apart.
+    ended = revoke_all_sessions(db, user.id, "user_deactivated")
     db.commit()
 
     audit.record(db, "user.deactivated", actor=current_user, request=request,
                  target_type="user", target_id=user.id,
-                 detail={"target_email": user.email, "target_name": user.full_name})
+                 detail={"target_email": user.email,
+                         "target_name": user.full_name,
+                         "sessions_ended": ended})
 
     return None
 

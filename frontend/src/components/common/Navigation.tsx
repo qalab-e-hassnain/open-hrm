@@ -41,6 +41,7 @@ import {
 } from 'react-icons/fi';
 import { TbLayoutSidebarLeftCollapse } from 'react-icons/tb';
 import { useAuthStore } from '../../store/authStore';
+import { authService } from '../../services/authService';
 import { ROUTES, BRAND_NAME } from '../../config/constants';
 import { notificationService } from '../../services/notificationService';
 import { leaveService } from '../../services/leaveService';
@@ -320,7 +321,17 @@ const Navigation = () => {
     };
   }, [isProfileOpen]);
 
-  const handleLogout = () => {
+  const handleLogout = async () => {
+    // Tell the server first, so the refresh token this browser holds stops
+    // working rather than staying valid for the rest of its week. It is
+    // best-effort: the local session is cleared either way, because somebody
+    // who clicked "sign out" has to end up signed out even offline.
+    //
+    // Only the deliberate sign-out does this. The 401 handler in
+    // services/api.ts calls logout() on its own and must not call the
+    // endpoint, since the session it would be revoking is already gone and
+    // the request would be another 401.
+    await authService.revokeSession();
     logout();
     navigate(ROUTES.LOGIN);
   };

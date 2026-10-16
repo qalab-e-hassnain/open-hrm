@@ -1,3 +1,4 @@
+import secrets
 from datetime import datetime, timedelta
 from typing import Optional
 # PyJWT rather than python-jose.
@@ -48,11 +49,35 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
     encoded_jwt = jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
     return encoded_jwt
 
-def create_refresh_token(data: dict) -> str:
+def new_token_id() -> str:
+    """An unguessable id for one refresh token, or for a family of them."""
+    return secrets.token_urlsafe(24)
+
+
+def create_refresh_token(data: dict, *, jti: Optional[str] = None,
+                         family_id: Optional[str] = None) -> str:
+    """
+    Mint a refresh token.
+
+    `jti` identifies this token and `fid` the chain it belongs to. Both are
+    recorded server-side (see app/models/refresh_token.py) so that a token
+    can be revoked, and so that presenting a superseded one is detectable
+    rather than indistinguishable from normal use.
+
+    They default to fresh random values, which keeps the signature compatible
+    with callers that only want a signed token — the tests that check claim
+    shape, mainly. Issuing one for an actual session goes through
+    app.api.v1.auth.issue_refresh_token, which writes the row as well.
+    """
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(days=settings.REFRESH_TOKEN_EXPIRE_DAYS)
-    to_encode.update({"exp" : expire, "type": "refresh"})
-    return jwt.encode(to_encode, settings. SECRET_KEY, algorithm=settings.ALGORITHM)
+    to_encode.update({
+        "exp": expire,
+        "type": "refresh",
+        "jti": jti or new_token_id(),
+        "fid": family_id or new_token_id(),
+    })
+    return jwt.encode(to_encode, settings.SECRET_KEY, algorithm=settings.ALGORITHM)
 
 
 def decode_access_token(token: str) -> Optional[dict]:

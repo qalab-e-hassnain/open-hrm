@@ -90,6 +90,13 @@ def _inventory_digest(db: Session):
     return send_digests(db)
 
 
+def _prune_refresh_tokens(db: Session):
+    from app.api.v1.auth import prune_expired_refresh_tokens
+    deleted = prune_expired_refresh_tokens(db)
+    db.commit()
+    return {"deleted": deleted}
+
+
 def _leave_accrual(db: Session):
     from app.utils.leave_accrual import refresh_balances
     result = refresh_balances(db)
@@ -134,6 +141,11 @@ REGISTRY: Dict[str, Job] = {
             "Ask employees whose record is missing something required — bank "
             "details, CNIC, emergency contact — to fill it in.",
             timedelta(hours=20), _profile_reminders),
+        Job("prune_refresh_tokens",
+            "Delete refresh-token records that expired more than 30 days ago. "
+            "They are kept well past expiry on purpose: an attempt to reuse a "
+            "recently dead token is worth being able to see.",
+            timedelta(hours=20), _prune_refresh_tokens),
     ]
 }
 

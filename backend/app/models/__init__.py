@@ -3,6 +3,7 @@ from app.models.team import Team, UserTeam
 from app.models.leave import Leave
 from app.models.leave_balance import LeaveBalance
 from app.models.audit_log import AuditLog
+from app.models.refresh_token import RefreshToken
 from app.models.time_log import TimeLogRequest
 from app.models.holiday import Holiday
 from app.models.biometric import BiometricIdentity, BiometricScan

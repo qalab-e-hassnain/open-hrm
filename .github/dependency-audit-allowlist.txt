@@ -1,0 +1,26 @@
+# Vulnerabilities this project knowingly ships with.
+#
+# The dependency audit fails the build on anything not listed here. That is
+# the point: an audit that cannot fail is an audit nobody reads, and the
+# previous version of this job ended in `|| echo warning`, which meant the
+# green tick said nothing about whether the dependencies were safe.
+#
+# But a job that fails on every newly-published advisory, including ones with
+# no released fix, gets switched off within a fortnight. So there is a way to
+# accept one — in writing, with a reason, and with a date on which somebody
+# has to look again. An entry whose review date has passed FAILS the build,
+# which is what stops this file from quietly becoming the `|| true` it
+# replaced.
+#
+# Format, whitespace-separated:
+#
+#   <advisory-id>  <review-by YYYY-MM-DD>  <why this is acceptable>
+#
+# The advisory id is whatever the tool prints — GHSA-…, PYSEC-…, CVE-…, or an
+# npm numeric id. Before adding one, answer the question it raises: is the
+# vulnerable code path reachable from this application at all? Say so in the
+# reason. "Transitive dependency" is not a reason; "parser is only reached
+# for files this application never reads" is.
+#
+# Empty at the time of writing: every known advisory in both dependency trees
+# has a fix released, and this project has taken it.
