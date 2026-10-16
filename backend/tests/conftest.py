@@ -270,7 +270,18 @@ def env(monkeypatch):
     yield e
 
     app.dependency_overrides.clear()
-    Base.metadata.drop_all(engine)
+    if not USING_POSTGRES:
+        # SQLite's database lives in this engine and goes away with it, so
+        # dropping is tidiness rather than necessity.
+        #
+        # Against PostgreSQL it is actively wrong: the schema is shared by the
+        # whole run and built by the migrations, which create tables the
+        # models never mention — asset_assignments still carries a foreign key
+        # to inv_items — so the drop fails on a dependency that metadata
+        # cannot see. Isolation there comes from truncating at setup, which
+        # empties the data and leaves the schema exactly as the migrations
+        # built it.
+        Base.metadata.drop_all(engine)
 
 
 @pytest.fixture
