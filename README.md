@@ -207,7 +207,8 @@ Honest answer, by use:
 What CI proves on every push:
 
 - the full suite against **PostgreSQL**, not only SQLite
-- migrations apply, roll back to base, and re-apply
+- migrations apply, roll back and re-apply (down to the one deliberately
+  irreversible migration, which is documented)
 - `bootstrap.py` takes an empty database to a working deployment, twice, without duplicating anything
 - the portal type-checks and builds from a clean clone
 - dependency audits for Python and npm

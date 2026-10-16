@@ -167,7 +167,29 @@ into its own configuration, or the policy will not be applied at all.
 
 ---
 
-## 5. Things worth knowing
+## 5. One migration you cannot undo
+
+`alembic downgrade` works for every migration except one. **inv02**
+(`b2c3d4e5f6a7`, "assets become inv_items") is deliberately irreversible: it
+folds a category enum and a free-text location column into rows that cannot
+be told apart afterwards, so there is nothing honest to write in its
+downgrade. It raises instead of pretending.
+
+What that means in practice:
+
+```bash
+alembic downgrade b2c3d4e5f6a7   # fine — rolls back everything above it
+alembic downgrade base           # fails, on purpose
+```
+
+If you need the schema from before inv02, restore from a backup taken before
+you upgraded. That is the only route, which is a reason to have taken one —
+see `scripts/backup.sh`.
+
+CI exercises the rollback down to that revision and back up on every push, so
+everything above the line stays reversible.
+
+## 6. Things worth knowing
 
 **Background jobs run on portal traffic.** Reminder sweeps, device syncs and
 exit completions ride on incoming requests rather than a scheduler, so
@@ -190,7 +212,7 @@ quietly discards that person's punches, and nothing will tell you.
 
 ---
 
-## 6. Where to look when something is wrong
+## 7. Where to look when something is wrong
 
 | Symptom | Usually |
 |---|---|
