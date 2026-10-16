@@ -87,7 +87,14 @@ jobs:
       - name: Only the one migration is irreversible
         working-directory: backend
         run: |
-          count=$(grep -rl "NotImplementedError" alembic/versions/ | wc -l)
+          # --include='*.py' matters: the step above ran the migrations,
+          # which imported every version module and left .pyc files in
+          # __pycache__. Compiled bytecode carries the names used in the
+          # source, so a plain recursive grep counts inv02 twice — once as
+          # source and once as bytecode. GNU grep searches those binaries;
+          # BSD grep on a developer's Mac does not, so this passed locally
+          # and failed in CI.
+          count=$(grep -rl --include='*.py' "NotImplementedError" alembic/versions/ | wc -l)
           echo "irreversible migrations: $count"
           if [ "$count" -ne 1 ]; then
             echo "::error::Expected exactly 1 irreversible migration (inv02), found $count."
