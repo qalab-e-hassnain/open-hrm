@@ -234,6 +234,8 @@ Built this HRM to run a real company's people operations — attendance,
 payroll, contracts and equipment for a working team — and opened it up so
 others can do the same without starting over.
 
+- Portfolio — [qalabagha.com](https://qalabagha.com/)
+- LinkedIn — [qalabhassnainagha](https://www.linkedin.com/in/qalabhassnainagha)
 - GitHub — [@qalab-e-hassnain](https://github.com/qalab-e-hassnain)
 - Email — qalab@quickgentech.com
 
