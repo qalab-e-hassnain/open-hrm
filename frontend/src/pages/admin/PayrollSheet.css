@@ -1,0 +1,345 @@
+/* ===================================================================
+   Payroll Sheet — run list + spreadsheet editor
+   Reuses the .pr-* tokens from PayrollReimbursement.css (same page).
+   =================================================================== */
+
+:root {
+  --ps-head-bg: #F3F4F6;
+  --ps-row-border: rgba(31, 41, 55, 0.08);
+  --ps-computed-bg: rgba(31, 41, 55, 0.03);
+  --ps-input-bg: #ffffff;
+  --ps-input-border: rgba(31, 41, 55, 0.16);
+  --ps-totals-bg: rgba(31, 41, 55, 0.05);
+  --ps-locked-bg: #FEF3C7;
+  --ps-locked-text: #92400E;
+}
+
+[data-theme="dark"] {
+  --ps-head-bg: rgba(255, 255, 255, 0.06);
+  --ps-row-border: rgba(255, 255, 255, 0.08);
+  --ps-computed-bg: rgba(255, 255, 255, 0.04);
+  --ps-input-bg: rgba(32, 32, 38, 0.9);
+  --ps-input-border: rgba(255, 255, 255, 0.18);
+  --ps-totals-bg: rgba(255, 255, 255, 0.07);
+  --ps-locked-bg: rgba(245, 158, 11, 0.16);
+  --ps-locked-text: #FCD34D;
+}
+
+/* ---- New run form ---- */
+.ps-new-run {
+  display: grid;
+  grid-template-columns: minmax(15rem, 20rem) minmax(10rem, 14rem) auto;
+  gap: 1rem;
+  align-items: end;
+  justify-content: start;
+}
+
+.ps-new-run .select-wrapper {
+  margin-bottom: 0;
+}
+
+/* ---- Run list ---- */
+.ps-runs {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.ps-run-card {
+  display: grid;
+  grid-template-columns: 1fr auto auto;
+  align-items: center;
+  gap: 1rem;
+  padding: 1rem 1.25rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--glass-shadow);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ps-run-card:hover {
+  box-shadow: var(--glass-shadow-hover);
+  border-color: rgba(232, 53, 42, 0.25);
+  transform: translateY(-1px);
+}
+
+.ps-run-main {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ps-run-month {
+  font-size: 1.0625rem;
+  font-weight: 700;
+  color: var(--text-dark);
+}
+
+.ps-run-meta {
+  display: flex;
+  align-items: center;
+  gap: 1.5rem;
+  font-size: 0.9375rem;
+  color: var(--text-gray);
+}
+
+.ps-run-net {
+  font-weight: 700;
+  color: var(--accent-green, #059669);
+}
+
+.ps-run-actions {
+  display: flex;
+  gap: 0.4rem;
+}
+
+/* ---- Editor header ---- */
+.ps-editor-head {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1rem;
+}
+
+.ps-back {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border: 1px solid var(--ps-input-border);
+  border-radius: 999px;
+  background: transparent;
+  color: var(--text-gray);
+  font-size: 0.875rem;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ps-back:hover {
+  color: var(--brand-red);
+  border-color: var(--brand-red);
+}
+
+.ps-editor-title {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.ps-editor-title .pr-section-title {
+  margin: 0;
+}
+
+.ps-editor-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.ps-locked-note {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.9rem;
+  margin: 0 0 1rem;
+  background: var(--ps-locked-bg);
+  color: var(--ps-locked-text);
+  border-radius: var(--radius-md);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+/* ---- Spreadsheet ----
+   Horizontal scroll: 13 columns never fit. The Name column is sticky so rows
+   stay identifiable while scrolling sideways. */
+.ps-table-wrap {
+  overflow-x: auto;
+  overflow-y: auto;
+  max-height: 560px;
+  border: 1px solid var(--ps-row-border);
+  border-radius: var(--radius-md);
+}
+
+.ps-table {
+  border-collapse: separate;
+  border-spacing: 0;
+  width: 100%;
+  min-width: 1500px;
+  font-size: 0.875rem;
+}
+
+.ps-table thead th {
+  position: sticky;
+  top: 0;
+  z-index: 2;
+  /* Opaque: scrolled rows must not bleed through a sticky header. */
+  background: var(--ps-head-bg);
+  padding: 0.6rem 0.55rem;
+  font-size: 0.75rem;
+  font-weight: 700;
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+  text-align: left;
+  white-space: normal;
+  border-bottom: 1px solid var(--ps-row-border);
+  vertical-align: bottom;
+}
+
+.ps-table tbody td {
+  padding: 0.35rem 0.55rem;
+  border-bottom: 1px solid var(--ps-row-border);
+  color: var(--text-dark);
+  white-space: nowrap;
+}
+
+.ps-table tbody tr:hover td {
+  background: rgba(232, 53, 42, 0.04);
+}
+
+.ps-right { text-align: right; }
+.ps-num { width: 46px; text-align: center; color: var(--text-gray); }
+
+.ps-designation {
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+  max-width: 160px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Sticky first data column keeps the person visible while scrolling right */
+.ps-sticky-name {
+  position: sticky;
+  left: 0;
+  z-index: 1;
+  background: var(--bg-white);
+  font-weight: 600;
+  min-width: 150px;
+  box-shadow: 1px 0 0 var(--ps-row-border);
+}
+
+.ps-table thead .ps-sticky-name {
+  z-index: 3;
+  background: var(--ps-head-bg);
+}
+
+.ps-table tbody tr:hover .ps-sticky-name {
+  background: #FDF5F5;
+}
+
+[data-theme="dark"] .ps-table tbody tr:hover .ps-sticky-name {
+  background: #2A2024;
+}
+
+/* Read-only vs computed vs editable, so the grid reads at a glance */
+.ps-readonly { color: var(--text-gray); }
+
+.ps-computed {
+  background: var(--ps-computed-bg);
+  font-weight: 600;
+}
+
+.ps-net { color: var(--accent-green, #059669); font-weight: 700; }
+
+.ps-edit-col { padding: 0.25rem 0.35rem !important; }
+
+.ps-input {
+  width: 100%;
+  min-width: 84px;
+  padding: 0.35rem 0.5rem;
+  border: 1px solid var(--ps-input-border);
+  border-radius: 6px;
+  background: var(--ps-input-bg);
+  color: var(--text-dark);
+  font-size: 0.875rem;
+  font-family: inherit;
+  text-align: right;
+  outline: none;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ps-input:focus {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px var(--brand-red-soft, rgba(232, 53, 42, 0.15));
+}
+
+/* Hide number spinners — they steal width in a dense grid */
+.ps-input::-webkit-outer-spin-button,
+.ps-input::-webkit-inner-spin-button {
+  -webkit-appearance: none;
+  margin: 0;
+}
+.ps-input { -moz-appearance: textfield; appearance: textfield; }
+
+.ps-row-remove {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.3rem;
+  border: none;
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.ps-row-remove:hover {
+  background: var(--status-error-bg, #FEE2E2);
+  color: var(--brand-red);
+}
+
+/* Pinned totals row */
+.ps-table tfoot td {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  background: var(--ps-totals-bg);
+  padding: 0.7rem 0.55rem;
+  font-weight: 700;
+  color: var(--text-dark);
+  border-top: 2px solid var(--ps-row-border);
+  white-space: nowrap;
+}
+
+.ps-table tfoot .ps-sticky-name {
+  z-index: 3;
+  background: var(--ps-totals-bg);
+}
+
+/* ---- Add employee ---- */
+.ps-add-row {
+  display: grid;
+  grid-template-columns: minmax(220px, 340px) auto;
+  gap: 1rem;
+  align-items: center;
+  margin-top: 1.25rem;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .ps-new-run { grid-template-columns: 1fr; }
+  .ps-add-row { grid-template-columns: 1fr; }
+  .ps-run-card { grid-template-columns: 1fr; gap: 0.5rem; }
+  .ps-editor-actions { margin-left: 0; width: 100%; }
+}
+
+/* A leaver still gets a final salary, so the row stays — labelled, not hidden,
+   and the run's count exceeding the active headcount is expected. */
+.ps-leaver {
+  display: inline-block;
+  margin-left: .4rem;
+  padding: .05rem .35rem;
+  border-radius: var(--radius-full);
+  background: var(--status-neutral-bg);
+  color: var(--status-neutral-text);
+  font-size: .625rem;
+  font-weight: 700;
+  vertical-align: middle;
+}

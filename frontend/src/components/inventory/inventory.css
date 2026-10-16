@@ -1,0 +1,155 @@
+/* Shared vocabulary for the inventory module: chips, buttons, the action
+   dialog, the history timeline and the receiving-table label. Pages layer
+   their own layout on top. Everything is drawn from the theme tokens in
+   index.css, so dark mode follows without a second set of rules. */
+
+.inv-muted { color: var(--text-secondary); font-size: var(--font-subtitle); margin: 0; }
+
+/* ------------------------------- Chips -------------------------------- */
+
+.inv-chip {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .15rem .5rem; border-radius: 999px;
+  font-size: .75rem; font-weight: 600; white-space: nowrap;
+}
+.inv-chip-neutral { background: var(--status-neutral-bg); color: var(--status-neutral-text); }
+.inv-chip-info    { background: var(--status-info-bg);    color: var(--status-info-text); }
+.inv-chip-success { background: var(--status-success-bg); color: var(--status-success-text); }
+.inv-chip-warning { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.inv-chip-danger  { background: var(--status-error-bg);   color: var(--status-error-text); }
+/* Muted, not green: "unknown" means counted but never powered on. */
+.inv-chip-muted   { background: var(--status-neutral-bg); color: var(--text-gray); }
+
+/* ------------------------------ Buttons ------------------------------- */
+
+.inv-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: .4rem;
+  padding: .5rem .9rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.inv-btn:hover:not(:disabled) { background: var(--bg-card-hover); }
+.inv-btn-primary { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+.inv-btn-primary:hover:not(:disabled) { background: var(--brand-red-dark); }
+.inv-btn-danger { border-color: var(--brand-red-darker); background: var(--brand-red-darker); color: #fff; }
+.inv-btn-danger-ghost { color: var(--status-error-text); border-color: var(--status-error-border); }
+.inv-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.inv-icon-btn {
+  display: inline-flex; padding: .35rem; border: 0; border-radius: var(--radius-md);
+  background: none; color: var(--text-gray); cursor: pointer;
+}
+.inv-icon-btn:hover { background: var(--bg-card-hover); }
+
+/* The one big target on the scan screen. Thumb-sized on purpose: scanning has
+   to take seconds, or people walk off with the board instead. */
+.inv-primary-tap {
+  display: flex; align-items: center; justify-content: center; gap: .6rem;
+  width: 100%; min-height: 4rem; padding: 1rem;
+  border: 0; border-radius: var(--radius-lg);
+  background: var(--brand-red); color: #fff;
+  font: inherit; font-size: 1.25rem; font-weight: 700; cursor: pointer;
+}
+.inv-primary-tap:hover:not(:disabled) { background: var(--brand-red-dark); }
+.inv-primary-tap:disabled { opacity: .6; cursor: progress; }
+
+.inv-actions { display: flex; flex-direction: column; gap: .75rem; }
+.inv-action-row { display: flex; flex-wrap: wrap; gap: .5rem; }
+.inv-no-actions { margin: 0; color: var(--text-gray); font-size: var(--font-subtitle); }
+
+/* ------------------------------- Dialog ------------------------------- */
+
+.inv-overlay {
+  position: fixed; inset: 0; z-index: var(--z-overlay);
+  display: flex; align-items: center; justify-content: center; padding: 1rem;
+  background: rgba(15, 23, 42, .5);
+}
+.inv-dialog {
+  width: min(28rem, 100%); max-height: 90vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: .75rem;
+  padding: 1.1rem; border-radius: var(--radius-lg);
+  background: var(--bg-white); color: var(--text-dark);
+}
+.inv-dialog header { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.inv-dialog h3 { margin: 0; font-size: 1.1rem; color: var(--text-heading); }
+.inv-dialog-item { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.inv-dialog-item code {
+  padding: .1rem .35rem; border-radius: var(--radius-md);
+  background: var(--status-neutral-bg); font-size: .8rem;
+}
+.inv-dialog-blurb { margin: 0; font-size: .85rem; color: var(--text-gray); }
+
+.inv-field { display: flex; flex-direction: column; gap: .3rem; font-size: var(--font-subtitle); }
+.inv-field > span { font-weight: 600; color: var(--text-secondary); }
+.inv-field small { color: var(--text-gray); font-size: .78rem; }
+.inv-field input, .inv-field select, .inv-field textarea {
+  padding: .5rem .6rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-dark); font: inherit;
+}
+.inv-field textarea { resize: vertical; }
+
+.inv-dialog-warn, .inv-dialog-error {
+  display: flex; align-items: flex-start; gap: .45rem; margin: 0;
+  padding: .6rem .7rem; border-radius: var(--radius-md); font-size: .85rem;
+}
+.inv-dialog-warn svg, .inv-dialog-error svg { flex: none; margin-top: .15rem; }
+.inv-dialog-warn { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.inv-dialog-error { background: var(--status-error-bg); color: var(--status-error-text); }
+
+.inv-dialog footer { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .25rem; }
+
+/* ------------------------------ Timeline ------------------------------ */
+
+.inv-timeline { list-style: none; margin: 0; padding: 0; }
+.inv-timeline li {
+  position: relative; padding: .7rem 0 .7rem 1.1rem;
+  border-left: 2px solid var(--border-gray);
+}
+.inv-timeline li::before {
+  content: ''; position: absolute; left: -.31rem; top: 1.05rem;
+  width: .5rem; height: .5rem; border-radius: 50%; background: var(--brand-red);
+}
+.inv-timeline li:last-child { border-left-color: transparent; }
+.inv-tl-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: .5rem; }
+.inv-tl-head strong { color: var(--text-heading); font-size: var(--font-subtitle); }
+.inv-tl-head time { color: var(--text-gray); font-size: .78rem; }
+.inv-tl-route { margin: .2rem 0 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.inv-tl-meta { display: flex; flex-wrap: wrap; gap: .6rem; margin: .25rem 0 0; font-size: .78rem; color: var(--text-gray); }
+.inv-tl-note { margin: .3rem 0 0; font-size: .82rem; color: var(--text-secondary); font-style: italic; }
+
+/* -------------------------------- Label ------------------------------- */
+
+.inv-label-panel {
+  width: min(22rem, 100%); padding: 1.1rem; border-radius: var(--radius-lg);
+  background: var(--bg-white); color: var(--text-dark);
+}
+.inv-label-head { display: flex; align-items: center; justify-content: space-between; gap: .5rem; }
+.inv-label-head h3 { margin: 0; font-size: 1rem; color: var(--text-heading); }
+
+/* Drawn at the real size the printer will produce, so what is on screen is
+   what comes off the roll. */
+.inv-label {
+  width: 25mm; height: 15mm; margin: 1rem auto;
+  display: flex; align-items: center; gap: 1mm;
+  padding: 1mm; border: 1px dashed var(--border-gray);
+  background: #fff; color: #000;
+}
+.inv-label img { width: 12mm; height: 12mm; image-rendering: pixelated; }
+.inv-label-text { display: flex; flex-direction: column; justify-content: center; min-width: 0; }
+.inv-label-text strong { font-size: 2.1mm; letter-spacing: .02em; }
+.inv-label-text span {
+  font-size: 1.8mm; line-height: 1.2;
+  overflow: hidden; display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 3;
+}
+.inv-label-hint { margin: 0; font-size: .8rem; color: var(--text-gray); text-align: center; }
+.inv-label-foot { display: flex; justify-content: flex-end; gap: .5rem; margin-top: .9rem; }
+
+/* Only the sticker reaches the roll — nav, dialog chrome and all. */
+@media print {
+  body * { visibility: hidden !important; }
+  #inv-label-print, #inv-label-print * { visibility: visible !important; }
+  #inv-label-print {
+    position: fixed; left: 0; top: 0; margin: 0; border: 0;
+  }
+  @page { size: 25mm 15mm; margin: 0; }
+}

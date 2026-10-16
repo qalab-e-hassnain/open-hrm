@@ -1,0 +1,727 @@
+.profile-page {
+  --profile-red: #c9342c;
+  --profile-red-dark: #a92620;
+  --profile-red-soft: #fff1ef;
+  --profile-ink: #171a21;
+  --profile-muted: #69707d;
+  --profile-line: #e6e8eb;
+  --profile-card-line: #cbd1d8;
+  --profile-card-shadow: 0 1px 2px rgba(35, 42, 52, .06), 0 8px 22px rgba(35, 42, 52, .07);
+  --profile-soft: #f7f8f9;
+  --profile-surface: var(--bg-white, #fff);
+  width: min(100%, 1240px);
+  margin: 0 auto;
+  color: var(--profile-ink);
+}
+
+.profile-page-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 0 0 1.4rem;
+}
+
+.profile-eyebrow {
+  display: block;
+  margin-bottom: .25rem;
+  color: var(--profile-red);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: .08em;
+  text-transform: uppercase;
+}
+
+.profile-page-heading h1 {
+  margin: 0;
+  color: var(--profile-ink);
+  font-size: clamp(1.8125rem, 2.2vw, 2.1875rem);
+  font-weight: 700;
+  letter-spacing: -.035em;
+}
+
+.profile-page-heading p {
+  margin: .35rem 0 0;
+  color: var(--profile-muted);
+  font-size: 0.9375rem;
+}
+
+.editing-indicator {
+  display: inline-flex;
+  align-items: center;
+  gap: .45rem;
+  padding: .45rem .65rem;
+  border: 1px solid #efc5c1;
+  border-radius: 6px;
+  background: var(--profile-red-soft);
+  color: var(--profile-red-dark);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.editing-indicator > span {
+  width: .45rem;
+  height: .45rem;
+  border-radius: 50%;
+  background: var(--profile-red);
+  box-shadow: 0 0 0 4px rgba(201, 52, 44, .1);
+}
+
+.profile-notice {
+  display: grid;
+  grid-template-columns: auto 1fr auto;
+  align-items: center;
+  gap: .65rem;
+  margin-bottom: 1rem;
+  padding: .75rem .9rem;
+  border: 1px solid;
+  border-radius: 8px;
+  font-size: 0.8125rem;
+}
+
+.profile-notice.success { border-color: #a7dfbe; background: #f0fbf4; color: #176238; }
+.profile-notice.error { border-color: #efb4ae; background: #fff3f1; color: #952b24; }
+.profile-notice.info { border-color: #cfd5dd; background: #f7f8fa; color: #4c5563; }
+.profile-notice button { display: grid; place-items: center; width: 2rem; height: 2rem; border: 0; background: transparent; color: currentColor; cursor: pointer; }
+
+.profile-editor-notice {
+  flex: none;
+  margin: 1rem 1.6rem 0;
+  align-items: start;
+}
+
+.profile-editor-notice > svg { margin-top: .1rem; }
+
+.profile-editor-notice > span { line-height: 1.45; }
+
+.profile-editor-notice button {
+  margin: -.35rem -.35rem 0 0;
+  width: 1.75rem;
+  height: 1.75rem;
+  border-radius: 6px;
+}
+
+/* Neutral tint so it reads the same over the success, error and info fills. */
+.profile-editor-notice button:hover { background: rgba(128, 128, 128, .18); }
+
+.profile-identity-card.card-component {
+  padding: 1.4rem 1.5rem;
+  border: 1px solid var(--profile-card-line);
+  border-radius: 12px;
+  background: var(--profile-surface);
+  box-shadow: var(--profile-card-shadow);
+}
+
+.profile-identity-card.card-component:hover { transform: none; border-color: #b9c0c9; box-shadow: var(--profile-card-shadow); }
+.profile-identity { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 1.35rem; }
+.avatar-wrap { position: relative; align-self: start; }
+
+.profile-avatar {
+  display: grid;
+  place-items: center;
+  width: 7rem;
+  height: 7rem;
+  overflow: hidden;
+  border: 5px solid #fff;
+  border-radius: 50%;
+  background: #f4dedb;
+  color: var(--profile-red-dark);
+  box-shadow: 0 0 0 1px #ead8d5, 0 7px 20px rgba(101, 45, 39, .12);
+  font-size: 1.75rem;
+  font-weight: 700;
+  letter-spacing: -.04em;
+}
+
+.profile-avatar img { width: 100%; height: 100%; object-fit: cover; }
+.avatar-camera {
+  position: absolute;
+  right: -.05rem;
+  bottom: .05rem;
+  display: grid;
+  place-items: center;
+  width: 2.25rem;
+  height: 2.25rem;
+  border: 1px solid var(--profile-line);
+  border-radius: 50%;
+  background: #fff;
+  color: #343944;
+  box-shadow: 0 5px 14px rgba(30, 35, 44, .13);
+  cursor: pointer;
+  transition: transform 180ms ease, color 180ms ease;
+}
+.avatar-camera:hover { color: var(--profile-red); transform: translateY(-1px); }
+
+.identity-copy { min-width: 0; }
+.identity-title-row h2 { margin: 0; color: var(--profile-ink); font-size: clamp(1.5625rem, 2vw, 1.9375rem); font-weight: 700; letter-spacing: -.035em; }
+.identity-role { display: flex; align-items: center; gap: .65rem; margin-top: .35rem; color: #4e5561; font-size: 0.9375rem; text-transform: capitalize; }
+.profile-page .status-badge { padding: .2rem .48rem; border: 1px solid #b8e2c7; border-radius: 5px; background: #ebf9f0; color: #1d7a43; font-size: 0.75rem; font-weight: 700; }
+.profile-page .status-badge.inactive { border-color: #efc1bc; background: #fff0ee; color: #a82d26; }
+
+.identity-metadata {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(8rem, 1fr));
+  gap: 1rem 1.35rem;
+  max-width: 47rem;
+  margin-top: 1.25rem;
+  padding-top: 1rem;
+  border-top: 1px dashed #dfe2e6;
+}
+
+.meta-item { display: flex; align-items: flex-start; gap: .65rem; min-width: 0; }
+.meta-item > span { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; flex: 0 0 1.8rem; color: #535b67; }
+.meta-item div { min-width: 0; }
+.meta-item small,
+ .quick-row small { display: block; margin-bottom: .16rem; color: var(--profile-muted); font-size: 0.75rem; }
+.meta-item strong { display: block; overflow: hidden; color: var(--profile-ink); font-size: 0.8125rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+
+/* min-width, not width: the column sits in an `auto` grid track, and pinning
+   it to 10.5rem left "Edit profile" about five pixels short of fitting on one
+   line — the label at 1rem/600 plus the icon, the gap and the button's own
+   2.5rem of padding comes to roughly 164px inside a 168px box. It wrapped to
+   two lines. The floor keeps the two buttons the same comfortable width they
+   were, and lets them grow rather than break when a label needs it. */
+.identity-actions { display: flex; flex-direction: column; align-self: start; gap: .65rem; min-width: 10.5rem; }
+/* Labels here are short and deliberate; none of them should ever wrap. */
+.identity-actions button,
+ .identity-actions .secondary-action { white-space: nowrap; }
+.identity-actions button,
+ .secondary-action { min-height: 2.65rem; justify-content: center; }
+.identity-actions button { display: inline-flex; align-items: center; gap: .5rem; }
+.secondary-action { display: flex; align-items: center; justify-content: center; gap: .5rem; border: 1px solid #d9dde2; border-radius: 6px; background: #fff; color: #484f5a; font-size: 0.8125rem; font-weight: 600; cursor: pointer; transition: border-color 180ms ease, color 180ms ease; }
+.secondary-action:hover { border-color: #b9bec6; color: var(--profile-red); }
+
+.profile-tabs {
+  /* Was `display: none`, and nothing anywhere turned it back on. It arrived
+     with the redesign sync and took the whole tabbed half of this page with
+     it: Personal, Employment, Banking, Documents and Security are all fully
+     built in the JSX and none of them could be reached. */
+  display: flex;
+  gap: 1.8rem;
+  margin-top: 1rem;
+  padding: 0 .25rem;
+  border-bottom: 1px solid #dfe2e6;
+  overflow-x: auto;
+}
+
+.profile-tabs button {
+  position: relative;
+  min-height: 3.25rem;
+  padding: 0 .15rem;
+  border: 0;
+  background: transparent;
+  color: #626a76;
+  font-size: 0.875rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: color 180ms ease;
+}
+.profile-tabs button::after { position: absolute; right: 0; bottom: -1px; left: 0; height: 2px; background: var(--profile-red); content: ''; transform: scaleX(0); transition: transform 180ms ease; }
+.profile-tabs button:hover,
+ .profile-tabs button.active { color: var(--profile-red); }
+.profile-tabs button.active::after { transform: scaleX(1); }
+
+.profile-layout { display: block; margin-top: 1.25rem; }
+/* Hidden by the same sync as .profile-tabs above. The aside below it kept
+   rendering, which is why the page looked complete rather than broken. */
+.profile-main { display: block; }
+.profile-main + .profile-aside { margin-top: 1.25rem; }
+
+.profile-section-card {
+  padding: 1.35rem 1.4rem 1.55rem;
+  border: 1px solid var(--profile-card-line);
+  border-radius: 11px;
+  background: var(--profile-surface);
+  box-shadow: var(--profile-card-shadow);
+}
+
+.profile-section-card > header { display: flex; align-items: flex-start; gap: .75rem; margin-bottom: 1.25rem; }
+.profile-section-card > header > span,
+ .summary-heading > svg { color: var(--profile-red); }
+.profile-section-card > header > span { display: grid; place-items: center; width: 1.65rem; height: 1.65rem; flex: 0 0 1.65rem; }
+.profile-section-card h2,
+ .summary-heading h2 { margin: 0; color: var(--profile-ink); font-size: 1rem; font-weight: 700; letter-spacing: -.012em; }
+.profile-section-card > header p { max-width: 65ch; margin: .25rem 0 0; color: var(--profile-muted); font-size: 0.75rem; line-height: 1.5; }
+
+.profile-fields-grid,
+ .security-overview { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.05rem 1.5rem; }
+.profile-field { position: relative; min-width: 0; padding-bottom: .85rem; border-bottom: 1px solid #eceef1; }
+.profile-field.wide { grid-column: 1 / -1; }
+.field-label { display: flex; align-items: center; gap: .32rem; margin-bottom: .35rem; color: var(--profile-muted); font-size: 0.75rem; font-weight: 550; }
+.field-label svg { width: .68rem; height: .68rem; }
+.field-value { display: flex; align-items: center; justify-content: space-between; gap: .5rem; min-height: 1.3rem; color: var(--profile-ink); font-size: 0.875rem; font-weight: 600; line-height: 1.45; word-break: break-word; }
+.field-value.empty { color: #9aa0aa; font-weight: 500; }
+.field-value button { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 0; background: transparent; color: #7a818c; cursor: pointer; }
+
+/* 1.4rem top padding, not the .1rem this used to carry: that left no room
+   above the input box, so .changed-label (also absolutely positioned) sat at
+   the exact same height as the input's floating label/border notch and
+   visually collided with it. Reserved uniformly for every editing field (not
+   just dirty ones) so a field's box doesn't shift down when it becomes dirty. */
+.profile-field.is-editing { padding: 1.4rem 0 0; border-bottom: 0; }
+.profile-field.is-editing > .input-group,
+ .profile-field.is-editing > .select-group { margin: 0; }
+.profile-field.is-dirty { padding-left: .65rem; border-left: 2px solid var(--profile-red); }
+.changed-label { position: absolute; top: .15rem; right: 0; color: var(--profile-red); font-size: 0.7rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; line-height: 1; }
+
+.permission-note { display: flex; align-items: center; gap: .55rem; margin-top: 1.25rem; padding: .7rem .8rem; border-left: 3px solid #8a929d; background: #f7f8f9; color: #5c6470; font-size: 0.75rem; line-height: 1.45; }
+.permission-note.banking { border-left-color: var(--profile-red); background: var(--profile-red-soft); color: #763631; }
+
+.profile-empty-state { display: grid; grid-template-columns: auto 1fr auto; align-items: center; gap: .8rem; padding: 1rem; border: 1px dashed #d9dde2; border-radius: 8px; background: #fafafb; }
+.profile-empty-state > span { display: grid; place-items: center; width: 2.35rem; height: 2.35rem; border-radius: 8px; background: var(--profile-red-soft); color: var(--profile-red); }
+.profile-empty-state h3 { margin: 0; font-size: 0.8125rem; }
+.profile-empty-state p { margin: .2rem 0 0; color: var(--profile-muted); font-size: 0.75rem; }
+.profile-empty-state button { min-height: 2.4rem; padding: 0 .8rem; border: 1px solid #d7dade; border-radius: 6px; background: #fff; color: var(--profile-red); font-size: 0.75rem; font-weight: 650; cursor: pointer; }
+
+.documents-list { display: grid; }
+.document-row { display: grid; grid-template-columns: auto minmax(0, 1fr) auto auto; align-items: center; gap: .8rem; padding: .9rem 0; border-bottom: 1px solid #eceef1; }
+.document-row:last-child { border-bottom: 0; }
+.document-icon { display: grid; place-items: center; width: 2.2rem; height: 2.2rem; border-radius: 7px; background: #f4f5f6; color: #5b626d; }
+.document-copy { display: grid; gap: .15rem; }
+.document-copy strong { font-size: 0.8125rem; }
+.document-copy span { color: var(--profile-muted); font-size: 0.75rem; }
+.document-status { padding: .22rem .45rem; border-radius: 4px; font-size: 0.75rem; font-weight: 700; }
+.document-status.complete { background: #ecf8f0; color: #277a47; }
+.document-status.pending { background: #fff3e7; color: #986028; }
+.document-actions { display: flex; align-items: center; gap: .35rem; }
+.document-actions a,
+ .document-actions label { min-height: 2rem; padding: .45rem .55rem; border: 0; border-radius: 5px; color: var(--profile-red); font-size: 0.75rem; font-weight: 650; text-decoration: none; cursor: pointer; }
+.document-actions label { border: 1px solid #d9dde2; background: #fff; }
+
+.profile-aside { position: static; display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1rem; }
+.summary-card.card-component {
+  position: relative;
+  min-width: 0;
+  min-height: 14rem;
+  padding: 1.25rem;
+  overflow: hidden;
+  border: 1px solid var(--profile-card-line);
+  border-radius: 11px;
+  background: var(--profile-surface);
+  box-shadow: var(--profile-card-shadow);
+}
+.summary-card.card-component::before {
+  position: absolute;
+  top: 0;
+  right: 1rem;
+  left: 1rem;
+  height: 3px;
+  border-radius: 0 0 3px 3px;
+  background: var(--profile-red);
+  content: '';
+  opacity: .9;
+}
+.summary-card.card-component:hover { transform: translateY(-1px); border-color: #b9c0c9; box-shadow: 0 2px 4px rgba(35, 42, 52, .07), 0 12px 28px rgba(35, 42, 52, .09); }
+.summary-heading { display: flex; align-items: center; gap: .55rem; margin-bottom: 1rem; }
+
+.completion-body { display: grid; grid-template-columns: auto 1fr; align-items: center; gap: 1rem; }
+.completion-ring { display: grid; place-items: center; width: 5.5rem; height: 5.5rem; border-radius: 50%; background: conic-gradient(var(--profile-red) var(--completion), #f0e5e3 0); }
+.completion-ring::before { position: absolute; width: 4.35rem; height: 4.35rem; border-radius: 50%; background: var(--profile-surface); content: ''; }
+.completion-ring > div { position: relative; display: grid; place-items: center; z-index: 1; }
+.completion-ring strong { font-size: 1.0625rem; font-variant-numeric: tabular-nums; }
+.completion-ring span { color: var(--profile-muted); font-size: 0.75rem; }
+.completion-body > div:last-child > strong { font-size: 0.75rem; }
+.completion-body p { margin: .3rem 0 0; color: var(--profile-muted); font-size: 0.75rem; line-height: 1.5; }
+.missing-list { display: grid; margin-top: .9rem; padding-top: .5rem; border-top: 1px solid #eceef1; }
+.missing-list button { display: flex; align-items: center; justify-content: space-between; min-height: 2.25rem; padding: 0; border: 0; background: transparent; color: var(--profile-red); font-size: 0.75rem; cursor: pointer; }
+
+.summary-row { display: grid; grid-template-columns: minmax(0, 1fr) auto auto; align-items: center; min-height: 2.2rem; gap: .5rem; border-bottom: 1px solid #eff0f2; font-size: 0.75rem; }
+.summary-row:last-child { border-bottom: 0; }
+.summary-row > span { color: var(--profile-muted); }
+.summary-row > strong { max-width: 8.5rem; overflow: hidden; font-size: 0.75rem; font-weight: 600; text-overflow: ellipsis; text-transform: capitalize; white-space: nowrap; }
+.summary-row > button { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; border: 0; background: transparent; color: #707782; cursor: pointer; }
+.summary-status { padding: .2rem .4rem; border-radius: 4px; }
+.summary-status.active { background: #ebf8f0; color: #247445; }
+.summary-status.inactive { background: #fff0ee; color: #a82d26; }
+
+.quick-row { display: grid; grid-template-columns: auto minmax(0, 1fr); align-items: center; gap: .65rem; min-height: 2.65rem; }
+.quick-row > span { display: grid; place-items: center; width: 1.8rem; height: 1.8rem; color: #606873; }
+.quick-row strong { display: block; overflow: hidden; font-size: 0.75rem; font-weight: 600; text-overflow: ellipsis; white-space: nowrap; }
+
+/* Closed-by-default profile editor */
+.profile-editor-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: flex;
+  justify-content: flex-end;
+  background: rgba(20, 23, 29, .42);
+  backdrop-filter: blur(3px);
+  animation: editor-backdrop-in 180ms ease-out;
+}
+
+.profile-editor {
+  /* Column flex, not a fixed-row grid: the notice is a conditional child, so
+     any row template is wrong for one of the two cases. Here the body takes
+     the slack and every other child keeps its natural height either way. */
+  display: flex;
+  flex-direction: column;
+  width: min(100%, 43rem);
+  height: 100dvh;
+  background: var(--profile-surface);
+  box-shadow: -22px 0 54px rgba(30, 35, 44, .18);
+  animation: editor-drawer-in 230ms cubic-bezier(.22, .8, .3, 1);
+}
+
+@keyframes editor-backdrop-in { from { opacity: 0; } }
+@keyframes editor-drawer-in { from { transform: translateX(2.5rem); opacity: .65; } }
+
+.profile-editor-header {
+  display: flex;
+  flex: none;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1.5rem 1.6rem 1.25rem;
+  border-bottom: 1px solid var(--profile-line);
+}
+
+.profile-editor-header h2 {
+  margin: 0;
+  color: var(--profile-ink);
+  font-size: 1.5625rem;
+  letter-spacing: -.035em;
+}
+
+.profile-editor-header p {
+  margin: .35rem 0 0;
+  color: var(--profile-muted);
+  font-size: 0.75rem;
+}
+
+.profile-editor-header > button {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  flex: 0 0 2.5rem;
+  border: 1px solid var(--profile-line);
+  border-radius: 7px;
+  background: transparent;
+  color: var(--profile-muted);
+  cursor: pointer;
+  transition: color 180ms ease, border-color 180ms ease, background 180ms ease;
+}
+
+.profile-editor-header > button:hover {
+  border-color: #d5aaa6;
+  background: var(--profile-red-soft);
+  color: var(--profile-red);
+}
+
+.profile-editor-tabs {
+  display: flex;
+  flex: none;
+  gap: 1.25rem;
+  min-width: 0;
+  padding: 0 1.6rem;
+  border-bottom: 1px solid var(--profile-line);
+  overflow-x: auto;
+}
+
+.profile-editor-tabs button {
+  position: relative;
+  min-height: 3.25rem;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--profile-muted);
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+}
+
+.profile-editor-tabs button::after {
+  position: absolute;
+  right: 0;
+  bottom: -1px;
+  left: 0;
+  height: 2px;
+  background: var(--profile-red);
+  content: '';
+  transform: scaleX(0);
+  transition: transform 180ms ease;
+}
+
+.profile-editor-tabs button:hover,
+
+.profile-editor-tabs button.active { color: var(--profile-red); }
+.profile-editor-tabs button.active::after { transform: scaleX(1); }
+
+.profile-editor-body {
+  flex: 1;
+  min-height: 0;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+}
+
+.editor-section { padding: 1.5rem 1.6rem 2rem; }
+.editor-section-heading { display: flex; align-items: flex-start; gap: .7rem; margin-bottom: 1.35rem; }
+.editor-section-heading > span { display: grid; place-items: center; width: 2rem; height: 2rem; flex: 0 0 2rem; border-radius: 6px; background: var(--profile-red-soft); color: var(--profile-red); }
+.editor-section-heading h3 { margin: .05rem 0 0; color: var(--profile-ink); font-size: 1rem; }
+.editor-section-heading p { margin: .25rem 0 0; color: var(--profile-muted); font-size: 0.75rem; line-height: 1.45; }
+
+.profile-page .drawer-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.1rem 1.25rem;
+}
+
+.profile-page .drawer-form-grid .profile-field.is-editing { min-height: 4.25rem; }
+.editor-subsection-title { display: flex; align-items: center; gap: .5rem; margin: 1.75rem 0 1rem; padding-top: 1.25rem; border-top: 1px solid var(--profile-line); color: var(--profile-red); font-size: 0.8125rem; font-weight: 700; }
+
+.employment-access-note {
+  display: flex;
+  align-items: flex-start;
+  gap: .55rem;
+  margin: -.15rem 0 1.25rem;
+  padding: .75rem .85rem;
+  border-left: 3px solid #78818d;
+  background: var(--profile-soft);
+  color: var(--profile-muted);
+  font-size: 0.75rem;
+  line-height: 1.5;
+}
+
+.employment-access-note.banking {
+  border-left-color: var(--profile-red);
+  background: var(--profile-red-soft);
+  color: #7d3a35;
+}
+
+.editor-toggle {
+  display: flex;
+  grid-column: 1 / -1;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  min-height: 3.8rem;
+  padding: .75rem .85rem;
+  border: 1px solid var(--profile-line);
+  border-radius: 7px;
+  cursor: pointer;
+}
+
+.editor-toggle.is-dirty { border-left: 3px solid var(--profile-red); }
+.editor-toggle span { display: grid; gap: .2rem; }
+.editor-toggle strong { color: var(--profile-ink); font-size: 0.75rem; }
+.editor-toggle small { color: var(--profile-muted); font-size: 0.75rem; font-weight: 400; }
+.editor-toggle input { width: 1.05rem; height: 1.05rem; accent-color: var(--profile-red); }
+
+.drawer-documents { display: grid; }
+.drawer-document-row {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .75rem;
+  min-height: 4.2rem;
+  border-bottom: 1px solid var(--profile-line);
+}
+.drawer-document-row > span { display: grid; place-items: center; width: 2rem; height: 2rem; border-radius: 6px; background: var(--profile-soft); color: var(--profile-muted); }
+.drawer-document-row > div { display: grid; gap: .2rem; }
+.drawer-document-row strong { color: var(--profile-ink); font-size: 0.75rem; }
+.drawer-document-row small { color: var(--profile-muted); font-size: 0.75rem; }
+.drawer-document-row > label { min-height: 2.2rem; padding: .55rem .7rem; border: 1px solid var(--profile-line); border-radius: 6px; color: var(--profile-red); font-size: 0.75rem; font-weight: 650; cursor: pointer; }
+
+.profile-editor-footer {
+  display: flex;
+  flex: none;
+  align-items: center;
+  justify-content: flex-end;
+  gap: .6rem;
+  min-height: 4.5rem;
+  padding: .75rem 1.6rem;
+  border-top: 1px solid var(--profile-line);
+  background: var(--profile-surface);
+  box-shadow: 0 -8px 20px rgba(35, 42, 52, .035);
+}
+
+.profile-editor-footer > span {
+  margin-right: auto;
+  color: var(--profile-muted);
+  font-size: 0.75rem;
+}
+
+.discard-confirm {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: .6rem;
+  width: 100%;
+}
+.discard-confirm > div { display: grid; gap: .16rem; }
+.discard-confirm strong { color: var(--profile-ink); font-size: 0.75rem; }
+.discard-confirm span { color: var(--profile-muted); font-size: 0.75rem; }
+.discard-confirm button { min-height: 2.35rem; padding: 0 .75rem; border: 1px solid var(--profile-line); border-radius: 6px; background: transparent; color: var(--profile-ink); font-size: 0.75rem; font-weight: 650; cursor: pointer; }
+.discard-confirm button.danger { border-color: #e1aaa5; background: var(--profile-red-soft); color: var(--profile-red-dark); }
+
+.password-change-form { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; }
+.profile-password-field { display: flex; flex-direction: column; gap: .4rem; color: var(--profile-ink); font-size: 0.75rem; font-weight: 600; }
+.profile-password-field:first-child { grid-column: 1 / -1; }
+.profile-password-field > div { display: flex; align-items: center; min-height: 2.8rem; border: 1px solid #d8dce1; border-radius: 6px; background: #fff; }
+.profile-password-field > div:focus-within { border-color: var(--profile-red); box-shadow: 0 0 0 3px rgba(201, 52, 44, .1); }
+.profile-password-field input { width: 100%; padding: 0 .75rem; border: 0; outline: 0; background: transparent; color: var(--profile-ink); font: inherit; }
+.profile-password-field button { width: 2.8rem; height: 2.8rem; border: 0; background: transparent; color: #707782; cursor: pointer; }
+.profile-password-requirements { grid-column: 1 / -1; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: .45rem; margin: 0; padding: .8rem; border: 1px solid #e5e7ea; border-radius: 6px; background: #f8f9fa; list-style: none; }
+.profile-password-requirements li { display: flex; align-items: center; gap: .4rem; color: #858c96; font-size: 0.75rem; }
+.profile-password-requirements li.met { color: #237545; }
+.password-message { grid-column: 1 / -1; display: flex; align-items: center; gap: .45rem; padding: .7rem; border: 1px solid; border-radius: 6px; font-size: 0.75rem; }
+.password-message.success { border-color: #a7dfbe; background: #f0fbf4; color: #176238; }
+.password-message.error { border-color: #efb4ae; background: #fff3f1; color: #952b24; }
+.password-form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; }
+
+.visually-hidden { position: absolute !important; width: 1px !important; height: 1px !important; padding: 0 !important; margin: -1px !important; overflow: hidden !important; clip: rect(0, 0, 0, 0) !important; white-space: nowrap !important; border: 0 !important; }
+.button-spinner { width: .85rem; height: .85rem; border: 2px solid #ddd; border-top-color: var(--profile-red); border-radius: 50%; animation: profile-spin .7s linear infinite; }
+@keyframes profile-spin { to { transform: rotate(360deg); } }
+
+.profile-loading { display: grid; gap: 1rem; min-height: 70vh; }
+.profile-skeleton { border-radius: 10px; background: linear-gradient(90deg, #f1f2f3 25%, #fafafa 50%, #f1f2f3 75%); background-size: 200% 100%; animation: profile-shimmer 1.4s infinite; }
+.skeleton-hero { height: 12rem; }
+.skeleton-tabs { height: 3rem; }
+.skeleton-grid { display: grid; grid-template-columns: 1.65fr .72fr; gap: 1rem; }
+.skeleton-content { height: 28rem; }
+.skeleton-aside { height: 22rem; }
+@keyframes profile-shimmer { to { background-position: -200% 0; } }
+
+.mobile-save-bar { display: none; }
+.profile-page button:focus-visible,
+ .profile-page a:focus-visible,
+ .profile-page label[role="button"]:focus-visible,
+ .avatar-camera:focus-visible,
+ .secondary-action:focus-visible { outline: 3px solid rgba(201, 52, 44, .25); outline-offset: 2px; }
+.profile-page button:active,
+ .profile-page .secondary-action:active { transform: translateY(1px); }
+
+[data-theme='dark'] .profile-page {
+  --profile-ink: #f1f2f3;
+  --profile-muted: #a6abb3;
+  --profile-line: #34373d;
+  --profile-card-line: #525760;
+  --profile-card-shadow: 0 1px 2px rgba(0, 0, 0, .22), 0 9px 24px rgba(0, 0, 0, .18);
+  --profile-soft: #24262a;
+  --profile-surface: #1c1e24;
+  --profile-red-soft: rgba(201, 52, 44, .15);
+}
+[data-theme='dark'] .identity-role,
+ [data-theme='dark'] .meta-item > span,
+ [data-theme='dark'] .quick-row > span,
+ [data-theme='dark'] .summary-row > button,
+ [data-theme='dark'] .field-value.empty {
+  color: var(--profile-muted);
+}
+[data-theme='dark'] .identity-metadata,
+ [data-theme='dark'] .profile-field,
+ [data-theme='dark'] .document-row,
+ [data-theme='dark'] .missing-list,
+ [data-theme='dark'] .summary-row,
+ [data-theme='dark'] .profile-tabs {
+  border-color: var(--profile-line);
+}
+[data-theme='dark'] .profile-avatar,
+ [data-theme='dark'] .avatar-camera,
+ [data-theme='dark'] .secondary-action,
+ [data-theme='dark'] .document-actions label,
+ [data-theme='dark'] .profile-password-field > div { border-color: #3b3e44; background: #25272b; color: #f2f2f2; }
+[data-theme='dark'] .profile-empty-state button,
+ [data-theme='dark'] .document-icon {
+  border-color: var(--profile-line);
+  background: #25272b;
+  color: var(--profile-muted);
+}
+[data-theme='dark'] .profile-empty-state,
+ [data-theme='dark'] .permission-note,
+ [data-theme='dark'] .profile-password-requirements { background: #24262a; }
+[data-theme='dark'] .completion-ring {
+  background: conic-gradient(var(--profile-red) var(--completion), #34373d 0);
+}
+[data-theme='dark'] .profile-notice.success,
+ [data-theme='dark'] .password-message.success {
+  border-color: rgba(16, 185, 129, .35);
+  background: rgba(16, 185, 129, .14);
+  color: #6ee7b7;
+}
+[data-theme='dark'] .profile-notice.error,
+ [data-theme='dark'] .password-message.error {
+  border-color: rgba(239, 68, 68, .35);
+  background: rgba(239, 68, 68, .14);
+  color: #fca5a5;
+}
+[data-theme='dark'] .profile-notice.info {
+  border-color: var(--profile-line);
+  background: #24262a;
+  color: var(--profile-muted);
+}
+[data-theme='dark'] .profile-skeleton {
+  background: linear-gradient(90deg, #1c1e24 25%, #25272d 50%, #1c1e24 75%);
+  background-size: 200% 100%;
+}
+/* Keep the progress ring cutout on the same surface as its card. */
+[data-theme='dark'] .completion-ring::before { background: var(--profile-surface); }
+[data-theme='dark'] .employment-access-note.banking { color: #e8b3ae; }
+[data-theme='dark'] .profile-identity-card.card-component:hover,
+
+[data-theme='dark'] .summary-card.card-component:hover { border-color: #676d77; }
+
+@media (max-width: 1060px) {
+  .profile-identity { grid-template-columns: auto minmax(0, 1fr); }
+  .identity-actions { grid-column: 1 / -1; flex-direction: row; min-width: 0; padding-left: 8.35rem; }
+  .identity-actions > * { min-width: 10rem; }
+  .identity-metadata { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 840px) {
+  .profile-layout { grid-template-columns: 1fr; }
+  .profile-aside { position: static; grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .profile-aside .completion-card { grid-column: 1 / -1; }
+}
+
+@media (max-width: 640px) {
+  .profile-page { padding-bottom: 4.5rem; }
+  .profile-page-heading { align-items: flex-start; }
+  .profile-page-heading p { max-width: 18rem; }
+  .editing-indicator { display: none; }
+  .profile-identity-card.card-component { padding: 1.1rem; }
+  .profile-identity { grid-template-columns: 1fr; text-align: center; }
+  .avatar-wrap { justify-self: center; }
+  .profile-avatar { width: 6.2rem; height: 6.2rem; }
+  .identity-role { justify-content: center; }
+  .identity-metadata { grid-template-columns: 1fr 1fr; text-align: left; }
+  /* Was `display: none` with no replacement UI ever wired up (the intended
+     .mobile-save-bar below is never rendered in the JSX) — that hid the only
+     way to open the editor, leaving mobile with no way to edit a profile at
+     all. Stack it full-width instead of hiding it. */
+  .identity-actions { flex-direction: column; width: 100%; min-width: 0; padding-left: 0; }
+  .identity-actions > * { width: 100%; min-width: 0; }
+  .profile-tabs { gap: 1.25rem; }
+  .profile-fields-grid,
+ .security-overview,
+ .password-change-form,
+ .profile-aside { grid-template-columns: 1fr; }
+  .profile-aside .completion-card { grid-column: auto; }
+  .profile-field.wide { grid-column: auto; }
+  .profile-section-card { padding: 1.1rem; }
+  .document-row { grid-template-columns: auto 1fr auto; }
+  .document-actions { grid-column: 2 / -1; }
+  .profile-password-field:first-child,
+ .profile-password-requirements,
+ .password-message,
+ .password-form-actions { grid-column: auto; }
+  .profile-password-requirements { grid-template-columns: 1fr; }
+  .profile-editor { width: 100%; }
+  .profile-editor-header,
+ .editor-section { padding-right: 1rem; padding-left: 1rem; }
+  .profile-editor-tabs,
+ .profile-editor-footer { padding-right: 1rem; padding-left: 1rem; }
+  .profile-editor-notice { margin-right: 1rem; margin-left: 1rem; }
+  .profile-page .drawer-form-grid { grid-template-columns: 1fr; }
+  .editor-toggle { grid-column: auto; }
+  .discard-confirm { grid-template-columns: 1fr auto auto; }
+  .mobile-save-bar { position: fixed; right: 0; bottom: 0; left: 0; z-index: 30; display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: .5rem; padding: .7rem 1rem; border-top: 1px solid var(--profile-line); background: var(--profile-surface); box-shadow: 0 -8px 24px rgba(30, 35, 44, .1); }
+  .mobile-save-bar > span { color: var(--profile-muted); font-size: 0.75rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .profile-page *,
+ .profile-page *::before,
+ .profile-page *::after { scroll-behavior: auto !important; animation-duration: .01ms !important; transition-duration: .01ms !important; }
+}

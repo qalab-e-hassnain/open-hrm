@@ -1,0 +1,172 @@
+/* ===================================================================
+   Reimbursements  ·  page shell (title + segmented tabs)
+
+   Every class here is `rb-` prefixed, mirroring the `lv-` convention in
+   Leaves.css. The generic names this file used before (.tab-buttons,
+   .tab-btn, .page-title) are also declared globally by Employees.css and
+   PayrollReimbursement.css at the same specificity, so whichever stylesheet
+   Vite emitted last silently won and the tabs rendered as Employees'
+   underline tabs instead of a segmented control.
+   =================================================================== */
+
+:root {
+  --rb-tab-border: var(--border-strong);
+}
+
+[data-theme="dark"] {
+  --rb-tab-border: var(--border-strong);
+}
+
+.reimbursements-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1.35rem;
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+}
+
+.reimbursements-page .rb-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.reimbursements-page .rb-page-title {
+  margin: 0;
+  color: var(--text-heading);
+  font-size: var(--font-page-title);
+  font-weight: var(--font-page-title-weight);
+  letter-spacing: -0.04em;
+}
+
+.reimbursements-page .rb-page-header p {
+  margin: 0.3rem 0 0;
+  color: var(--text-gray);
+  font-size: 0.9375rem;
+}
+
+/* ---- Segmented tabs ---- */
+.reimbursements-page .rb-tabs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0;
+  width: fit-content;
+  max-width: 100%;
+  padding: 0;
+  overflow: hidden;
+  border: 1px solid var(--rb-tab-border);
+  border-radius: 0.55rem;
+  background: var(--bg-white);
+}
+
+.reimbursements-page .rb-tab-btn {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  min-height: 2.5rem;
+  margin: 0;
+  padding: 0 1.25rem;
+  border: 0;
+  border-right: 1px solid var(--rb-tab-border);
+  border-radius: 0;
+  background: transparent;
+  color: var(--text-secondary);
+  font-family: inherit;
+  font-size: 0.9375rem;
+  font-weight: 600;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.reimbursements-page .rb-tab-btn:last-child {
+  border-right: 0;
+}
+
+.reimbursements-page .rb-tab-btn:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-heading);
+}
+
+.reimbursements-page .rb-tab-btn.rb-tab-active {
+  background: color-mix(in srgb, var(--brand-red) 7%, var(--bg-white));
+  color: var(--brand-red);
+}
+
+.reimbursements-page .rb-tab-btn.rb-tab-active::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  bottom: 0;
+  left: 0;
+  height: 2px;
+  background: var(--brand-red);
+}
+
+.reimbursements-page .rb-tab-btn svg {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+}
+
+/* ---- Tab content ---- */
+.reimbursements-page .rb-tab-content {
+  display: flex;
+  flex-direction: column;
+}
+
+/* ReimbursementHistory renders its own <h2 class="page-title"> but ships no
+   rule for it, so it inherited whichever global .page-title Vite emitted last.
+   Pinned here, and kept narrower than .manage-reimbursement-card .page-title
+   so the Manage tab keeps its own heading treatment. It reads as a section
+   heading, not a second page title — the page is already titled above it. */
+.reimbursements-page .reimbursement-history-page .page-title {
+  margin: 0;
+  color: var(--text-heading);
+  font-size: var(--font-section-title);
+  font-weight: var(--font-section-title-weight);
+  letter-spacing: -0.02em;
+}
+
+.reimbursements-page .reimbursement-history-page .page-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--text-gray);
+  font-size: var(--font-subtitle);
+}
+
+.reimbursements-page .rb-tab-panel {
+  animation: rb-fade-in 0.2s ease-out;
+}
+
+@keyframes rb-fade-in {
+  from { opacity: 0; transform: translateY(6px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reimbursements-page .rb-tab-panel { animation: none; }
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .reimbursements-page .rb-tabs {
+    width: 100%;
+  }
+
+  .reimbursements-page .rb-tab-btn {
+    flex: 1 1 auto;
+    justify-content: center;
+    padding: 0 0.9rem;
+    font-size: 0.875rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .reimbursements-page .rb-page-header {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+}

@@ -1,0 +1,90 @@
+/* Manage Reimbursement — page-specific additions on top of ManageWorkspace.css,
+   which supplies the shared `ml-*` approval-workspace styling. Only the money
+   column and the receipt marker differ from the leave workspace. */
+
+:root {
+  --mr-amount-color: #047857;
+}
+
+[data-theme="dark"] {
+  --mr-amount-color: #6EE7B7;
+}
+
+/* Money is the primary fact in a claim row, so it is a shade larger than the
+   surrounding cells and uses tabular figures so columns line up. */
+.manage-reimbursement-page .mr-amount {
+  color: var(--text-heading);
+  font-size: 0.9375rem !important;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* Green marks a receipt that is genuinely attached — a confirmed fact, not a
+   pending one. */
+.manage-reimbursement-page .mr-has-receipt {
+  color: var(--mr-amount-color) !important;
+}
+
+/* One column fewer than the leave table (no duration/balance/approver split), so
+   the grid is redefined here rather than inheriting the eight-column template. */
+.mr-table .ml-table-head,
+.mr-table .ml-row {
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, .85fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, .7fr) minmax(0, .8fr) minmax(0, 1.15fr);
+}
+
+.manage-reimbursement-page .ml-kpi-money {
+  font-size: 1.25rem !important;
+}
+
+@media (max-width: 1080px) {
+  .mr-table .ml-table-head,
+  .mr-table .ml-row { min-width: 880px; }
+}
+
+/* ---- Approved, awaiting payment ---------------------------------------- */
+/* A separate list from the approval queue on purpose: deciding a claim and
+   paying it are different jobs, done by different people on different days. */
+.mr-pay { margin-top: 1rem; }
+.mr-pay-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .75rem; padding: .85rem 1rem; border-bottom: 1px solid var(--border-gray);
+  background: var(--bg-sidebar);
+}
+.mr-pay-head h3 { margin: 0; font-size: .95rem; color: var(--text-heading); }
+.mr-pay-head p { margin: .15rem 0 0; font-size: .8rem; color: var(--text-secondary); }
+.mr-pay-tools { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.mr-pay-all {
+  display: inline-flex; align-items: center; gap: .35rem;
+  font-size: .8rem; color: var(--text-secondary);
+}
+.mr-pay-bulk {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .45rem .8rem; border: 1px solid var(--brand-red); border-radius: var(--radius-md);
+  background: var(--brand-red); color: #fff; font: inherit; font-weight: 600; cursor: pointer;
+}
+.mr-pay-bulk:disabled { opacity: .5; cursor: not-allowed; }
+
+.mr-pay-row {
+  display: grid; align-items: center; gap: .75rem;
+  grid-template-columns: 1.5rem minmax(8rem, 1fr) auto auto auto;
+  padding: .7rem 1rem; border-bottom: 1px solid var(--border-gray);
+}
+.mr-pay-row:last-child { border-bottom: 0; }
+.mr-pay-row.is-picked { background: var(--brand-red-soft); }
+.mr-pay-pick { display: flex; align-items: center; }
+.mr-pay-who { display: flex; flex-direction: column; min-width: 0; }
+.mr-pay-who strong { color: var(--text-heading); font-size: .9rem; }
+.mr-pay-who small { color: var(--text-gray); font-size: .78rem; }
+.mr-pay-when { color: var(--text-gray); font-size: .78rem; white-space: nowrap; }
+.mr-pay-one {
+  padding: .35rem .7rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-size: .8rem; font-weight: 600; cursor: pointer; white-space: nowrap;
+}
+.mr-pay-one:hover:not(:disabled) { background: var(--bg-card-hover); }
+.mr-pay-one:disabled { opacity: .5; cursor: not-allowed; }
+
+@media (max-width: 720px) {
+  .mr-pay-row { grid-template-columns: 1.5rem 1fr auto; }
+  .mr-pay-when { grid-column: 2 / -1; }
+}

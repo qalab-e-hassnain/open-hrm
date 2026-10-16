@@ -1,0 +1,378 @@
+/* ========================================
+   CSS VARIABLES - Simplified Select Theme (match Input)
+   ======================================== */
+:root {
+  /* Colors */
+  --select-bg: transparent;
+  --select-text: #4a5568;
+  --select-label: #718096;
+  --select-label-float: var(--brand-red, #E8352A); /* Match Input focus tint */
+  --select-border: rgb(200,200,200);
+  --select-border-focus: var(--brand-red, #E8352A);
+  --select-error: #ef4444;
+  --select-icon: #718096;
+  
+  /* Shadows */
+  --shadow-inset: none;
+  /* Shared token — this used to be a hand-rolled ring in the old brand red at
+     10% opacity, which read visibly weaker than Input's. */
+  --shadow-inset-focus: var(--glow-red);
+  
+  /* Spacing & Sizing */
+  /* Matches .input-field's 6px so a select and a text field sitting in the
+     same form row have identical corners. */
+  --select-radius: 6px;
+  --select-padding: 0.8rem 2.75rem 0.8rem 1rem;
+  --select-height: auto;
+  --label-font-size: 1.0625rem;
+  --label-font-size-float: 0.75rem;
+  --label-top: 50%;
+  --label-top-float: 0; /* We'll use top:0 for floated label to match Input */
+  
+  /* Transitions */
+  --transition-float: all 0.25s ease;
+  --transition-smooth: all 0.25s ease;
+}
+
+[data-theme="dark"] {
+  --select-text: #D1D5DB;
+  --select-label: #9CA3AF;
+  --select-border: rgba(255, 255, 255, 0.25);
+  --select-error: #FCA5A5;
+  --select-icon: #9CA3AF;
+  --select-error-highlight: rgba(255, 255, 255, 0.06);
+}
+
+/* ========================================
+   SELECT WRAPPER - Main Container
+   ======================================== */
+.select-wrapper {
+  position: relative;
+  width: 100%;
+  margin-bottom: 1.5rem;
+}
+
+/* ========================================
+   SELECT CONTAINER - Neumorphic Box
+   ======================================== */
+.select-container {
+  position: relative;
+  width: 100%;
+  height: var(--select-height);
+  background: var(--select-bg);
+  border-radius: var(--select-radius);
+  box-shadow: var(--shadow-inset);
+  transition: var(--transition-smooth);
+  border: 1px solid var(--select-border);
+}
+
+/* Focus state for container */
+.select-container:focus-within {
+  box-shadow: var(--shadow-inset-focus);
+  border-color: var(--select-border-focus);
+}
+
+/* ========================================
+   SELECT FIELD - The Actual Select Element
+   ======================================== */
+.select-field {
+  /* Layout */
+  position: relative;
+  width: 100%;
+  height: 100%;
+  
+  /* Appearance */
+  background: transparent;
+  border: none;
+  outline: none !important; /* the container draws the single focus ring; this must never double up */
+
+  /* Typography */
+  font-size: 1.0625rem;
+  font-weight: 500;
+  color: var(--select-text);
+  font-family: inherit;
+  
+  /* Spacing */
+  padding: var(--select-padding);
+  
+  /* Remove default select styling */
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  
+  /* Cursor */
+  cursor: pointer;
+  
+  /* Z-index to stay above label */
+  z-index: 2;
+  
+  /* Transitions */
+  transition: var(--transition-smooth);
+}
+
+/* Placeholder text styling */
+.select-field option[value=""][disabled] {
+  display: none;
+}
+
+.select-field option {
+  /* The dropdown itself is transparent glass, but the native option list popup
+     needs an opaque background — it can't inherit the page's glass/blur look
+     (that popup is OS-rendered, so its hover/selected highlight color also
+     can't be fully restyled cross-browser). */
+  background: var(--bg-white);
+  color: var(--select-text);
+  padding: 0.5rem;
+}
+
+/* ========================================
+   FLOATING LABEL - The Magic Happens Here
+   ======================================== */
+.select-label {
+  /* Position */
+  position: absolute;
+  left: 1rem;
+  top: var(--label-top);
+  transform: translateY(-50%);
+  
+  /* Typography */
+  font-size: var(--label-font-size);
+  font-weight: 500;
+  color: var(--select-label);
+  
+  /* Appearance */
+  background: var(--select-bg);
+  padding: 0 0.5rem;
+  
+  /* Pointer events */
+  pointer-events: none;
+  user-select: none;
+  
+  /* Z-index */
+  z-index: 1;
+  
+  /* Smooth transition for floating effect */
+  transition: var(--transition-float);
+  
+  /* Text rendering */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+/* ========================================
+   FLOAT UP CONDITIONS
+   ======================================== */
+
+/* Float when select is focused or has a value - match Input styling */
+.select-field:focus ~ .select-label,
+.select-field:not([value=""]) ~ .select-label,
+.select-field:valid ~ .select-label,
+.select-field:not(:placeholder-shown) ~ .select-label {
+  top: 0;
+  transform: translateY(-50%) scale(0.85);
+  font-size: var(--label-font-size-float);
+  color: var(--select-label-float);
+  background-color: var(--bg-white);
+  padding: 0 4px;
+  font-weight: 600;
+}
+
+/* ========================================
+   SELECT ICON - Chevron Down
+   ======================================== */
+.select-icon {
+  /* Position */
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  /* Appearance */
+  color: var(--select-icon);
+  
+  /* Pointer events */
+  pointer-events: none;
+  
+  /* Z-index */
+  z-index: 3;
+  
+  /* Transitions */
+  transition: var(--transition-smooth);
+  
+  /* Layout */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Rotate icon when focused */
+.select-field:focus ~ .select-icon {
+  transform: translateY(-50%) rotate(180deg);
+  color: var(--select-label-float);
+}
+
+/* ========================================
+   ERROR STATE
+   ======================================== */
+.select-error {
+  border-color: var(--select-error) !important;
+}
+
+.select-error ~ .select-label {
+  color: var(--select-error);
+}
+
+.select-container:has(.select-error) {
+  box-shadow:
+    inset 4px 4px 8px rgba(239, 68, 68, 0.2),
+    inset -4px -4px 8px var(--select-error-highlight, rgba(255, 255, 255, 0.7)),
+    0 0 0 2px rgba(239, 68, 68, 0.2);
+  border-color: var(--select-error);
+}
+
+.select-error-message {
+  display: block;
+  margin-top: 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--select-error);
+  font-weight: 500;
+  padding-left: 0.5rem;
+}
+
+/* ========================================
+   DISABLED STATE
+   ======================================== */
+.select-field:disabled {
+  cursor: not-allowed;
+  opacity: 0.6;
+  color: var(--select-label);
+}
+
+.select-field:disabled ~ .select-label {
+  color: var(--select-label);
+  opacity: 0.6;
+}
+
+.select-field:disabled ~ .select-icon {
+  opacity: 0.6;
+}
+
+.select-container:has(.select-field:disabled) {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet screens */
+@media (max-width: 768px) {
+  :root {
+    --select-height: 56px;
+    --select-padding: 1.4rem 2.5rem 0.5rem 1rem;
+    --label-font-size: 1rem;
+    --label-font-size-float: 0.7rem;
+  }
+  
+  .select-field {
+    font-size: 1rem;
+  }
+  
+  .select-icon {
+    right: 0.875rem;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 480px) {
+  :root {
+    --select-height: 52px;
+    --select-padding: 1.3rem 2.5rem 0.5rem 0.875rem;
+    /* Radius deliberately not overridden here — it stays 6px, matching the
+       text inputs, which do not round up on small screens either. */
+    --label-font-size: 1rem;
+    --label-font-size-float: 0.65rem;
+  }
+  
+  .select-wrapper {
+    margin-bottom: 1.25rem;
+  }
+  
+  .select-field {
+    font-size: 1rem;
+  }
+  
+  .select-icon {
+    right: 0.75rem;
+  }
+  
+  .select-label {
+    left: 0.875rem;
+  }
+  
+  .select-error-message {
+    font-size: 0.875rem;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+  .select-container {
+    border: 2px solid var(--select-text);
+  }
+  
+  .select-label {
+    font-weight: 600;
+  }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+  .select-label,
+  .select-field,
+  .select-icon,
+  .select-container {
+    transition: none;
+  }
+}
+
+/* Keyboard/mouse focus indication is handled by .select-container:focus-within
+   (border-color + glow) above — no separate outline here, or the two would
+   double up exactly like the old bug this file was hardened against. */
+
+/* ========================================
+   BROWSER-SPECIFIC FIXES
+   ======================================== */
+
+/* Firefox */
+@-moz-document url-prefix() {
+  .select-field {
+    padding-right: 3rem;
+  }
+}
+
+/* Safari */
+@supports (-webkit-touch-callout: none) {
+  .select-field {
+    padding-right: 3rem;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+  .select-container {
+    box-shadow: none;
+    border: 1px solid #000;
+  }
+  
+  .select-icon {
+    display: none;
+  }
+}

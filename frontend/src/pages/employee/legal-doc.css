@@ -1,0 +1,158 @@
+/* Rendering for documents returned as `body_html` — contracts, NDAs, NOCs.
+ *
+ * This lives in the frontend, NOT inside body_html. The document's content
+ * hash covers exactly the bytes that were signed; folding presentation into
+ * it would mean every CSS tweak invalidated every existing signature. Markup
+ * is content, styling is not.
+ */
+
+.legal-doc {
+  --doc-ink:    #1a1a1a;
+  --doc-muted:  #555;
+  --doc-rule:   #cfcfcf;
+  --doc-accent: #C8102E;                       /* the brand accent */
+
+  max-width: 190mm;                            /* A4 minus margins */
+  margin: 0 auto;
+  padding: 18mm 20mm;
+  background: #fff;
+  color: var(--doc-ink);
+  font-family: "Times New Roman", Times, Georgia, serif;   /* contracts read as serif */
+  font-size: 11.5pt;
+  line-height: 1.6;
+  text-align: justify;
+  hyphens: auto;
+}
+
+/* Always light: a legal document is a paper artefact, and rendering it dark
+   makes a printed copy and an on-screen copy look like different documents. */
+@media (prefers-color-scheme: dark) {
+  .legal-doc { background: #fff; color: var(--doc-ink); }
+}
+
+.legal-doc .doc-title {
+  font-size: 15pt;
+  font-weight: 700;
+  letter-spacing: .06em;
+  text-align: center;
+  margin: 0 0 6mm;
+  padding-bottom: 4mm;
+  border-bottom: 2px solid var(--doc-accent);
+}
+
+.legal-doc h2 {
+  font-size: 12pt;
+  font-weight: 700;
+  letter-spacing: .04em;
+  margin: 8mm 0 3mm;
+  text-align: left;
+}
+.legal-doc h3 {
+  font-size: 11.5pt;
+  font-weight: 700;
+  margin: 6mm 0 2.5mm;
+  text-align: left;
+}
+
+.legal-doc p { margin: 0 0 3.2mm; }
+.legal-doc .between {
+  text-align: center;
+  font-weight: 700;
+  margin: 4mm 0;
+}
+
+.legal-doc ul { margin: 0 0 4mm; padding-left: 7mm; }
+.legal-doc li { margin-bottom: 1.8mm; }
+
+/* Appendices start a fresh page, as in the original document. */
+.legal-doc .appendix {
+  margin-top: 10mm;
+  padding-top: 6mm;
+  border-top: 1px solid var(--doc-rule);
+}
+
+/* The two-column execution block. Grid rather than a table so it stacks on a
+   phone instead of scrolling sideways. */
+.legal-doc .signature-block {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 10mm;
+  margin: 10mm 0 6mm;
+  page-break-inside: avoid;
+  break-inside: avoid;
+}
+@media (max-width: 640px) {
+  .legal-doc .signature-block { grid-template-columns: 1fr; gap: 14mm; }
+}
+.legal-doc .signatory .party  { font-weight: 700; margin-bottom: 1mm; }
+.legal-doc .signatory .entity { color: var(--doc-muted); margin-bottom: 12mm; }
+.legal-doc .signatory .rule   { border-bottom: 1px solid var(--doc-ink); margin: 0 0 2.5mm; }
+.legal-doc .signatory .field  { margin: 0 0 1.5mm; }
+.legal-doc .signatory .field span {
+  display: inline-block;
+  min-width: 32mm;
+  color: var(--doc-muted);
+}
+.legal-doc .signatory .field span::after { content: ":"; }
+
+/* ---- print ---------------------------------------------------------- */
+@media print {
+  @page { size: A4; margin: 16mm 0; }
+
+  /* A wrapper with min-height:100vh is what produces the stray blank page. */
+  html, body { height: auto !important; background: #fff; }
+
+  .legal-doc {
+    max-width: none;
+    padding: 0 18mm;
+    font-size: 10.5pt;
+  }
+
+  /* Keep colour: browsers drop backgrounds when printing, and the title rule
+     disappears with them unless this is set. */
+  .legal-doc, .legal-doc * {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  .legal-doc .appendix {
+    page-break-before: always;
+    break-before: page;
+    border-top: none;
+    padding-top: 0;
+  }
+
+  /* No heading stranded at the foot of a page, no single line carried over. */
+  .legal-doc h2, .legal-doc h3 {
+    page-break-after: avoid;
+    break-after: avoid-page;
+  }
+  .legal-doc p, .legal-doc li {
+    orphans: 3;
+    widows: 3;
+  }
+
+  /* Hide the app around the document. Named against this codebase's actual
+     markup rather than the generic selectors the stylesheet shipped with —
+     the page chrome here is .doc-head, .doc-sign and the layout wrappers. */
+  body:has(.legal-doc) .app-navigation,
+  body:has(.legal-doc) .doc-head,
+  body:has(.legal-doc) .doc-back,
+  body:has(.legal-doc) .doc-sign,
+  body:has(.legal-doc) .doc-signed,
+  body:has(.legal-doc) .doc-notice {
+    display: none !important;
+  }
+
+  /* The reading panel scrolls on screen; in print it must run its full
+     length, or only the first screenful reaches the paper. */
+  .doc-body {
+    max-height: none !important;
+    overflow: visible !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    padding: 0 !important;
+  }
+  .main-layout, .main-content { position: static !important; padding: 0 !important; margin: 0 !important; }
+}
+

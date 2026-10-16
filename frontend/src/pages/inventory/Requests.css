@@ -1,0 +1,91 @@
+.req-page { padding: 1.5rem; max-width: 56rem; margin: 0 auto; }
+
+.req-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.25rem;
+}
+.req-head h1 {
+  margin: 0 0 .25rem; font-size: var(--font-page-title);
+  font-weight: var(--font-page-title-weight); color: var(--text-heading);
+}
+.req-head p { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+
+.req-alert {
+  display: flex; align-items: flex-start; gap: .55rem;
+  padding: .7rem .85rem; margin-bottom: 1rem;
+  border-radius: var(--radius-md); font-size: var(--font-subtitle);
+}
+.req-alert svg { flex: none; margin-top: .15rem; }
+.req-alert-error { background: var(--status-error-bg); color: var(--status-error-text); }
+.req-alert-ok { background: var(--status-success-bg); color: var(--status-success-text); }
+
+/* ------------------------------ New request ---------------------------- */
+
+.req-form {
+  display: grid; gap: .85rem; margin-bottom: 1.25rem;
+  grid-template-columns: repeat(auto-fit, minmax(13rem, 1fr));
+  padding: 1.1rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg); background: var(--bg-white);
+}
+.req-wide, .req-mode { grid-column: 1 / -1; }
+.req-form-foot { display: flex; justify-content: flex-end; gap: .5rem; }
+.req-form .inv-field small a { color: var(--brand-red); }
+
+.req-mode { display: flex; flex-wrap: wrap; gap: .5rem; }
+.req-mode label {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .45rem .8rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  font-size: var(--font-subtitle); color: var(--text-secondary); cursor: pointer;
+}
+.req-mode label.is-on { border-color: var(--brand-red); color: var(--text-heading); font-weight: 600; }
+
+/* -------------------------------- Inbox -------------------------------- */
+
+.req-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .75rem; margin-bottom: 1rem;
+}
+.req-tabs { display: flex; flex-wrap: wrap; gap: .35rem; }
+.req-tabs button {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .4rem .8rem; border: 1px solid var(--border-gray); border-radius: 999px;
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-size: var(--font-subtitle); font-weight: 600; cursor: pointer;
+}
+.req-tabs button:hover { background: var(--bg-card-hover); }
+.req-tabs button.is-on { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+.req-tabs button span {
+  min-width: 1.2rem; padding: 0 .3rem; border-radius: 999px;
+  background: var(--status-neutral-bg); color: var(--status-neutral-text);
+  font-size: .72rem; text-align: center;
+}
+.req-tabs button.is-on span { background: rgba(255, 255, 255, .25); color: #fff; }
+.req-check {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: var(--font-subtitle); color: var(--text-secondary);
+}
+
+.req-empty {
+  padding: 2.5rem 1rem; text-align: center;
+  border: 1px dashed var(--border-gray); border-radius: var(--radius-lg);
+  color: var(--text-secondary); font-size: var(--font-subtitle);
+}
+
+.req-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .6rem; }
+.req-card {
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: .75rem;
+  padding: .85rem 1rem; border: 1px solid var(--border-gray); border-radius: var(--radius-lg);
+  background: var(--bg-white);
+}
+.req-card.req-approved { border-color: var(--status-info-border); }
+.req-main { display: flex; flex-direction: column; gap: .3rem; min-width: 0; flex: 1 1 20rem; }
+.req-title { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; }
+.req-title strong { color: var(--text-heading); }
+.req-purpose { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.req-meta {
+  display: flex; flex-wrap: wrap; gap: .25rem .6rem; margin: 0;
+  font-size: .8rem; color: var(--text-gray);
+}
+.req-meta a { color: var(--brand-red); }
+.req-reason { margin: 0; font-size: .82rem; color: var(--text-secondary); font-style: italic; }
+.req-actions { display: flex; flex-wrap: wrap; gap: .4rem; align-items: center; }

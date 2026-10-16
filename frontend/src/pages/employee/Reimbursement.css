@@ -1,0 +1,579 @@
+/* ===================================================================
+   Apply Reimbursement  ·  form card
+
+   Local tokens map onto the project palette declared in index.css. The
+   previous revision referenced --surface-color / --background-color /
+   --border-color / --primary-color / --text-primary, none of which exist
+   here; an undefined custom property makes the whole declaration invalid
+   at computed-value time, so every border and background silently
+   collapsed to its initial value (none / transparent) and the form
+   rendered as floating text.
+
+   Everything is scoped under .reimbursement-page so the generic class
+   names cannot be captured by the other page stylesheets that Vite
+   concatenates into one bundle.
+   =================================================================== */
+
+.reimbursement-page {
+  --rb-surface: var(--bg-white);
+  --rb-field-bg: var(--bg-white);
+  --rb-border: var(--border-strong);
+  --rb-border-soft: var(--border-gray);
+  --rb-info: #2563EB;
+  --rb-danger: #DC2626;
+  --rb-success: #15803D;
+
+  width: 100%;
+  max-width: 1360px;
+  margin: 0 auto;
+  color: var(--text-dark);
+}
+
+[data-theme="dark"] .reimbursement-page {
+  --rb-border: var(--border-strong);
+  --rb-field-bg: rgba(255, 255, 255, 0.04);
+  --rb-info: #60A5FA;
+  --rb-danger: #FCA5A5;
+  --rb-success: #6EE7B7;
+
+  /* Renders the native date picker and select popup in dark chrome. */
+  color-scheme: dark;
+}
+
+/* ---- Policy notice ---- */
+.reimbursement-page .reimbursement-policy-note {
+  display: flex;
+  align-items: center;
+  gap: 0.625rem;
+  margin-bottom: 1rem;
+  padding: 0.75rem 0.9rem;
+  border: 1px solid color-mix(in srgb, var(--rb-info) 35%, transparent);
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--rb-info) 7%, var(--rb-surface));
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+}
+
+.reimbursement-page .reimbursement-policy-note > svg {
+  flex: 0 0 auto;
+  width: 1rem;
+  height: 1rem;
+  color: var(--rb-info);
+}
+
+/* ---- Card ---- */
+.reimbursement-page .reimbursement-card {
+  overflow: hidden;
+  border: 1px solid var(--rb-border);
+  border-radius: 0.625rem;
+  background: var(--rb-surface);
+  box-shadow: var(--shadow-sm);
+}
+
+.reimbursement-page .reimbursement-form-header {
+  display: flex;
+  align-items: center;
+  gap: 0.8rem;
+  padding: 1.1rem 1.35rem;
+  border-bottom: 1px solid var(--rb-border-soft);
+}
+
+.reimbursement-page .reimbursement-form-header > i {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2.5rem;
+  height: 2.5rem;
+  border-radius: 0.5rem;
+  background: color-mix(in srgb, var(--brand-red) 10%, transparent);
+  color: var(--brand-red);
+  font-size: 1.25rem;
+}
+
+.reimbursement-page .reimbursement-form-header > div {
+  flex: 1;
+  min-width: 0;
+}
+
+.reimbursement-page .reimbursement-form-header h2 {
+  margin: 0 0 0.15rem;
+  color: var(--text-heading);
+  font-size: 1.125rem;
+  font-weight: 650;
+  letter-spacing: -0.02em;
+}
+
+.reimbursement-page .reimbursement-form-header p {
+  margin: 0;
+  color: var(--text-gray);
+  font-size: 0.875rem;
+}
+
+.reimbursement-page .reimbursement-form-header > span {
+  flex: 0 0 auto;
+  padding: 0.35rem 0.55rem;
+  border: 1px solid var(--rb-border-soft);
+  border-radius: 0.375rem;
+  color: var(--text-gray);
+  font-size: 0.75rem;
+}
+
+.reimbursement-page .reimbursement-form-header > span b {
+  color: var(--brand-red);
+}
+
+/* ---- Fields ---- */
+.reimbursement-page .reimbursement-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1.15rem 1.5rem;
+  padding: 1.35rem;
+}
+
+.reimbursement-page .rb-field {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+  color: var(--text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.reimbursement-page .rb-field.wide,
+.reimbursement-page .rb-upload-field.wide {
+  grid-column: 1 / -1;
+}
+
+.reimbursement-page .rb-field input,
+.reimbursement-page .rb-field select,
+.reimbursement-page .rb-field textarea {
+  width: 100%;
+  min-height: 2.625rem;
+  padding: 0.6rem 0.7rem;
+  border: 1px solid var(--rb-border);
+  border-radius: 0.45rem;
+  outline: none;
+  background: var(--rb-field-bg);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.9375rem;
+  font-weight: 400;
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.reimbursement-page .rb-field textarea {
+  min-height: 6.5rem;
+  line-height: 1.5;
+  resize: vertical;
+}
+
+.reimbursement-page .rb-field input:hover,
+.reimbursement-page .rb-field select:hover,
+.reimbursement-page .rb-field textarea:hover {
+  border-color: var(--text-muted);
+}
+
+.reimbursement-page .rb-field input:focus,
+.reimbursement-page .rb-field select:focus,
+.reimbursement-page .rb-field textarea:focus {
+  border-color: var(--brand-red);
+  box-shadow: var(--glow-red);
+}
+
+.reimbursement-page .rb-field [aria-invalid="true"] {
+  border-color: var(--rb-danger);
+}
+
+.reimbursement-page .rb-field > small {
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+  font-weight: 400;
+}
+
+.reimbursement-page .rb-field > small.error {
+  color: var(--rb-danger);
+  font-weight: 500;
+}
+
+.reimbursement-page .rb-field > small.counter {
+  text-align: right;
+}
+
+/* ---- Amount (PKR prefix) ---- */
+.reimbursement-page .rb-amount-control {
+  display: flex;
+  min-height: 2.625rem;
+  overflow: hidden;
+  border: 1px solid var(--rb-border);
+  border-radius: 0.45rem;
+  background: var(--rb-field-bg);
+  transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.reimbursement-page .rb-amount-control:hover {
+  border-color: var(--text-muted);
+}
+
+.reimbursement-page .rb-amount-control:focus-within {
+  border-color: var(--brand-red);
+  box-shadow: var(--glow-red);
+}
+
+.reimbursement-page .rb-amount-control > b {
+  display: flex;
+  align-items: center;
+  padding: 0 0.75rem;
+  border-right: 1px solid var(--rb-border);
+  background: var(--bg-card-hover);
+  color: var(--text-secondary);
+  font-size: 0.8125rem;
+  font-weight: 650;
+  letter-spacing: 0.02em;
+}
+
+.reimbursement-page .rb-amount-control input {
+  min-height: 2.5rem;
+  border: 0;
+  border-radius: 0;
+  font-variant-numeric: tabular-nums;
+  box-shadow: none !important;
+}
+
+/* ---- Claim total ---- */
+/* Copies .rb-field's anatomy — caption, control-height box, hint — so this
+   tile and the field beside it are the same size. Wrapping caption + value +
+   hint in one tinted block instead made the block sit against the input alone
+   and read as an oversized card. */
+.reimbursement-page .rb-expense-summary {
+  display: grid;
+  align-content: start;
+  gap: 0.4rem;
+}
+
+.reimbursement-page .rb-expense-summary > span {
+  color: var(--text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.reimbursement-page .rb-summary-box {
+  display: grid;
+  align-content: center;
+  min-height: 2.625rem;
+  padding: 0.4rem 0.7rem;
+  border: 1px solid color-mix(in srgb, var(--brand-red) 25%, transparent);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--brand-red) 5%, var(--rb-surface));
+}
+
+.reimbursement-page .rb-summary-box > strong {
+  color: var(--text-heading);
+  font-size: 1.125rem;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+  letter-spacing: -0.02em;
+}
+
+.reimbursement-page .rb-expense-summary > small {
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+}
+
+/* ---- Receipt upload ---- */
+.reimbursement-page .rb-upload-field > label {
+  display: block;
+  margin-bottom: 0.4rem;
+  color: var(--text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.reimbursement-page .rb-upload-field > label span {
+  margin-left: 0.35rem;
+  color: var(--text-gray);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.reimbursement-page .rb-dropzone {
+  border: 1px dashed color-mix(in srgb, var(--brand-red) 45%, transparent);
+  border-radius: 0.45rem;
+  background: color-mix(in srgb, var(--brand-red) 3%, var(--rb-field-bg));
+  transition: border-color 0.15s ease, background 0.15s ease;
+}
+
+.reimbursement-page .rb-dropzone:hover,
+.reimbursement-page .rb-dropzone:focus-within,
+.reimbursement-page .rb-dropzone.dragging {
+  border-color: var(--brand-red);
+  background: color-mix(in srgb, var(--brand-red) 7%, var(--rb-field-bg));
+}
+
+.reimbursement-page .rb-dropzone.dragging {
+  border-style: solid;
+}
+
+.reimbursement-page .rb-dropzone input {
+  display: none;
+}
+
+.reimbursement-page .rb-dropzone > button {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  min-height: 5.25rem;
+  padding: 0.85rem 1rem;
+  border: 0;
+  background: none;
+  color: var(--text-dark);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.reimbursement-page .rb-dropzone > button > svg {
+  flex: 0 0 auto;
+  width: 1.35rem;
+  height: 1.35rem;
+  color: var(--brand-red);
+}
+
+.reimbursement-page .rb-dropzone > button > span {
+  display: grid;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.reimbursement-page .rb-dropzone strong {
+  color: var(--text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+}
+
+.reimbursement-page .rb-dropzone small {
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+}
+
+.reimbursement-page .rb-dropzone em {
+  flex: 0 0 auto;
+  padding: 0.45rem 0.7rem;
+  border: 1px solid var(--brand-red);
+  border-radius: 0.375rem;
+  color: var(--brand-red);
+  font-size: 0.8125rem;
+  font-style: normal;
+  font-weight: 650;
+}
+
+.reimbursement-page .rb-file-preview {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: 5.25rem;
+  padding: 0.85rem 1rem;
+}
+
+.reimbursement-page .rb-file-preview > svg {
+  flex: 0 0 auto;
+  width: 1.3rem;
+  height: 1.3rem;
+  color: var(--brand-red);
+}
+
+.reimbursement-page .rb-file-preview > span {
+  display: grid;
+  gap: 0.15rem;
+  flex: 1;
+  min-width: 0;
+}
+
+.reimbursement-page .rb-file-preview strong {
+  overflow: hidden;
+  color: var(--text-dark);
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.reimbursement-page .rb-file-preview small {
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+}
+
+.reimbursement-page .rb-file-preview > button {
+  display: grid;
+  place-items: center;
+  flex: 0 0 auto;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 0.375rem;
+  background: none;
+  color: var(--text-gray);
+  cursor: pointer;
+}
+
+.reimbursement-page .rb-file-preview > button:hover {
+  background: color-mix(in srgb, var(--rb-danger) 12%, transparent);
+  color: var(--rb-danger);
+}
+
+/* ---- Inline result ---- */
+.reimbursement-page .rb-form-message {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 1.35rem 1rem;
+  padding: 0.65rem 0.8rem;
+  border: 1px solid transparent;
+  border-radius: 0.45rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.reimbursement-page .rb-form-message > svg {
+  flex: 0 0 auto;
+}
+
+.reimbursement-page .rb-form-message.error {
+  border-color: var(--status-error-border);
+  background: var(--status-error-bg);
+  color: var(--status-error-text);
+}
+
+.reimbursement-page .rb-form-message.success {
+  border-color: var(--status-success-border);
+  background: var(--status-success-bg);
+  color: var(--status-success-text);
+}
+
+/* ---- Actions ---- */
+.reimbursement-page .reimbursement-actions {
+  position: sticky;
+  bottom: 0;
+  z-index: 2;
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+  gap: 0.5rem;
+  padding: 0.85rem 1.35rem;
+  border-top: 1px solid var(--rb-border-soft);
+  background: var(--rb-surface);
+}
+
+.reimbursement-page .reimbursement-actions > span {
+  margin-right: auto;
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+}
+
+.reimbursement-page .reimbursement-actions button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.4rem;
+  min-height: 2.4rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--rb-border);
+  border-radius: 0.45rem;
+  background: var(--rb-surface);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
+
+.reimbursement-page .reimbursement-actions button:hover {
+  background: var(--bg-card-hover);
+}
+
+.reimbursement-page .reimbursement-actions button.reset {
+  border-color: transparent;
+  background: transparent;
+  color: var(--text-gray);
+}
+
+.reimbursement-page .reimbursement-actions button.reset:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-dark);
+}
+
+.reimbursement-page .reimbursement-actions button.draft {
+  color: var(--brand-red);
+}
+
+.reimbursement-page .reimbursement-actions button.draft:hover {
+  border-color: var(--brand-red);
+  background: color-mix(in srgb, var(--brand-red) 6%, var(--rb-surface));
+}
+
+.reimbursement-page .reimbursement-actions button.submit {
+  border-color: var(--brand-red);
+  background: var(--brand-red);
+  color: #fff;
+}
+
+.reimbursement-page .reimbursement-actions button.submit:hover {
+  border-color: var(--brand-red-dark);
+  background: var(--brand-red-dark);
+}
+
+.reimbursement-page .reimbursement-actions button:disabled {
+  opacity: 0.55;
+  cursor: wait;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 768px) {
+  .reimbursement-page .reimbursement-form-header {
+    align-items: flex-start;
+  }
+
+  .reimbursement-page .reimbursement-form-header > span {
+    display: none;
+  }
+
+  .reimbursement-page .reimbursement-fields {
+    grid-template-columns: 1fr;
+    padding: 1.1rem;
+  }
+
+  .reimbursement-page .rb-field.wide,
+  .reimbursement-page .rb-upload-field.wide {
+    grid-column: auto;
+  }
+
+  .reimbursement-page .rb-form-message {
+    margin-inline: 1.1rem;
+  }
+
+  .reimbursement-page .reimbursement-actions {
+    flex-wrap: wrap;
+    padding-inline: 1.1rem;
+  }
+
+  .reimbursement-page .reimbursement-actions > span {
+    width: 100%;
+    margin-bottom: 0.25rem;
+  }
+
+  .reimbursement-page .reimbursement-actions button {
+    flex: 1;
+  }
+}
+
+@media (max-width: 480px) {
+  .reimbursement-page .rb-dropzone > button {
+    flex-wrap: wrap;
+  }
+
+  .reimbursement-page .rb-dropzone em {
+    margin-left: 2.1rem;
+  }
+}

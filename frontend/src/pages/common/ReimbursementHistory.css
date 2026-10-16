@@ -1,0 +1,793 @@
+:root {
+  --rh-card-hover-border: #F3D4D4;
+  --rh-amount-color: #047857;
+  --rh-receipt-link: #1D4ED8;
+  --rh-toggle-bg: rgba(31, 41, 55, 0.06);
+  /* Avatar and description tints, declared in both themes — a var() pointing at
+     a property that does not exist invalidates the whole declaration. */
+  --rh-avatar-bg: rgba(192, 57, 43, 0.12);
+  --rh-reason-bg: rgba(192, 57, 43, 0.045);
+}
+
+[data-theme="dark"] {
+  --rh-card-hover-border: rgba(232, 53, 42, 0.35);
+  --rh-amount-color: #34D399;
+  --rh-receipt-link: #60A5FA;
+  --rh-toggle-bg: rgba(255, 255, 255, 0.06);
+  --rh-avatar-bg: rgba(232, 53, 42, 0.22);
+  --rh-reason-bg: rgba(255, 255, 255, 0.04);
+}
+
+.rh-scope-row {
+  display: flex;
+  padding-bottom: .85rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.rh-segmented {
+  display: flex;
+  padding: .2rem;
+  border: 1px solid var(--border-light);
+  border-radius: .45rem;
+  background: var(--bg-card-hover);
+}
+
+.rh-segmented button {
+  position: relative;
+  min-height: 2.4rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: .3rem;
+  background: transparent;
+  color: var(--text-gray);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rh-segmented button.active {
+  background: var(--bg-white);
+  color: var(--text-dark);
+}
+
+.rh-segmented button.active::after {
+  content: "";
+  position: absolute;
+  right: .65rem;
+  bottom: -.2rem;
+  left: .65rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--brand-red);
+}
+
+@media (max-width: 480px) {
+  .rh-segmented { width: 100%; }
+  .rh-segmented button { flex: 1; justify-content: center; }
+}
+
+/* Employee/Status row sits above the toggle,
+ so tighten its bottom gap */
+.rh-top-filters {
+  margin-bottom: 1.25rem;
+}
+
+.rh-date-filters {
+  margin-bottom: 1.5rem;
+}
+
+/* Date-filter mode toggle + result count bar */
+.rh-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.rh-filter-toggle {
+  display: flex;
+  background: var(--rh-toggle-bg);
+  border-radius: 10px;
+  padding: 3px;
+  width: fit-content;
+}
+
+.rh-toggle-btn {
+  padding: 0.45rem 1.25rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.rh-toggle-active {
+  background: linear-gradient(135deg, var(--brand-red, #E8352A), var(--brand-red-dark, #C42B22));
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(232, 53, 42, 0.35);
+}
+
+.rh-filter-count {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-gray);
+  white-space: nowrap;
+}
+
+.reimbursement-history-page {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.reimbursement-history-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.reimbursement-history-card {
+  padding: var(--space-card-padding);
+}
+
+/* The list scrolls inside itself so a long history does not stretch the page.
+   Sized in vh rather than a fixed pixel height so it adapts to the window. */
+.reimbursements-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 68vh;
+  min-height: 18rem;
+  overflow-y: auto;
+  padding-right: .5rem;
+}
+
+.reimbursements-history-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.reimbursements-history-list::-webkit-scrollbar-thumb {
+  background: var(--rh-toggle-bg);
+  border-radius: 8px;
+}
+
+/* Card structure mirrors the leave history cards: identity header, a divided row
+   of facts, the description, then a tinted footer carrying the approval trail. */
+.reimbursement-history-item {
+  /* Natural height, not a shrunk-to-fit one — see .leave-history-item: a flex
+     item in a capped scrolling column gets squashed and clipped otherwise. */
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  background: var(--bg-white);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.reimbursement-history-item:hover {
+  border-color: var(--rh-card-hover-border);
+  box-shadow: 0 6px 20px rgba(31, 41, 55, .07);
+}
+
+.reimbursement-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.reimbursement-history-employee {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+}
+
+.reimbursement-avatar {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--rh-avatar-bg);
+  color: var(--brand-red-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.reimbursement-employee-details {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.reimbursement-history-page .reimbursement-employee-name {
+  overflow: hidden;
+  color: var(--text-heading);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -.015em;
+  text-overflow: ellipsis;
+}
+
+/* Claim type sits where the leave type badge does, so both card families read
+   the same way. */
+.reimbursement-type-badge {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.22rem 0.6rem;
+  border-radius: 6px;
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.reimbursement-history-page .status-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.reimbursement-history-page .status-badge svg { flex: 0 0 auto; }
+
+.reimbursement-history-page .status-pending {
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text);
+  border: 1px solid var(--status-warning-border);
+}
+
+.reimbursement-history-page .status-approved {
+  background: var(--status-success-bg);
+  color: var(--status-success-text);
+  border: 1px solid var(--status-success-border);
+}
+
+.reimbursement-history-page .status-rejected {
+  background: var(--status-error-bg);
+  color: var(--status-error-text);
+  border: 1px solid var(--status-error-border);
+}
+
+.reimbursement-history-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Four facts across, separated by hairlines rather than boxes. */
+.reimbursement-info-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 1.05rem 1.25rem;
+}
+
+.info-item {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: 0 1rem;
+  border-left: 1px solid var(--border-light);
+}
+
+.info-item:first-child { padding-left: 0; border-left: 0; }
+
+.info-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  color: var(--brand-red);
+  font-size: 1.125rem;
+}
+
+.info-copy { min-width: 0; display: flex; flex-direction: column; gap: .15rem; align-items: flex-start; }
+
+.info-label {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.info-value {
+  overflow: hidden;
+  color: var(--text-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* The claim amount is the headline number, so it carries the money colour. */
+.rh-amount-value { color: var(--rh-amount-color) !important; font-variant-numeric: tabular-nums; }
+.rh-info-muted { color: var(--text-muted) !important; font-weight: 500 !important; }
+
+.rh-receipt-btn {
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--brand-red);
+  font: inherit;
+  font-size: 1rem;
+  font-weight: 700;
+  text-align: left;
+  cursor: pointer;
+}
+.rh-receipt-btn:hover { text-decoration: underline; text-underline-offset: 3px; }
+
+.reimbursement-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  margin: 0 1.25rem 1.15rem;
+  padding: .85rem 1rem;
+  border-radius: 10px;
+  background: var(--rh-reason-bg);
+}
+
+/* Scoped: LeaveHistory.css declares the same two class names for its own reason
+   panel, and an unscoped rule would be settled by bundle emit order. */
+.reimbursement-history-page .reason-icon { flex: 0 0 auto; display: grid; place-items: center; margin-top: .1rem; color: var(--text-muted); font-size: 1.0625rem; }
+.reimbursement-history-page .reason-copy { min-width: 0; display: flex; flex-direction: column; gap: .15rem; }
+
+.reimbursement-history-page .reason-label {
+  display: block;
+  margin-bottom: 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.reimbursement-history-page .reason-text {
+  color: var(--text-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+/* Footer strip: approval trail plus the admin's delete action. */
+.reimbursement-history-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: .8rem 1.25rem;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-card-hover);
+}
+
+.reimbursement-meta {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .3rem 0;
+  color: var(--text-gray);
+  font-size: 0.875rem;
+}
+
+.rh-meta-item { display: inline-flex; align-items: center; gap: .4rem; padding: 0 .85rem; border-left: 1px solid var(--border-strong); }
+.rh-meta-item:first-child { padding-left: 0; border-left: 0; }
+.rh-meta-item svg { flex: 0 0 auto; color: var(--text-muted); font-size: 1rem; }
+.rh-meta-item strong { color: var(--text-heading); font-weight: 650; }
+
+.reimbursement-receipt {
+  padding: 0.75rem 1rem;
+  background: var(--glass-bg);
+  border-radius: var(--radius-md);
+}
+
+.reimbursement-history-page .receipt-link {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--rh-receipt-link);
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.2s;
+}
+
+.reimbursement-history-page .receipt-link:hover {
+  color: var(--status-info-text);
+  text-decoration: underline;
+}
+
+/* Rejection reason styling - displayed when reimbursement is rejected */
+/* Inset to match the description panel, since the card body itself is unpadded. */
+.rejection-reason {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 1.25rem 1.15rem;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--brand-red);
+  border-radius: 8px;
+  background: var(--status-error-bg);
+}
+
+.reimbursement-history-page .rejection-label {
+  font-size: var(--font-label);
+  font-weight: 700;
+  color: var(--brand-red-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: block;
+  margin-bottom: 0.5rem;
+}
+
+.reimbursement-history-page .rejection-text {
+  font-size: 1rem;
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+.reimbursement-history-page .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-empty-state-padding);
+  color: var(--text-gray);
+  text-align: center;
+}
+
+.reimbursement-history-page .empty-state svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.reimbursement-history-page .empty-state p {
+  font-size: 1.1875rem;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .reimbursement-history-card {
+    padding: var(--space-card-padding-tablet);
+  }
+
+  .reimbursement-history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* Stacked: the vertical dividers drop away so each fact reads as its own line. */
+  .reimbursement-info-grid {
+    grid-template-columns: 1fr;
+    gap: .8rem;
+  }
+
+  .info-item,
+  .rh-meta-item {
+    padding: 0;
+    border-left: 0;
+  }
+
+  .reimbursement-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .35rem;
+  }
+}
+
+@media (max-width: 1080px) and (min-width: 769px) {
+  /* Two-by-two before stacking, so values are never squeezed to an ellipsis. */
+  .reimbursement-info-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .9rem 0;
+  }
+
+  .info-item:nth-child(3) { padding-left: 0; border-left: 0; }
+}
+
+/* Delete-from-history action, mirroring the leave history page. */
+.rh-row-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: .6rem;
+}
+
+.rh-delete-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .35rem .7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+/* Destructive, so it only takes on the brand red on intent, not at rest. */
+.rh-delete-btn:hover {
+  border-color: var(--brand-red);
+  background: var(--brand-red-soft);
+  color: var(--brand-red-dark);
+}
+
+.rh-footer-actions { display: flex; align-items: center; gap: .5rem; }
+
+.rh-edit-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .35rem .7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+.rh-edit-btn:hover {
+  border-color: var(--brand-red);
+  background: var(--brand-red-soft);
+  color: var(--brand-red-dark);
+}
+
+.rh-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  padding: .6rem .8rem;
+  border-radius: 5px;
+  font-size: 0.8125rem;
+}
+
+.rh-notice-success { background: rgba(22, 163, 74, .1); color: #15803d; }
+.rh-notice-error { background: rgba(192, 57, 43, .08); color: var(--brand-red-dark); }
+.rh-notice button { display: grid; place-items: center; border: 0; background: transparent; color: inherit; cursor: pointer; }
+
+.rh-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(10, 10, 10, .45);
+}
+
+.rh-confirm {
+  width: min(100%, 420px);
+  padding: 1.4rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+  text-align: center;
+}
+
+.rh-confirm > svg { margin-bottom: .6rem; font-size: 1.625rem; color: var(--brand-red); }
+.rh-confirm h3 { margin: 0 0 .5rem; color: var(--text-heading); font-size: 1rem; }
+.rh-confirm p { margin: 0 0 .4rem; color: var(--text-gray); font-size: 0.875rem; line-height: 1.5; }
+.rh-confirm strong { color: var(--text-heading); }
+.rh-confirm-note { color: var(--text-muted) !important; font-size: 0.75rem !important; }
+
+.rh-confirm footer {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: 1.1rem;
+}
+
+.rh-confirm footer button {
+  min-height: 36px;
+  padding: .5rem .9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-white);
+  color: var(--text-heading);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rh-confirm footer button:disabled { opacity: .6; cursor: wait; }
+
+.rh-confirm-danger {
+  border-color: var(--brand-red) !important;
+  background: var(--brand-red) !important;
+  color: #fff !important;
+}
+
+/* Edit modal reuses .rh-confirm's card/backdrop but needs to be wider and
+   left-aligned to hold actual form fields instead of a couple of centered
+   sentences. */
+.rh-confirm.rh-confirm-wide {
+  width: min(100%, 560px);
+  text-align: left;
+}
+.rh-confirm-wide header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: .9rem;
+}
+.rh-confirm-wide header h3 { margin: 0; }
+.rh-confirm-wide header button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--text-gray);
+  cursor: pointer;
+}
+
+.rh-edit-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0 .9rem;
+}
+.rh-edit-fields .wide { grid-column: 1 / -1; }
+
+.rh-edit-textarea { display: grid; gap: .4rem; margin-bottom: 1.25rem; }
+.rh-edit-textarea > span { color: var(--text-secondary); font-size: 0.875rem; font-weight: 600; }
+.rh-edit-textarea textarea {
+  min-height: 78px;
+  padding: .6875rem .875rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  font: inherit;
+  resize: vertical;
+}
+.rh-edit-textarea textarea:focus { outline: none; border-color: var(--brand-red); box-shadow: var(--glow-red); }
+.rh-edit-error-text { color: var(--input-error-color); font-size: 0.8125rem; }
+
+.rh-edit-receipt {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: 1.25rem;
+  padding: .6rem .8rem;
+  border: 1px dashed var(--border-strong);
+  border-radius: 6px;
+  background: var(--bg-card-hover);
+  font-size: 0.8125rem;
+  color: var(--text-gray);
+}
+.rh-edit-receipt strong { color: var(--text-heading); }
+.rh-edit-receipt button {
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  padding: .3rem .6rem;
+  background: var(--bg-white);
+  color: var(--text-heading);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.rh-edit-submit-error {
+  margin-bottom: .8rem;
+  padding: .55rem .75rem;
+  border-radius: 5px;
+  background: rgba(192, 57, 43, .08);
+  color: var(--brand-red-dark);
+  font-size: 0.8125rem;
+}
+
+.rh-confirm-primary {
+  border-color: var(--brand-red) !important;
+  background: var(--brand-red) !important;
+  color: #fff !important;
+}
+
+.rh-confirm-danger:hover { background: var(--brand-red-dark) !important; }
+
+/* Receipt viewer — same inline preview as the management workspace, so a receipt
+   can be read without leaving the page. */
+.rh-doc-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(10, 10, 10, .55);
+}
+
+.rh-doc-viewer {
+  width: min(100%, 860px);
+  height: min(88vh, 780px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+}
+
+.rh-doc-viewer header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .7rem .9rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-heading);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.rh-doc-viewer header > span { display: inline-flex; align-items: center; gap: .4rem; min-width: 0; }
+.rh-doc-tools { flex: 0 0 auto; gap: .6rem !important; }
+.rh-doc-tools a { color: var(--brand-red); font-size: 0.75rem; font-weight: 650; text-decoration: none; }
+.rh-doc-tools a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.rh-doc-tools button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  cursor: pointer;
+}
+.rh-doc-tools button:hover { border-color: var(--brand-red); color: var(--brand-red); }
+
+.rh-doc-viewer object { flex: 1; width: 100%; border: 0; background: var(--bg-page); }
+
+.rh-doc-fallback {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.rh-doc-fallback > svg { font-size: 1.75rem; }
+.rh-doc-fallback p { margin: 0; font-size: 0.8125rem; }
+.rh-doc-fallback a { color: var(--brand-red); font-size: 0.8125rem; font-weight: 650; }

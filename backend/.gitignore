@@ -1,0 +1,31 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+.pytest_cache/
+
+# Local databases, backups, and uploads
+*.db
+*.sqlite
+*.sqlite3
+*.dump
+uploads/
+
+# Local certificates and editor files
+certs/
+*.pem
+*.key
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+.vercel
+.gstack/

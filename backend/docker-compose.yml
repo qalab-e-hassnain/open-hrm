@@ -1,0 +1,15 @@
+# HRM API on the shared QuickComm Azure VM. Its own compose project and network,
+# so nothing here can touch the quickcomm-backend stack. Bound to localhost:
+# nginx fronts it on your own hostname (deploy/nginx.example.conf).
+
+name: hrm
+
+services:
+  api:
+    build: .
+    image: hrm-api:latest
+    restart: unless-stopped
+    env_file:
+      - .env
+    ports:
+      - "127.0.0.1:8002:8000"

@@ -1,0 +1,418 @@
+.app-navigation {
+  --sidebar-width: 192px;
+  --sidebar-collapsed-width: 72px;
+}
+
+.navigation {
+  position: fixed;
+  inset: 0 auto 0 0;
+  z-index: 110;
+  width: var(--sidebar-width);
+  display: flex;
+  flex-direction: column;
+  border-right: 1px solid var(--border-light);
+  background: var(--bg-sidebar);
+  transition: width 180ms ease;
+}
+
+.nav-brand {
+  position: relative;
+  min-height: 72px;
+  display: flex;
+  align-items: center;
+  gap: .35rem;
+  /* "the portal" needs 98px on one line and had 96px, so the name was
+     rendering as "Your Brand H…". Trimming the gutters gives it the few pixels
+     it was short of, which keeps the brand at its proper size rather than
+     shrinking the type to fit. */
+  padding: 0 .45rem 0 .6rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.nav-brand-home {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  color: inherit;
+  text-decoration: none;
+}
+
+.nav-brand-home:hover .nav-brand-name { color: var(--brand-red); }
+
+/* Sized so the logo, the brand name on a single line, and the collapse button
+   all fit across the 192px sidebar. */
+.nav-logo {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  object-fit: contain;
+}
+
+.nav-sidebar-toggle {
+  width: 26px;
+  height: 26px;
+  display: grid;
+  place-items: center;
+  flex: 0 0 26px;
+  margin-left: auto;
+  border: 1px solid var(--border-light);
+  border-radius: 5px;
+  background: var(--bg-card-hover);
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: color 160ms ease, border-color 160ms ease, background-color 160ms ease, transform 160ms ease;
+}
+
+
+.nav-sidebar-toggle:hover {
+  border-color: color-mix(in srgb, var(--brand-red) 34%, var(--border-light));
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+}
+
+.nav-sidebar-toggle:active { transform: scale(.94); }
+
+.nav-brand-copy,
+.nav-profile-copy {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Belt-and-braces for the nowrap brand text below: if it ever does exceed the
+   sidebar it clips to an ellipsis instead of overrunning the collapse button. */
+.nav-brand-copy { overflow: hidden; }
+.nav-brand-name,
+.nav-brand-edition { overflow: hidden; text-overflow: ellipsis; }
+
+/* Both lines stay on one line each — "the portal" wrapping to two lines was
+   what made the header look broken. nowrap plus the smaller logo above keeps it
+   inside the 192px sidebar. */
+.nav-brand-name {
+  color: var(--text-heading);
+  font-size: 0.875rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+  white-space: nowrap;
+}
+
+.nav-brand-edition {
+  margin-top: .1rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  white-space: nowrap;
+}
+
+.nav-links {
+  flex: 1;
+  overflow-y: auto;
+  padding: .8rem .6rem;
+}
+
+.nav-section + .nav-section { margin-top: .75rem; }
+
+.nav-section-label {
+  display: block;
+  padding: 0 .6rem .3rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: .1em;
+  text-transform: uppercase;
+}
+
+.nav-link,
+.nav-mobile-link {
+  position: relative;
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  min-height: 38px;
+  padding: .45rem .6rem;
+  border-left: 2px solid transparent;
+  border-radius: 4px;
+  color: var(--text-gray);
+  font-size: 0.875rem;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.nav-link:hover,
+.nav-mobile-link:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-heading);
+}
+
+.nav-link.active,
+.nav-mobile-link.active {
+  border-left-color: var(--brand-red);
+  background: rgba(192, 57, 43, .075);
+  color: var(--brand-red-dark);
+  font-weight: 650;
+}
+
+.nav-pending-dot {
+  width: 6px;
+  height: 6px;
+  margin-left: auto;
+  border-radius: 50%;
+  background: var(--brand-red);
+}
+
+.nav-sidebar-footer {
+  display: flex;
+  flex-direction: column;
+  margin: .75rem;
+  padding: .85rem;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+}
+
+.nav-sidebar-footer strong { color: var(--text-heading); font-size: 0.8125rem; }
+.nav-sidebar-footer span { margin-top: .15rem; color: var(--text-muted); font-size: 0.75rem; }
+
+.nav-topbar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: var(--sidebar-width);
+  z-index: 100;
+  height: 72px;
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1.5rem;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-sidebar);
+  transition: left 180ms ease, background 180ms ease;
+}
+
+.nav-current-page {
+  color: var(--text-heading);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+
+.nav-actions {
+  margin-left: auto;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+}
+
+.nav-icon-btn {
+  position: relative;
+  width: 38px;
+  height: 38px;
+  display: grid;
+  place-items: center;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: color 160ms ease, background 160ms ease, border-color 160ms ease;
+}
+
+.nav-icon-btn:hover {
+  border-color: var(--border-light);
+  background: var(--bg-card-hover);
+  color: var(--text-heading);
+}
+
+.notification-wrapper { position: relative; }
+
+.notification-badge {
+  position: absolute;
+  /* Sits on the corner of the bell, not the corner of the 38px button —
+     anchored to the button it landed on top of the glyph. */
+  top: 3px;
+  right: 3px;
+  min-width: 17px;
+  height: 17px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 4px;
+  box-sizing: border-box;
+  /* The border eats 4px of the box, so a 12px digit in a 15px badge had an
+     11px hole to fit into and came out looking cut off. */
+  border: 2px solid var(--bg-white);
+  border-radius: 999px;
+  background: var(--brand-red);
+  color: #fff;
+  font-size: 0.625rem;
+  font-weight: 700;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.nav-profile {
+  min-width: 150px;
+  min-height: 44px;
+  display: flex;
+  align-items: center;
+  gap: .65rem;
+  margin-left: .35rem;
+  padding: .3rem .55rem;
+  border: 0;
+  border-left: 1px solid var(--border-light);
+  background: transparent;
+  color: inherit;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-profile-menu { position: relative; }
+
+.nav-profile-dropdown {
+  position: absolute;
+  top: calc(100% + .45rem);
+  right: 0;
+  width: 170px;
+  padding: .35rem;
+  border: 1px solid var(--border-light);
+  border-radius: 6px;
+  background: var(--bg-white);
+  box-shadow: 0 12px 28px rgba(10, 10, 10, .16);
+}
+
+.nav-profile-dropdown button {
+  width: 100%;
+  min-height: 38px;
+  display: flex;
+  align-items: center;
+  gap: .55rem;
+  padding: .5rem .6rem;
+  border: 0;
+  border-radius: 4px;
+  background: transparent;
+  color: var(--text-gray);
+  font: inherit;
+  font-size: 0.8125rem;
+  text-align: left;
+  cursor: pointer;
+}
+
+.nav-profile-dropdown button:hover {
+  background: var(--bg-card-hover);
+  color: var(--text-heading);
+}
+
+.nav-profile-avatar {
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+  border-radius: 5px;
+  background: var(--brand-red);
+  color: #fff;
+  font-size: 0.8125rem;
+  font-weight: 700;
+  overflow: hidden;
+}
+
+.nav-profile-avatar img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.nav-profile-copy strong {
+  overflow: hidden;
+  color: var(--text-heading);
+  font-size: 0.8125rem;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.nav-profile-copy small {
+  margin-top: .1rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  text-transform: capitalize;
+}
+
+.nav-mobile-menu-btn { display: none; }
+.nav-mobile-overlay { display: none; }
+
+[data-sidebar="collapsed"] .navigation { width: var(--sidebar-collapsed-width); }
+[data-sidebar="collapsed"] .nav-topbar { left: var(--sidebar-collapsed-width); }
+[data-sidebar="collapsed"] .navigation .nav-brand {
+  min-height: 72px;
+  justify-content: center;
+  flex-direction: row;
+  gap: .3rem;
+  padding: 0 .4rem;
+}
+[data-sidebar="collapsed"] .navigation .nav-brand-home {
+  justify-content: center;
+  flex: 0 0 auto;
+}
+[data-sidebar="collapsed"] .navigation .nav-sidebar-toggle {
+  display: none;
+}
+[data-sidebar="collapsed"] .navigation .nav-logo {
+  width: 34px;
+  height: 34px;
+  flex-basis: 34px;
+}
+[data-sidebar="collapsed"] .navigation .nav-brand-copy,
+[data-sidebar="collapsed"] .navigation .nav-section-label,
+[data-sidebar="collapsed"] .navigation .nav-link > span:not(.nav-pending-dot),
+[data-sidebar="collapsed"] .navigation .nav-sidebar-footer { display: none; }
+[data-sidebar="collapsed"] .navigation .nav-links { padding-inline: .55rem; }
+[data-sidebar="collapsed"] .navigation .nav-section + .nav-section { margin-top: .35rem; }
+[data-sidebar="collapsed"] .navigation .nav-link {
+  justify-content: center;
+  min-height: 40px;
+  padding-inline: .4rem;
+  border-left-width: 0;
+}
+[data-sidebar="collapsed"] .navigation .nav-link.active { box-shadow: inset 3px 0 0 var(--brand-red); }
+[data-sidebar="collapsed"] .navigation .nav-pending-dot { position: absolute; top: 7px; right: 7px; }
+
+[data-theme="dark"] .nav-link.active,
+[data-theme="dark"] .nav-mobile-link.active {
+  color: var(--brand-red-light);
+}
+
+.app-navigation :where(a, button):focus-visible {
+  outline: 3px solid rgba(192, 57, 43, .25);
+  outline-offset: 2px;
+}
+
+@media (max-width: 980px) {
+  .navigation { display: none; }
+  .nav-topbar { left: 0; }
+  .navigation .nav-sidebar-toggle { display: none; }
+  .nav-mobile-menu-btn { display: grid; }
+  .nav-profile { min-width: 0; border-left: 0; }
+  .nav-profile-copy { display: none; }
+
+  .nav-mobile-overlay {
+    position: fixed;
+    inset: 72px 0 0;
+    z-index: 120;
+    display: block;
+    background: rgba(10, 10, 10, .34);
+  }
+
+  .nav-mobile-drawer {
+    width: min(86vw, 300px);
+    height: 100%;
+    overflow-y: auto;
+    background: var(--bg-sidebar);
+    box-shadow: 18px 0 50px rgba(10, 10, 10, .16);
+  }
+
+  .nav-mobile-links { padding: 1rem .75rem; }
+}
+
+@media (max-width: 560px) {
+  .nav-topbar { padding: 0 .8rem; }
+  .nav-current-page { display: none; }
+  .nav-profile { padding-right: .2rem; }
+}

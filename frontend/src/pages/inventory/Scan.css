@@ -1,0 +1,83 @@
+.scan-page { padding: 1.25rem; max-width: 34rem; margin: 0 auto; }
+
+.scan-head h1 {
+  margin: 0 0 .2rem; font-size: var(--font-page-title);
+  font-weight: var(--font-page-title-weight); color: var(--text-heading);
+}
+.scan-head p { margin: 0 0 1rem; font-size: var(--font-subtitle); color: var(--text-secondary); }
+
+.scan-alert {
+  display: flex; align-items: flex-start; gap: .55rem;
+  padding: .7rem .85rem; margin-bottom: .9rem;
+  border-radius: var(--radius-md); font-size: var(--font-subtitle);
+}
+.scan-alert p { margin: 0; }
+.scan-alert svg { flex: none; margin-top: .15rem; }
+.scan-alert-ok { background: var(--status-success-bg); color: var(--status-success-text); }
+.scan-alert-error { background: var(--status-error-bg); color: var(--status-error-text); }
+.scan-register {
+  display: inline-flex; align-items: center; gap: .3rem; margin-top: .4rem;
+  font-weight: 600; color: inherit;
+}
+
+.scan-stage { display: flex; flex-direction: column; gap: .9rem; }
+
+.scan-viewport {
+  position: relative; aspect-ratio: 4 / 3; overflow: hidden;
+  display: flex; align-items: center; justify-content: center;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-lg);
+  background: var(--bg-sidebar);
+}
+.scan-viewport video { width: 100%; height: 100%; object-fit: cover; display: none; }
+.scan-viewport.is-live video { display: block; }
+
+.scan-start {
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: 1.5rem; border: 0; background: none;
+  color: var(--text-secondary); font: inherit; font-weight: 600; cursor: pointer;
+}
+
+/* A frame to aim with, not a decoration — people hold the label where the box is. */
+.scan-reticle {
+  position: absolute; inset: 22% 18%;
+  border: 3px solid rgba(255, 255, 255, .85); border-radius: var(--radius-lg);
+  box-shadow: 0 0 0 100vmax rgba(15, 23, 42, .28);
+}
+
+.scan-camera-note {
+  display: flex; align-items: flex-start; gap: .45rem; margin: 0;
+  font-size: .85rem; color: var(--text-gray);
+}
+.scan-camera-note svg { flex: none; margin-top: .15rem; }
+
+.scan-manual { display: flex; gap: .5rem; }
+.scan-manual input {
+  flex: 1; min-width: 0; padding: .6rem .7rem;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-dark); font: inherit;
+  text-transform: uppercase;
+}
+
+.scan-result {
+  display: flex; flex-direction: column; gap: .9rem;
+  padding: 1rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg); background: var(--bg-white);
+}
+.scan-result > header { display: flex; flex-wrap: wrap; gap: .6rem; justify-content: space-between; }
+.scan-result h2 { margin: .2rem 0 0; font-size: 1.2rem; color: var(--text-heading); }
+.scan-tag {
+  padding: .1rem .4rem; border-radius: var(--radius-md);
+  background: var(--status-neutral-bg); font-size: .78rem; letter-spacing: .03em;
+}
+.scan-sub { margin: .2rem 0 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.scan-chips { display: flex; flex-wrap: wrap; align-content: flex-start; gap: .35rem; }
+
+.scan-where {
+  display: flex; align-items: center; gap: .45rem; margin: 0;
+  font-size: 1rem; font-weight: 600; color: var(--text-secondary);
+}
+.scan-qty { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.scan-qty strong { font-size: 1.4rem; color: var(--text-heading); }
+
+.scan-foot { display: flex; flex-wrap: wrap; gap: .5rem; padding-top: .4rem; border-top: 1px solid var(--border-gray); }
+.scan-foot .inv-btn { text-decoration: none; }

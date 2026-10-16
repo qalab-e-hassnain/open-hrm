@@ -1,0 +1,552 @@
+.manager-dashboard {
+  width: min(100%, 1440px);
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: var(--text-heading);
+}
+
+.dash-page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1.5rem;
+  padding: .35rem 0 .65rem;
+}
+
+.dash-page-header h1 {
+  margin: 0;
+  color: var(--text-heading);
+  font-size: clamp(1.6875rem, 2.4vw, 2rem);
+  line-height: 1.2;
+  letter-spacing: -.035em;
+}
+
+.dash-page-header p {
+  margin: .35rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.875rem;
+}
+
+.dash-header-actions {
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+}
+
+.dash-last-updated {
+  margin-right: .25rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.dash-check-btn {
+  min-height: 40px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: .45rem;
+  padding: .55rem .8rem;
+  border: 1px solid var(--brand-red);
+  border-radius: 5px;
+  background: var(--brand-red);
+  color: #fff;
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: background 160ms ease, border-color 160ms ease, transform 160ms ease;
+}
+
+.dash-check-btn:hover { background: var(--brand-red-dark); }
+.dash-check-btn-out { border-color: #292524; background: #292524; }
+.dash-check-btn:active { transform: translateY(1px); }
+.dash-check-btn:disabled { opacity: .6; cursor: wait; }
+
+.dash-error-state {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .7rem .9rem;
+  border: 1px solid rgba(192, 57, 43, .28);
+  border-radius: 5px;
+  background: rgba(192, 57, 43, .06);
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+}
+
+.dash-error-state button {
+  border: 0;
+  background: transparent;
+  color: var(--brand-red);
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.dash-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: 1rem;
+}
+
+.dash-kpi-card {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+  min-height: 100px;
+  padding: 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+  transition: border-color 160ms ease, transform 160ms ease;
+}
+
+.dash-kpi-card:hover { border-color: #c9c5c1; transform: translateY(-1px); }
+
+.dash-kpi-icon {
+  width: 40px;
+  height: 40px;
+  flex: 0 0 40px;
+  display: grid;
+  place-items: center;
+  border-radius: 7px;
+  font-size: 1.25rem;
+}
+
+.dash-kpi-red { background: rgba(192, 57, 43, .1); color: var(--brand-red); }
+.dash-kpi-green { background: rgba(22, 163, 74, .1); color: #15803d; }
+.dash-kpi-orange { background: rgba(217, 119, 6, .1); color: #b45309; }
+.dash-kpi-blue { background: rgba(37, 99, 235, .09); color: #1d4ed8; }
+
+.dash-kpi-card > div {
+  min-width: 0;
+  display: grid;
+  grid-template-columns: auto 1fr;
+  align-items: baseline;
+  gap: .1rem .55rem;
+}
+
+.dash-kpi-label {
+  grid-column: 1 / -1;
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+
+.dash-kpi-card strong {
+  color: var(--text-heading);
+  font-size: 1.9375rem;
+  line-height: 1.2;
+  font-variant-numeric: tabular-nums;
+}
+
+.dash-kpi-card small { color: var(--text-muted); font-size: 0.75rem; }
+
+.dash-primary-grid,
+.dash-secondary-grid {
+  display: grid;
+  gap: 1rem;
+}
+
+.dash-primary-grid { grid-template-columns: minmax(0, 1.65fr) minmax(290px, .85fr); }
+.dash-secondary-grid { grid-template-columns: minmax(0, 1.45fr) minmax(300px, .75fr); }
+
+.dash-panel,
+.manager-dashboard .announcements-card {
+  min-width: 0;
+  padding: 1.15rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+  box-shadow: none;
+}
+
+/* The shared Card component carries `margin: 1.5rem 0`, which left the
+   announcements card 48px shorter than the attendance panel beside it and
+   visibly inset in its grid cell. Reset it so both panels fill the row and
+   line up exactly. */
+.manager-dashboard .announcements-card {
+  height: 100%;
+  margin: 0;
+}
+
+.dash-panel-header {
+  min-height: 44px;
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+/* The title/subtitle block is a flex item alongside the "View all" link — by
+   default it won't shrink below its text's natural width, which is what was
+   pushing the whole panel (and the page) wider than the viewport on narrow
+   screens. min-width: 0 lets it shrink; the h2 then truncates instead. */
+.dash-panel-header > div:first-child {
+  min-width: 0;
+}
+
+.dash-panel-header h2,
+.dash-quick-access h2 {
+  margin: 0;
+  overflow: hidden;
+  color: var(--text-heading);
+  font-size: 1rem;
+  letter-spacing: -.015em;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.dash-panel-header p,
+.dash-quick-access p {
+  margin: .25rem 0 0;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+}
+
+.dash-panel-header a {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  color: var(--brand-red);
+  font-size: 0.75rem;
+  font-weight: 650;
+  text-decoration: none;
+  white-space: nowrap;
+}
+
+/* Compact week strip: the seven boxes still span the panel, but they are much
+   shorter than before (roughly 77px tall against 103px) so the week reads as a
+   summary line rather than the largest thing on the dashboard. The max-width
+   keeps each box from stretching so wide that its small contents look lost. */
+.dash-week-grid {
+  display: grid;
+  grid-template-columns: repeat(7, minmax(0, 1fr));
+  gap: .4rem;
+  max-width: 720px;
+}
+
+.dash-day-card {
+  position: relative;
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: .12rem;
+  padding: .45rem .35rem .5rem;
+  border: 1px solid var(--border-light);
+  border-radius: 7px;
+  background: var(--bg-white);
+  text-align: center;
+  transition: border-color 150ms ease, background 150ms ease, transform 150ms ease;
+}
+
+.dash-day-card:hover { border-color: var(--border-strong); transform: translateY(-1px); }
+
+/* Today is the anchor of the strip: brand border and a red day number, with a
+   dot above it so it is identifiable without relying on colour alone. */
+.dash-day-card.day-today { border-color: var(--brand-red); background: var(--brand-red-soft); }
+.dash-day-card.day-today .day-num { color: var(--brand-red-dark); }
+.dash-day-card.day-today::before {
+  content: '';
+  position: absolute;
+  top: .3rem;
+  right: .3rem;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--brand-red);
+}
+
+/* Weekends recede — a blank Saturday is expected, not a gap in the record. */
+.dash-day-card.day-weekend { background: var(--bg-page); }
+.dash-day-card.day-weekend .day-name,
+.dash-day-card.day-weekend .day-num { opacity: .62; }
+
+.day-name { color: var(--text-muted); font-size: 0.75rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase; }
+.day-num { color: var(--text-heading); font-size: 1rem; font-weight: 700; line-height: 1.1; font-variant-numeric: tabular-nums; }
+.day-hours { color: var(--text-gray); font-size: 0.75rem; font-weight: 650; font-variant-numeric: tabular-nums; }
+
+/* Hours bar: the track is always drawn so the seven boxes stay the same height
+   whether or not a day has a record. */
+.day-bar {
+  width: 100%;
+  height: 3px;
+  margin-top: .18rem;
+  overflow: hidden;
+  border-radius: 2px;
+  background: color-mix(in srgb, var(--text-muted) 22%, transparent);
+}
+
+.day-bar > i {
+  display: block;
+  height: 100%;
+  border-radius: 2px;
+  background: var(--text-muted);
+  transition: width 250ms ease;
+}
+
+/* Green only once the day is complete — a day still in progress is not a
+   confirmed total, so it stays neutral brand red while it runs. */
+.day-bar.is-done > i { background: #16a34a; }
+.day-bar.is-active > i { background: var(--brand-red); }
+
+/* Top-left, so it never overlaps the hours bar at the bottom or the today dot
+   at the top-right. */
+.day-ot {
+  position: absolute;
+  top: .26rem;
+  left: .32rem;
+  color: #b45309;
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: -.02em;
+}
+
+.dash-week-legend {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .25rem .9rem;
+  margin-top: .6rem;
+}
+
+.dash-week-legend span {
+  display: inline-flex;
+  align-items: center;
+  gap: .3rem;
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+
+.dash-week-legend i {
+  width: 12px;
+  height: 3px;
+  border-radius: 2px;
+}
+
+.dash-week-legend .legend-done { background: #16a34a; }
+.dash-week-legend .legend-active { background: var(--brand-red); }
+.dash-week-legend .legend-none { background: color-mix(in srgb, var(--text-muted) 30%, transparent); }
+
+/* Week totals sit in their own tinted block rather than floating under a rule —
+   it separates "the seven days" from "what they add up to". */
+.dash-inline-stats {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 1rem;
+  padding: .1rem 0;
+  border: 1px solid var(--border-light);
+  border-radius: 7px;
+  background: var(--bg-card-hover);
+}
+
+.dash-inline-stats div { padding: .6rem .85rem; border-left: 1px solid var(--border-light); }
+.dash-inline-stats div:first-child { border-left: 0; }
+.dash-inline-stats span { display: block; color: var(--text-muted); font-size: 0.75rem; font-weight: 600; }
+.dash-inline-stats strong { display: block; margin-top: .15rem; color: var(--text-heading); font-size: 1.125rem; line-height: 1.2; font-variant-numeric: tabular-nums; }
+
+/* The attendance panel lays out as a column so the week strip sits at the top
+   and the totals block pins to the bottom, keeping the panel's height matched
+   to the announcements card beside it without stretching the day boxes. */
+.dash-attendance-panel { display: flex; flex-direction: column; }
+.dash-attendance-panel > .dash-week-grid { flex: 0 0 auto; }
+.dash-attendance-panel .dash-inline-stats { margin-top: auto; }
+
+.dash-team-table { overflow: hidden; }
+.dash-team-header, .dash-team-row {
+  display: grid;
+  grid-template-columns: 1.4fr .9fr .85fr;
+  align-items: center;
+  gap: .75rem;
+}
+
+.dash-team-header {
+  padding: .55rem .7rem;
+  border-radius: 4px;
+  background: var(--bg-card-hover);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+}
+
+.dash-team-row {
+  min-height: 60px;
+  padding: .55rem .7rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-gray);
+  font-size: 0.8125rem;
+  transition: background 150ms ease;
+}
+
+.dash-team-row:hover { background: var(--bg-card-hover); }
+.dash-team-person { display: flex; align-items: center; gap: .6rem; min-width: 0; }
+.dash-team-person > b { width: 30px; height: 30px; flex: 0 0 30px; display: grid; place-items: center; border-radius: 4px; background: var(--brand-red-soft); color: var(--brand-red); }
+.dash-team-person > span { min-width: 0; display: flex; flex-direction: column; }
+.dash-team-person strong { overflow: hidden; color: var(--text-heading); font-size: 0.8125rem; text-overflow: ellipsis; white-space: nowrap; }
+.dash-team-person small { margin-top: .1rem; color: var(--text-muted); font-size: 0.75rem; }
+
+.team-badge { min-width: 104px; width: fit-content; padding: .26rem .45rem; border-radius: 3px; font-size: 0.75rem; font-weight: 650; text-align: center; }
+/* Green is reserved for someone actually checked in — a confirmed present
+   state. A finished day and a no-show are both neutral, so colour keeps meaning. */
+.badge-in { background: rgba(22, 163, 74, .09); color: #15803d; }
+.badge-done { background: rgba(120, 113, 108, .14); color: var(--text-heading); }
+.badge-absent { background: rgba(120, 113, 108, .1); color: var(--text-gray); }
+.badge-pending { background: rgba(120, 113, 108, .07); color: var(--text-muted); }
+
+.dash-approval-list { display: flex; flex-direction: column; }
+.dash-approval-row {
+  min-height: 55px;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .7rem;
+  padding: .55rem .25rem;
+  border-bottom: 1px solid var(--border-light);
+  color: inherit;
+  text-decoration: none;
+  transition: background 150ms ease;
+}
+.dash-approval-row:hover { background: var(--bg-card-hover); }
+.dash-approval-icon { width: 32px; height: 32px; display: grid; place-items: center; border-radius: 4px; background: rgba(217, 119, 6, .1); color: #b45309; }
+.dash-approval-row > span:nth-child(2) { min-width: 0; display: flex; flex-direction: column; }
+.dash-approval-row strong { overflow: hidden; color: var(--text-heading); font-size: 0.8125rem; text-overflow: ellipsis; white-space: nowrap; }
+.dash-approval-row small, .dash-approval-row time { color: var(--text-muted); font-size: 0.75rem; }
+
+.dash-empty-state {
+  min-height: 142px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+  text-align: center;
+}
+.dash-empty-state > svg { margin-bottom: .65rem; font-size: 1.5rem; }
+.dash-empty-state strong { color: var(--text-heading); font-size: 0.875rem; }
+.dash-empty-state span { max-width: 260px; margin-top: .25rem; font-size: 0.75rem; line-height: 1.45; }
+
+/* Quick access sits directly under the greeting, as a row of pills. It is a
+   toolbar rather than a panel, so it carries no card border of its own — the
+   pills are the only edges, which keeps it visually lighter than the KPI cards
+   below it. */
+.dash-quick-access {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .5rem .75rem;
+}
+
+.dash-quick-label {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: .04em;
+  text-transform: uppercase;
+}
+
+.dash-quick-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: .5rem;
+}
+
+.dash-quick-links a {
+  min-height: 34px;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: .4rem .85rem;
+  /* Fully rounded — the pill shape the toolbar is built around. */
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  font-size: 0.75rem;
+  font-weight: 600;
+  white-space: nowrap;
+  text-decoration: none;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease, box-shadow 150ms ease;
+}
+
+.dash-quick-links a:hover {
+  border-color: color-mix(in srgb, var(--brand-red) 40%, var(--border-strong));
+  background: var(--brand-red-soft);
+  color: var(--brand-red-dark);
+}
+
+.dash-quick-links a:active {
+  border-color: var(--brand-red);
+  box-shadow: var(--glow-red);
+}
+
+[data-theme="dark"] .dash-kpi-card:hover,
+[data-theme="dark"] .dash-quick-links a:hover {
+  background: var(--bg-card-hover);
+}
+
+.dash-toast {
+  position: fixed;
+  top: 84px;
+  right: 1.25rem;
+  z-index: 100;
+  max-width: 360px;
+  padding: .8rem 1rem;
+  border-radius: 5px;
+  background: #1c1917;
+  color: #fff;
+  font-size: 0.8125rem;
+  box-shadow: 0 12px 30px rgba(10, 10, 10, .18);
+}
+.dash-toast-success { border-left: 3px solid #22c55e; }
+.dash-toast-error { border-left: 3px solid var(--brand-red); }
+
+.dash-skeleton {
+  overflow: hidden;
+  border-radius: 7px;
+  background: #e7e5e4;
+  position: relative;
+}
+.dash-skeleton::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(90deg, transparent, rgba(255,255,255,.55), transparent);
+  transform: translateX(-100%);
+  animation: dash-shimmer 1.2s infinite;
+}
+.dash-skeleton-heading { width: 310px; height: 58px; }
+.dash-skeleton-kpi { height: 100px; }
+.dash-skeleton-panel { height: 310px; }
+@keyframes dash-shimmer { to { transform: translateX(100%); } }
+
+.manager-dashboard :where(a, button):focus-visible {
+  outline: 3px solid rgba(192, 57, 43, .25);
+  outline-offset: 2px;
+}
+
+@media (max-width: 1180px) {
+  .dash-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .dash-primary-grid, .dash-secondary-grid { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 720px) {
+  .dash-page-header { align-items: flex-start; flex-direction: column; }
+  .dash-header-actions { width: 100%; flex-wrap: wrap; }
+  .dash-last-updated { width: 100%; }
+  .dash-kpi-grid { grid-template-columns: 1fr; }
+  /* Narrow screens drop the fixed box width so the week wraps to four columns. */
+  .dash-week-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .dash-team-header { display: none; }
+  .dash-team-row { grid-template-columns: minmax(0, 1fr) auto; }
+  .dash-team-row > span:nth-child(2) { display: none; }
+  .dash-quick-access { align-items: flex-start; flex-direction: column; gap: .45rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .dash-skeleton::after { animation: none; }
+}

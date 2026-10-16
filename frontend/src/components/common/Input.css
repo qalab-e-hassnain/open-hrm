@@ -1,0 +1,184 @@
+:root {
+  --input-border: rgb(200, 200, 200);
+  --input-label-color: rgb(120, 120, 120);
+  --input-error-color: #e63946;
+}
+
+[data-theme="dark"] {
+  --input-border: rgba(255, 255, 255, 0.25);
+  --input-label-color: #9CA3AF;
+  --input-error-color: #FF6B75;
+}
+
+.input-wrapper {
+  font-family: inherit;
+  width: 100%;
+  margin-bottom: 1.5rem; /* matches .select-wrapper so Input/Select sit flush in the same row */
+  position: relative;
+}
+
+.input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.input-field {
+  font-size: 1.0625rem;
+  padding: 0.8rem 1rem;
+
+  outline: none !important;
+  box-shadow: none !important;
+
+  border: 1px solid var(--input-border);
+  background-color: transparent;
+  /* Inputs don't inherit text color — without this they render the browser
+     default (black), which is unreadable on the dark theme. */
+  color: var(--text-dark);
+  caret-color: var(--text-dark);
+  /* 6px, not the 12px this rule used to carry: the later .input-field block
+     below already overrode it, so the two declarations disagreed and only the
+     6px one ever rendered. */
+  border-radius: 6px;
+  width: 100%;
+  transition: border-color 0.3s ease;
+}
+
+.input-field:disabled {
+  color: var(--text-gray);
+  -webkit-text-fill-color: var(--text-gray); /* Safari/Chrome override disabled text color */
+  opacity: 1;
+}
+
+/* Base Label State (Inside the box) */
+.input-label {
+  position: absolute;
+  left: 0.8em;
+  top: 50%;
+  transform: translateY(-50%);
+  
+  color: var(--input-label-color);
+  background-color: transparent;
+  padding: 0 4px;
+  pointer-events: none;
+  z-index: 10;
+  
+  transition: 
+    top 0.25s ease, 
+    transform 0.25s ease, 
+    font-size 0.25s ease, 
+    color 0.25s ease, 
+    background-color 0.2s ease;
+}
+
+.input-field:focus + .input-label,
+.input-field:not(:placeholder-shown) + .input-label {
+  top: 0;
+  transform: translateY(-50%) scale(0.85);
+  background-color: var(--bg-white);
+  color: var(--brand-red, #E8352A);
+  font-weight: 600;
+}
+
+/* Focus Border */
+.input-field:focus {
+  border-color: var(--brand-red, #E8352A);
+  box-shadow: 0 0 0 3px rgba(232, 53, 42, 0.1) !important;
+}
+
+/* Error styling */
+.input-error {
+  border-color: var(--input-error-color) !important;
+}
+
+.input-error-message {
+  font-size: 0.8125rem;
+  color: var(--input-error-color);
+  margin-top: 0.4em;
+  margin-left: 0.5em;
+  display: block;
+}
+
+.input-icon {
+  position: absolute;
+  right: 12px;
+  top: 50%;
+  transform: translateY(-50%);
+  color: var(--input-label-color);
+}
+
+/* File Input Button Styling */
+input[type="file"]::file-selector-button {
+  background-color: var(--brand-red, #E8352A);
+  border-radius: 20px;
+  color: white;
+  padding: 0.6em 1.2em;
+  border: none;
+  cursor: pointer;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  text-decoration: none;
+  font-size: 1rem;
+}
+
+input[type="file"]::file-selector-button:hover {
+  background-color: var(--brand-red-dark, #C92B20);
+  text-decoration: underline;
+  text-decoration-color: white;
+  text-decoration-thickness: 2px;
+  text-underline-offset: 4px;
+}
+
+/* Responsive — mirrors Select.css breakpoints so an Input sitting next to a
+   Select in the same filter/form row keeps matching height and text size. */
+@media (max-width: 768px) {
+  .input-field {
+    font-size: 1rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .input-wrapper {
+    margin-bottom: 1.25rem;
+  }
+
+  .input-field {
+    font-size: 1rem;
+  }
+
+  .input-error-message {
+    font-size: 0.75rem;
+  }
+}
+
+/* the portal input foundation */
+.input-wrapper {
+  margin-bottom: 1.25rem;
+}
+
+.input-field {
+  min-height: 42px;
+  padding: 0.6875rem 0.875rem;
+  color: var(--text-dark);
+  background: var(--bg-white);
+  border: 1px solid var(--border-strong);
+  border-radius: 6px;
+}
+
+.input-field:hover {
+  border-color: var(--text-muted);
+}
+
+/* --glow-red is the shared token, so this ring is identical to Select,
+   TextArea and Card. !important is required only because the legacy
+   .input-field block above sets `box-shadow: none !important`. */
+.input-field:focus {
+  border-color: var(--brand-red);
+  box-shadow: var(--glow-red) !important;
+}
+
+.input-label {
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+}

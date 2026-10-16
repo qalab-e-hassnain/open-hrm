@@ -1,0 +1,70 @@
+:root {
+  --textarea-bg: rgba(255, 255, 255, 0.5);
+  --textarea-bg-focus: white;
+}
+
+[data-theme="dark"] {
+  --textarea-bg: rgba(255, 255, 255, 0.06);
+  --textarea-bg-focus: rgba(255, 255, 255, 0.1);
+}
+
+.textarea-wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  width: 100%;
+}
+
+.textarea-label {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.textarea-field {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1.0625rem;
+  border: 1px solid var(--input-border);
+  border-radius: 12px;
+  background: var(--textarea-bg);
+  color: var(--text-dark);
+  font-family: inherit;
+  resize: vertical;
+  min-height: 120px;
+  transition: all 0.2s;
+}
+
+.textarea-field::placeholder {
+  color: var(--text-gray);
+}
+
+.textarea-field:focus {
+  outline: none !important;
+  border-color: var(--brand-red);
+  background: var(--textarea-bg-focus);
+  box-shadow: var(--glow-red);
+}
+
+.textarea-field.textarea-error {
+  border-color: var(--accent-red);
+}
+
+.textarea-field.textarea-error:focus {
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+.textarea-error-message {
+  font-size: 0.9375rem;
+  color: var(--accent-red);
+  margin-top: -0.25rem;
+}
+
+@media (max-width: 768px) {
+  .textarea-field {
+    padding: 0.625rem 0.875rem;
+    font-size: 1rem;
+    min-height: 100px;
+  }
+}
+

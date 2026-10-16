@@ -1,0 +1,201 @@
+.performance-page { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
+
+.pf-head h1 {
+  margin: 0 0 .25rem;
+  font-size: var(--font-page-title); font-weight: var(--font-page-title-weight);
+  color: var(--text-heading);
+}
+.pf-head p { margin: 0 0 1rem; font-size: var(--font-subtitle); color: var(--text-secondary); }
+
+.pf-tabs { display: flex; flex-wrap: wrap; gap: .4rem; margin-bottom: 1rem; }
+.pf-tabs button {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .45rem .85rem; border: 1px solid var(--border-gray); border-radius: var(--radius-xl);
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.pf-tabs button.is-active { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+.pf-count {
+  padding: 0 .35rem; border-radius: var(--radius-full);
+  background: var(--brand-red); color: #fff; font-size: .7rem; font-weight: 700;
+}
+.pf-tabs button.is-active .pf-count { background: #fff; color: var(--brand-red); }
+
+.pf-alert {
+  display: flex; align-items: flex-start; gap: .55rem; padding: .75rem .9rem; margin-bottom: 1rem;
+  border-radius: var(--radius-md); font-size: var(--font-subtitle);
+}
+.pf-alert svg { flex: none; margin-top: .1rem; }
+.pf-alert-error { background: var(--status-error-bg); color: var(--status-error-text); }
+.pf-alert-ok { background: var(--status-success-bg); color: var(--status-success-text); }
+
+.pf-empty {
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: 2.5rem 1rem; border: 1px dashed var(--border-gray); border-radius: var(--radius-lg);
+  color: var(--text-secondary); font-size: var(--font-subtitle);
+}
+.pf-empty svg { font-size: 1.5rem; opacity: .6; }
+.pf-empty p { margin: 0; }
+
+.pf-section-head { display: flex; align-items: center; justify-content: space-between; gap: 1rem; margin-bottom: .75rem; }
+.pf-section-head h2 { margin: 0; font-size: 1rem; color: var(--text-heading); }
+
+.pf-list { display: flex; flex-direction: column; gap: .75rem; }
+.pf-card {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem;
+  padding: .9rem 1.05rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg); background: var(--bg-white); cursor: pointer;
+}
+.pf-card.is-static { cursor: default; }
+.pf-card:not(.is-static):hover { border-color: var(--brand-red); }
+.pf-card h2 { margin: 0 0 .15rem; font-size: .95rem; color: var(--text-heading); }
+.pf-card p { margin: 0; font-size: .76rem; color: var(--text-secondary); }
+.pf-due { display: inline-flex; align-items: center; gap: .25rem; margin-top: .25rem !important; }
+.pf-card-right { display: flex; flex-direction: column; align-items: flex-end; gap: .4rem; flex: none; }
+
+.pf-badge {
+  padding: .2rem .55rem; border-radius: var(--radius-full);
+  font-size: .7rem; font-weight: 700; white-space: nowrap;
+}
+.tone-wait { background: var(--status-neutral-bg); color: var(--status-neutral-text); }
+.tone-info { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.tone-live { background: var(--status-success-bg); color: var(--status-success-text); }
+.tone-done { background: var(--status-neutral-bg); color: var(--status-neutral-text); }
+.tone-draft { background: var(--status-neutral-bg); color: var(--status-neutral-text); }
+.tone-open { background: var(--status-success-bg); color: var(--status-success-text); }
+.tone-closed { background: var(--status-neutral-bg); color: var(--status-neutral-text); }
+
+.pf-stars { display: inline-flex; align-items: center; gap: .1rem; color: var(--border-gray); }
+.pf-stars .is-on { color: #d97706; fill: #d97706; }
+.pf-stars b { margin-left: .3rem; font-size: .78rem; color: var(--text-primary); }
+.pf-muted { color: var(--text-secondary); font-size: var(--font-subtitle); }
+
+.pf-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .45rem .85rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.pf-btn:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.pf-btn-primary { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+.pf-btn-primary:hover:not(:disabled) { filter: brightness(.94); color: #fff; }
+.pf-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.pf-cycle-form {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); gap: .75rem;
+  padding: 1rem; margin-bottom: 1rem;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-lg); background: var(--bg-white);
+}
+.pf-cycle-form label, .pf-field {
+  display: flex; flex-direction: column; gap: .25rem; min-width: 0;
+  font-size: var(--font-subtitle); font-weight: 600; color: var(--text-primary);
+}
+.pf-cycle-form input, .pf-cycle-form textarea, .pf-field textarea {
+  padding: .5rem .65rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  font: inherit; font-weight: 400; resize: vertical;
+}
+.pf-wide { grid-column: 1 / -1; }
+.pf-form-actions { grid-column: 1 / -1; display: flex; justify-content: flex-end; gap: .5rem; }
+
+.pf-goals { margin: 0; padding: 0; list-style: none; display: flex; flex-direction: column; gap: .7rem; }
+.pf-goals li {
+  padding: .7rem .85rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md); background: var(--bg-white);
+}
+.pf-goal-head { display: flex; flex-wrap: wrap; align-items: center; gap: .4rem; }
+.pf-goal-head strong { font-size: var(--font-subtitle); color: var(--text-primary); }
+.pf-goals p { margin: .35rem 0 0; font-size: .78rem; color: var(--text-secondary); }
+.pf-target { display: inline-flex; align-items: center; gap: .3rem; }
+.pf-goal-foot { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .5rem; margin-top: .5rem; }
+.pf-note {
+  margin-top: .4rem !important; padding: .4rem .6rem; border-radius: var(--radius-md);
+  background: var(--status-neutral-bg); font-style: italic;
+}
+
+.pf-chip {
+  padding: .12rem .45rem; border-radius: var(--radius-full);
+  background: var(--status-neutral-bg); color: var(--text-secondary);
+  font-size: .66rem; font-weight: 700;
+}
+/* A goal that came from the contract is worth marking: it is the standard
+   the employee actually signed up to. */
+.pf-chip.source-job_profile { background: var(--status-info-bg, #e0f2fe); color: var(--status-info-text, #075985); }
+
+.pf-rating { display: inline-flex; align-items: center; gap: .2rem; }
+.pf-rating button {
+  width: 1.9rem; height: 1.9rem; border-radius: 50%;
+  border: 1px solid var(--border-gray); background: var(--bg-white);
+  color: var(--text-secondary); font: inherit; font-weight: 700; cursor: pointer;
+}
+.pf-rating button.is-on { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+.pf-rating .pf-clear { width: auto; padding: 0 .5rem; border-radius: var(--radius-md); font-size: .7rem; font-weight: 600; }
+.pf-rating-row { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; margin-top: .6rem; font-size: var(--font-subtitle); font-weight: 600; }
+
+.pf-overlay {
+  position: fixed; inset: 0; z-index: 60; display: flex; align-items: center;
+  justify-content: center; padding: 1rem; background: rgba(15, 23, 42, .45);
+}
+.pf-dialog {
+  width: min(44rem, 100%); max-height: 92vh; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 1.25rem;
+  padding: 1.25rem; border-radius: var(--radius-lg); background: var(--bg-white);
+}
+.pf-dialog header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.pf-dialog h2 { margin: 0 0 .15rem; font-size: 1.1rem; color: var(--text-heading); }
+.pf-dialog header p { margin: 0; font-size: .78rem; color: var(--text-secondary); }
+.pf-dialog h3 {
+  display: flex; align-items: center; gap: .35rem; margin: 0 0 .5rem;
+  font-size: .72rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-secondary);
+}
+.pf-dialog textarea {
+  width: 100%; padding: .6rem .7rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md); font: inherit; resize: vertical;
+}
+.pf-two { display: grid; grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr)); gap: .75rem; margin-top: .6rem; }
+.pf-two label, .pf-field { display: flex; flex-direction: column; gap: .25rem; font-size: var(--font-subtitle); font-weight: 600; }
+.pf-field { margin-top: .6rem; }
+.pf-field small { font-weight: 400; font-size: .72rem; color: var(--text-secondary); }
+.pf-prose { margin: 0 0 .5rem; font-size: var(--font-subtitle); color: var(--text-primary); white-space: pre-wrap; }
+.pf-waiting {
+  display: flex; align-items: center; gap: .45rem; margin: 0;
+  padding: .6rem .75rem; border-radius: var(--radius-md);
+  background: var(--status-neutral-bg); color: var(--text-secondary); font-size: var(--font-subtitle);
+}
+.pf-actions { display: flex; flex-wrap: wrap; gap: .5rem; margin-top: .7rem; }
+.pf-dialog-foot { display: flex; justify-content: flex-end; }
+
+@media (max-width: 640px) {
+  .performance-page { padding: 1rem; }
+  .pf-card { flex-direction: column; }
+  .pf-card-right { align-items: flex-start; }
+}
+
+.pf-seed {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .75rem; margin-top: .75rem; padding: .7rem .85rem;
+  border: 1px dashed var(--border-gray); border-radius: var(--radius-md);
+}
+.pf-seed p { margin: 0; font-size: .78rem; color: var(--text-secondary); }
+
+/* HR's own words for this cycle, in front of the person writing rather
+   than only on the form that created it. */
+.pf-instructions {
+  margin: 0; padding: .7rem .85rem; border-radius: var(--radius-md);
+  border-left: 3px solid var(--brand-red); background: var(--bg-subtle, #f8fafc);
+  font-size: var(--font-subtitle); color: var(--text-primary); white-space: pre-wrap;
+}
+
+.pf-prompts {
+  margin: 0 0 .6rem; padding-left: 1.1rem;
+  font-size: .76rem; color: var(--text-secondary);
+}
+.pf-prompts li { margin-bottom: .15rem; }
+
+.pf-starter { margin-top: .4rem; font-size: .74rem; padding: .3rem .7rem; }
+
+.pf-rating-wrap { display: flex; flex-direction: column; gap: .35rem; }
+.pf-scale {
+  margin: 0; font-size: .74rem; color: var(--text-secondary); max-width: 46ch;
+}
+.pf-scale b { color: var(--text-primary); }

@@ -1,0 +1,17 @@
+# Secrets and local configuration
+.env
+.env.*
+!.env.example
+
+# Node/Vite
+node_modules/
+dist/
+*.log
+
+# Local certificates and editor files
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/
+
+.vercel

@@ -1,0 +1,287 @@
+.orgchart-page { padding: 1.5rem; max-width: var(--content-max-width); margin: 0 auto; }
+
+.oc-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.25rem;
+}
+.oc-head h1 {
+  margin: 0 0 .25rem;
+  font-size: var(--font-page-title); font-weight: var(--font-page-title-weight);
+  color: var(--text-heading);
+}
+.oc-head p { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.oc-controls { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.oc-search {
+  display: flex; align-items: center; gap: .45rem;
+  padding: .45rem .7rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-secondary);
+}
+.oc-search input { min-width: 0; width: 14rem; border: 0; outline: 0; background: none; font: inherit; color: var(--text-primary); }
+.oc-check { display: inline-flex; align-items: center; gap: .35rem; font-size: var(--font-subtitle); color: var(--text-secondary); }
+
+/* ---------------------------------------------------- layout switcher --- */
+
+.oc-bar {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .6rem; margin-bottom: 1rem;
+}
+.oc-views, .oc-zoom {
+  display: inline-flex; align-items: center; gap: .15rem; padding: .2rem;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-full);
+  background: var(--bg-white);
+}
+.oc-view {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .4rem .75rem; border: 0; border-radius: var(--radius-full);
+  background: none; color: var(--text-secondary);
+  font: inherit; font-size: .78rem; font-weight: 600; cursor: pointer;
+  transition: background .15s ease, color .15s ease;
+}
+.oc-view:hover { color: var(--brand-red); }
+.oc-view.is-on { background: var(--brand-red); color: #fff; }
+.oc-view svg { font-size: .95rem; }
+
+.oc-zoom button {
+  display: inline-grid; place-items: center; width: 1.9rem; height: 1.9rem;
+  border: 0; border-radius: 50%; background: none; color: var(--text-secondary); cursor: pointer;
+}
+.oc-zoom button:hover { background: var(--bg-card-hover); color: var(--brand-red); }
+.oc-zoom span {
+  min-width: 3rem; text-align: center;
+  font-size: .74rem; font-weight: 700; color: var(--text-secondary); font-variant-numeric: tabular-nums;
+}
+
+.oc-alert {
+  display: flex; align-items: center; gap: .55rem; padding: .75rem .9rem; margin-bottom: 1rem;
+  border-radius: var(--radius-md); background: var(--status-error-bg); color: var(--status-error-text);
+  font-size: var(--font-subtitle);
+}
+.oc-note {
+  margin: 0 0 1rem; padding: .6rem .8rem; border-radius: var(--radius-md);
+  background: var(--status-neutral-bg); color: var(--text-secondary); font-size: .78rem;
+}
+.oc-empty {
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: 2.5rem 1rem; border: 1px dashed var(--border-gray); border-radius: var(--radius-lg);
+  color: var(--text-secondary); font-size: var(--font-subtitle);
+}
+.oc-empty svg { font-size: 1.5rem; opacity: .6; }
+.oc-empty p { margin: 0; }
+
+/* The stage scrolls, the canvas inside it is scaled. Transform does not
+   change layout size, so the origin is pinned top-left and the canvas keeps
+   its own padding — otherwise zooming in crops the left edge away. */
+.oc-stage {
+  /* Connector colour. The border tokens are tuned for the edge of a card and
+     are too faint to follow across a chart this wide; the fallback keeps the
+     lines visible where color-mix is not supported. */
+  --wire: var(--border-gray);
+  --wire: color-mix(in srgb, var(--text-secondary) 40%, transparent);
+  overflow: auto; padding: .5rem;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-lg);
+  background:
+    radial-gradient(circle at 1px 1px, var(--border-gray) 1px, transparent 0) 0 0 / 22px 22px,
+    var(--bg-white);
+}
+.oc-canvas {
+  /* max-content, not a block: a level centres its cards inside this box, so a
+     box that stops at the stage width centres them around a point that is off
+     the chart and clips the narrow top levels away entirely. */
+  width: max-content; min-width: 100%; padding: 1.5rem;
+  transform-origin: 0 0; transition: transform .15s ease;
+}
+
+/* ------------------------------------------------------- shared pieces --- */
+
+.oc-avatar {
+  flex: none; width: 2.1rem; height: 2.1rem; border-radius: 50%;
+  object-fit: cover; background: var(--status-neutral-bg);
+}
+.oc-avatar-fallback {
+  display: grid; place-items: center;
+  color: var(--text-secondary); font-size: .72rem; font-weight: 700;
+}
+
+.oc-tag {
+  padding: .12rem .4rem; border-radius: var(--radius-full);
+  font-size: .64rem; font-weight: 700; font-style: normal; letter-spacing: .03em;
+}
+.oc-tag-hr { background: var(--status-info-bg); color: var(--status-info-text); }
+.oc-tag-admin { background: var(--status-error-bg); color: var(--status-error-text); }
+
+.oc-toggle {
+  display: inline-flex; align-items: center; gap: .2rem;
+  padding: .2rem .45rem; border: 1px solid var(--border-gray); border-radius: var(--radius-full);
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-size: .72rem; font-weight: 700; cursor: pointer;
+}
+.oc-toggle svg { transition: transform .15s ease; }
+.oc-toggle.is-open svg { transform: rotate(180deg); }
+.oc-toggle:hover { border-color: var(--brand-red); color: var(--brand-red); }
+
+/* Eight department bands. Each is a soft fill with a readable text colour,
+   so the same pair works on a card header and on an orbit label. */
+.oc-band-0 { --band: #1E40AF; --band-soft: rgba(30, 64, 175, .12); }
+.oc-band-1 { --band: #047857; --band-soft: rgba(4, 120, 87, .12); }
+.oc-band-2 { --band: #B45309; --band-soft: rgba(180, 83, 9, .12); }
+.oc-band-3 { --band: #7E22CE; --band-soft: rgba(126, 34, 206, .12); }
+.oc-band-4 { --band: #0E7490; --band-soft: rgba(14, 116, 144, .12); }
+.oc-band-5 { --band: #BE123C; --band-soft: rgba(190, 18, 60, .12); }
+.oc-band-6 { --band: #4D7C0F; --band-soft: rgba(77, 124, 15, .12); }
+.oc-band-7 { --band: #C2410C; --band-soft: rgba(194, 65, 12, .12); }
+
+/* ------------------------------------------------- compact (list) view --- */
+
+.oc-tree, .oc-children { margin: 0; padding: 0; list-style: none; }
+.oc-node { position: relative; }
+
+/* Indented tree with connectors: it stays readable at any depth and does
+   not overflow sideways the way boxes-and-lines does on a phone. */
+.oc-children { margin-left: 1.4rem; padding-left: 1.1rem; border-left: 1px solid var(--border-gray); }
+.oc-children > .oc-node::before {
+  content: ''; position: absolute; left: -1.1rem; top: 1.5rem;
+  width: .9rem; height: 1px; background: var(--border-gray);
+}
+
+.oc-card {
+  display: flex; align-items: center; gap: .7rem; margin: .35rem 0;
+  padding: .55rem .75rem; min-width: 0;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-lg);
+  background: var(--bg-white);
+}
+.oc-card.is-admin { border-left: 3px solid var(--brand-red); }
+.oc-who { display: flex; flex-direction: column; min-width: 0; flex: 1; }
+.oc-who strong { font-size: var(--font-subtitle); color: var(--text-primary); overflow-wrap: anywhere; }
+.oc-who small { font-size: .74rem; color: var(--text-secondary); overflow-wrap: anywhere; }
+.oc-tags { display: flex; align-items: center; gap: .35rem; flex: none; }
+
+/* ------------------------------------------- boxes and lines (branches) --- */
+
+.oc-b-level { margin: 0; padding: 0; list-style: none; position: relative; }
+.oc-b-node { position: relative; }
+.oc-b-slot { display: flex; align-items: center; gap: .4rem; }
+
+.oc-b-card {
+  display: flex; align-items: stretch; gap: 0; width: 15rem; overflow: hidden;
+  border: 1px solid var(--border-gray); border-left: 4px solid var(--band, var(--border-gray));
+  border-radius: var(--radius-lg); background: var(--bg-white);
+  box-shadow: var(--glass-shadow); text-align: left;
+}
+.oc-b-card.is-admin { border-color: var(--brand-red); border-left-color: var(--brand-red); }
+.oc-b-avatar {
+  width: 3rem; height: auto; align-self: stretch; border-radius: 0;
+  background: var(--band-soft, var(--status-neutral-bg));
+}
+.oc-b-text {
+  display: flex; flex-direction: column; justify-content: center; gap: .05rem;
+  flex: 1; min-width: 0; padding: .45rem .55rem;
+}
+.oc-b-role {
+  font-size: .6rem; font-weight: 800; letter-spacing: .06em; text-transform: uppercase;
+  color: var(--band, var(--text-secondary)); overflow-wrap: anywhere;
+}
+.oc-b-name { font-size: .82rem; color: var(--text-primary); overflow-wrap: anywhere; }
+.oc-b-dept { font-size: .68rem; color: var(--text-secondary); overflow-wrap: anywhere; }
+.oc-b-tags { display: flex; flex-direction: column; justify-content: center; gap: .2rem; padding-right: .4rem; }
+
+/* --- top down: levels are rows, connectors drop from the card above ----- */
+
+.oc-b-down .oc-b-level, .oc-b-down.oc-b-level { display: flex; justify-content: center; }
+.oc-b-down .oc-b-level { padding-top: 1.6rem; }
+.oc-b-down .oc-b-node { padding: 1.6rem .5rem 0; display: flex; flex-direction: column; align-items: center; }
+.oc-b-down.oc-b-root > .oc-b-node { padding-top: 0; }
+.oc-b-down .oc-b-slot { flex-direction: column; }
+
+/* The elbow above each child: a half-width rule on either side of centre,
+   with the drop into the card carried on whichever half reaches the middle. */
+.oc-b-down .oc-b-node::before, .oc-b-down .oc-b-node::after {
+  content: ''; position: absolute; top: 0; right: 50%;
+  width: 50%; height: 1.6rem; border-top: 1px solid var(--wire);
+}
+.oc-b-down .oc-b-node::after { right: auto; left: 50%; border-left: 1px solid var(--wire); }
+.oc-b-down .oc-b-node:first-child::before, .oc-b-down .oc-b-node:last-child::after { border: 0 none; }
+.oc-b-down .oc-b-node:last-child::before { border-right: 1px solid var(--wire); }
+.oc-b-down .oc-b-node:only-child { padding-top: 0; }
+.oc-b-down .oc-b-node:only-child::before, .oc-b-down .oc-b-node:only-child::after { display: none; }
+.oc-b-down.oc-b-root > .oc-b-node::before, .oc-b-down.oc-b-root > .oc-b-node::after { display: none; }
+/* The stem joining a parent to the rule above its children. */
+.oc-b-down .oc-b-level::before {
+  content: ''; position: absolute; top: 0; left: 50%;
+  width: 0; height: 1.6rem; border-left: 1px solid var(--wire);
+}
+.oc-b-down.oc-b-root::before { display: none; }
+
+/* --- sideways: levels are columns, connectors run out to the right ------ */
+
+.oc-b-sideways .oc-b-level, .oc-b-sideways.oc-b-level { display: flex; flex-direction: column; justify-content: center; }
+.oc-b-sideways .oc-b-level { padding-left: 2rem; }
+.oc-b-sideways .oc-b-node { padding: .4rem 0 .4rem 2rem; display: flex; align-items: center; }
+.oc-b-sideways.oc-b-root > .oc-b-node { padding-left: 0; }
+
+.oc-b-sideways .oc-b-node::before, .oc-b-sideways .oc-b-node::after {
+  content: ''; position: absolute; left: 0;
+  width: 2rem; height: 50%; border-left: 1px solid var(--wire);
+}
+.oc-b-sideways .oc-b-node::before { bottom: 50%; }
+.oc-b-sideways .oc-b-node::after { top: 50%; border-top: 1px solid var(--wire); }
+.oc-b-sideways .oc-b-node:first-child::before { border-left: 0 none; }
+.oc-b-sideways .oc-b-node:last-child::after { border-left: 0 none; }
+.oc-b-sideways .oc-b-node:only-child::before { display: none; }
+.oc-b-sideways .oc-b-node:only-child::after { border-left: 0 none; }
+.oc-b-sideways.oc-b-root > .oc-b-node::before, .oc-b-sideways.oc-b-root > .oc-b-node::after { display: none; }
+.oc-b-sideways .oc-b-level::before {
+  content: ''; position: absolute; left: 0; top: 50%;
+  width: 2rem; height: 0; border-top: 1px solid var(--wire);
+}
+.oc-b-sideways.oc-b-root::before { display: none; }
+
+/* ------------------------------------------------------------- orbit ---- */
+
+.oc-orbit { position: relative; margin: 0 auto; }
+.oc-orbit-lines { position: absolute; inset: 0; overflow: visible; }
+.oc-orbit-ring { fill: none; stroke: var(--border-gray); stroke-dasharray: 3 7; opacity: .7; }
+.oc-orbit-link { stroke: var(--wire); stroke-width: 1.5; }
+
+.oc-orbit-core {
+  position: absolute; transform: translate(-50%, -50%);
+  display: grid; place-content: center; gap: .1rem; text-align: center;
+  width: 7.5rem; height: 7.5rem; border-radius: 50%;
+  background: var(--brand-red); color: #fff;
+  box-shadow: 0 8px 24px var(--brand-red-soft);
+}
+.oc-orbit-core strong { font-size: .95rem; letter-spacing: .02em; }
+.oc-orbit-core small { font-size: .68rem; opacity: .85; }
+
+.oc-orbit-node {
+  position: absolute; transform: translate(-50%, -50%);
+  display: flex; flex-direction: column; align-items: center; gap: .25rem;
+  /* Kept in step with LABEL_W in OrgChart.tsx, which spaces the rings so two
+     neighbours clear this width. */
+  width: 7.5rem;
+}
+.oc-orbit-avatar {
+  width: 3.1rem; height: 3.1rem;
+  border: 3px solid var(--band, var(--border-gray)); background: var(--bg-white);
+  box-shadow: var(--glass-shadow);
+}
+.oc-orbit-label {
+  display: flex; flex-direction: column; align-items: center; gap: .05rem;
+  max-width: 100%; padding: .25rem .5rem; border-radius: var(--radius-md);
+  background: var(--band-soft, var(--status-neutral-bg));
+  border: 1px solid var(--band, var(--border-gray)); text-align: center;
+}
+.oc-orbit-label strong { font-size: .72rem; color: var(--text-primary); overflow-wrap: anywhere; }
+.oc-orbit-label small { font-size: .62rem; color: var(--band, var(--text-secondary)); overflow-wrap: anywhere; }
+
+@media (max-width: 640px) {
+  .orgchart-page { padding: 1rem; }
+  .oc-search input { width: 100%; }
+  .oc-search { flex: 1 1 100%; }
+  .oc-children { margin-left: .7rem; padding-left: .8rem; }
+  .oc-children > .oc-node::before { left: -.8rem; width: .6rem; }
+  .oc-bar { gap: .5rem; }
+  .oc-views { flex: 1 1 100%; justify-content: space-between; }
+  .oc-view span { display: none; }
+  .oc-view { flex: 1; justify-content: center; padding: .45rem; }
+  .oc-zoom { flex: 1 1 100%; justify-content: center; }
+}

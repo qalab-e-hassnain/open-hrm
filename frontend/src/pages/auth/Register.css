@@ -1,0 +1,296 @@
+/* ===================================================================
+   REGISTER PAGE
+   Matches Login.css exactly — dark card on white background
+   =================================================================== */
+
+/* ---- Page container ---- */
+.register-page-container {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  overflow-x: hidden;
+  background: #ffffff; 
+}
+
+/* ---- Centering wrapper ---- */
+.register-card-backdrop {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 40px 20px;
+  background: transparent;
+}
+
+.register-card {
+  position: relative;
+  z-index: 1;
+  width: 100%;
+  max-width: 420px;
+  padding: 2.75rem 2.5rem 3rem;
+  background:
+    radial-gradient(circle at 80% 15%, rgba(232, 53, 42, 0.3) 0%, transparent 50%),
+    radial-gradient(circle at 15% 85%, rgba(232, 53, 42, 0.12) 0%, transparent 50%),
+    linear-gradient(135deg, #1a0505 0%, #2a0e0c 35%, #3d0a08 70%, #0d0d0d 100%);
+    -webkit-backdrop-filter: blur(8px);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  border-radius: var(--radius-2xl);
+  box-shadow:
+    0 25px 50px -12px rgba(0, 0, 0, 0.2),
+    0 0 60px rgba(232, 53, 42, 0.06),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
+  animation: register-rise 0.45s ease both;
+  overflow: hidden;
+}
+
+@keyframes register-rise {
+  from { opacity: 0; transform: translateY(14px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+
+/* ---- Logo row ---- */
+.register-logo-section {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  margin-bottom: 1.75rem;
+}
+
+.register-logo-img {
+  width: 44px;
+  height: 44px;
+  object-fit: contain;
+  flex-shrink: 0;
+}
+
+.register-logo-name {
+  font-size: 1.375rem;
+  font-weight: 600;
+  color: #ffffff;
+  letter-spacing: -0.3px;
+}
+
+/* ---- Heading ---- */
+.register-text-section {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.register-title {
+  font-size: 2.5625rem;
+  font-weight: 700;
+  color: #ffffff;
+  margin-bottom: 0.4rem;
+  letter-spacing: -1.2px;
+  line-height: 1.1;
+}
+
+.register-title .accent-dot {
+  color: var(--brand-red);
+}
+
+.register-subtitle {
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.65); 
+  margin: 0;
+}
+
+/* ---- Form ---- */
+.register-form-modern {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+}
+
+/* ---- Field group ---- */
+.register-field-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.register-label {
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: rgba(255, 255, 255, 0.85);
+}
+
+/* ---- Inputs (text, email, password) ---- */
+.register-input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  outline: none !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+}
+
+.register-input::placeholder {
+  color: rgba(255, 255, 255, 0.35);
+}
+
+.register-input:focus {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px rgba(232, 53, 42, 0.25);
+}
+
+.register-input-error {
+  border-color: #F87171 !important;
+}
+
+.register-field-error {
+  font-size: 0.8125rem;
+  color: #FCA5A5; 
+  margin-top: 0.1rem;
+}
+
+/* ---- Select (Role) — styled identical to inputs ---- */
+.register-select {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  font-family: inherit;
+  border: 1px solid rgba(255, 255, 255, 0.15);
+  border-radius: 12px;
+  background: rgba(255, 255, 255, 0.06);
+  color: #ffffff;
+  outline: none !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+  box-sizing: border-box;
+  cursor: pointer;
+  -moz-appearance: none;
+  -webkit-appearance: none;
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath fill='rgba(255,255,255,0.5)' d='M1.41.59L6 5.17 10.59.59 12 2l-6 6-6-6z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 1rem center;
+  background-size: 12px;
+}
+
+.register-select:focus {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px rgba(232, 53, 42, 0.25);
+}
+
+.register-select option {
+  background-color: #1a0505;
+  color: #ffffff;
+}
+
+/* ---- Checkboxes ---- */
+.register-checkbox-group {
+  display: flex;
+  flex-direction: column;
+  gap: 0.65rem;
+  margin-top: 0.25rem;
+}
+
+.register-checkbox-label {
+  display: flex;
+  align-items: flex-start;
+  gap: 0.625rem;
+  font-size: 0.9375rem;
+  color: rgba(255, 255, 255, 0.85);
+  cursor: pointer;
+}
+
+.register-checkbox-label input[type="checkbox"] {
+  width: 18px;
+  height: 18px;
+  cursor: pointer;
+  margin-top: 2px;
+  flex-shrink: 0;
+  accent-color: var(--brand-red);
+}
+
+.register-checkbox-label span {
+  line-height: 1.5;
+}
+
+.register-terms-link {
+  color: #FF6B5A;
+  text-decoration: none;
+  font-weight: 500;
+}
+
+.register-terms-link:hover {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+/* ---- Button (matches Login sign-in-btn) ---- */
+.btn.sign-in-btn {
+  width: 100%;
+  padding: 0.9rem 1.5rem;
+  border-radius: 999px;
+  font-size: 1.0625rem;
+  font-weight: 600;
+  margin-top: 0.25rem;
+  min-height: 52px;
+  background: linear-gradient(135deg, var(--brand-red), var(--brand-red-dark));
+  color: #ffffff;
+  border-color: transparent;
+  box-shadow: 0 4px 14px rgba(232, 53, 42, 0.3);
+}
+
+.btn.sign-in-btn:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--brand-red-dark), #A8221A);
+  box-shadow: 0 8px 20px rgba(232, 53, 42, 0.4);
+  transform: translateY(-2px);
+}
+
+.btn.sign-in-btn:disabled {
+  background: var(--brand-red);
+  opacity: 0.55;
+}
+
+/* ---- Error banner ---- */
+.register-error-modern {
+  padding: 0.75rem 1rem;
+  background: rgba(254, 226, 226, 0.12);
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+  border: 1px solid rgba(232, 53, 42, 0.3);
+  color: #FCA5A5;
+  border-radius: 12px;
+  font-size: 0.9375rem;
+  text-align: center;
+}
+
+/* ---- Login prompt ---- */
+.register-login-prompt {
+  text-align: center;
+  font-size: 1rem;
+  color: rgba(255, 255, 255, 0.65);
+  margin-top: 1.25rem;
+}
+
+.register-login-link {
+  color: #ffffff;
+  font-weight: 600;
+  text-decoration: none;
+}
+
+.register-login-link:hover {
+  color: var(--brand-red);
+  text-decoration: underline;
+}
+
+/* ---- Responsive ---- */
+@media (max-width: 480px) {
+  .register-title {
+    font-size: 2.1875rem;
+  }
+  .register-card {
+    padding: 2rem 1.5rem 2.5rem;
+  }
+}

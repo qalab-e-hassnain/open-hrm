@@ -1,0 +1,705 @@
+.payroll-reimbursement-page {
+  width: 100%;
+}
+
+.payroll-reimbursement-page .tab-buttons {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  /* Plain spacing below the tab pills. This used to compensate for the
+     border-bottom Employees.css leaked in via its identically-named global
+     .tab-buttons rule; both pages now scope their tab rules under their own
+     page root, so nothing leaks. */
+  padding-bottom: 0.9rem;
+}
+
+.payroll-reimbursement-page .tab-btn {
+  /* Icon and label were inline siblings, so the icon sat on the text baseline
+     and rode high against the label. */
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  line-height: 1;
+  padding: 0.875rem 2rem;
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  font-size: var(--font-subtitle);
+  font-weight: 500;
+  cursor: pointer;
+  transition: all 0.2s;
+  background: var(--glass-bg-strong);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  color: var(--text-dark);
+}
+
+.payroll-reimbursement-page .tab-btn svg { flex: 0 0 auto; }
+
+.payroll-reimbursement-page .tab-btn:hover {
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+}
+
+.payroll-reimbursement-page .tab-btn.active {
+  background: linear-gradient(135deg, var(--brand-red), var(--brand-red-dark));
+  border-color: transparent;
+  color: white;
+  box-shadow: 0 4px 14px rgba(232, 53, 42, 0.35);
+}
+
+.content-card {
+  padding: var(--space-card-padding);
+}
+
+.content-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 300px;
+}
+
+.payroll-reimbursement-page .reimbursements-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.request-item {
+  padding: var(--space-item-padding);
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--card-radius);
+  box-shadow: var(--glass-shadow);
+  transition: transform 0.25s ease, box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.request-item:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 14px 30px rgba(232, 53, 42, 0.12), 0 4px 12px rgba(31, 41, 55, 0.06);
+  border-color: rgba(232, 53, 42, 0.25);
+}
+
+.request-header {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+}
+
+.request-avatar {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, rgba(232, 53, 42, 0.22), rgba(232, 53, 42, 0.06));
+  border: 1px solid rgba(232, 53, 42, 0.25);
+  flex-shrink: 0;
+}
+
+.request-info {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  flex: 1;
+}
+
+.request-name {
+  font-size: 1.0625rem;
+  font-weight: 600;
+  color: var(--text-dark);
+}
+
+.request-amount {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--status-success-text);
+}
+
+.request-header-right {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.5rem;
+  margin-left: auto;
+}
+
+.request-dates {
+  font-size: 1rem;
+  color: var(--text-gray);
+}
+
+.payroll-reimbursement-page .status-badge {
+  font-size: 0.8125rem;
+  font-weight: 700;
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  display: inline-block;
+  width: fit-content;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.payroll-reimbursement-page .status-pending {
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text);
+  border: 1px solid var(--status-warning-border);
+}
+
+.payroll-reimbursement-page .status-approved {
+  background: var(--status-success-bg);
+  color: var(--status-success-text);
+  border: 1px solid var(--status-success-border);
+}
+
+.payroll-reimbursement-page .status-rejected {
+  background: var(--status-error-bg);
+  color: var(--status-error-text);
+  border: 1px solid var(--status-error-border);
+}
+
+.request-body {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.request-row {
+  display: flex;
+  gap: 1rem;
+  align-items: flex-end;
+}
+
+.request-row > div:first-child {
+  flex: 1;
+}
+
+.request-actions {
+  display: flex;
+  gap: 0.5rem;
+  padding-bottom: 0.25rem;
+}
+
+.payroll-reimbursement-page .action-btn-inline {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: none;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: all 0.2s;
+  flex-shrink: 0;
+}
+
+.payroll-reimbursement-page .action-approve-inline {
+  background: linear-gradient(135deg, var(--accent-green), #059669);
+  color: white;
+  box-shadow: 0 2px 8px rgba(16, 185, 129, 0.35);
+}
+
+.payroll-reimbursement-page .action-approve-inline:hover:not(:disabled) {
+  background: linear-gradient(135deg, #059669, #047857);
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(16, 185, 129, 0.45);
+}
+
+.payroll-reimbursement-page .action-reject-inline {
+  background: linear-gradient(135deg, var(--brand-red), var(--brand-red-dark));
+  color: white;
+  box-shadow: 0 2px 8px rgba(232, 53, 42, 0.35);
+}
+
+.payroll-reimbursement-page .action-reject-inline:hover:not(:disabled) {
+  background: linear-gradient(135deg, var(--brand-red-dark), #A8221A);
+  transform: scale(1.08);
+  box-shadow: 0 4px 14px rgba(232, 53, 42, 0.45);
+}
+
+.payroll-reimbursement-page .reimbursement-details-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1rem;
+  padding: 1rem;
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-md);
+  margin-bottom: 1rem;
+}
+
+.payroll-reimbursement-page .detail-item {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.payroll-reimbursement-page .detail-item-full {
+  grid-column: 1 / -1;
+}
+
+.payroll-reimbursement-page .detail-label {
+  font-size: var(--font-label);
+  font-weight: var(--font-label-weight);
+  color: var(--text-gray);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payroll-reimbursement-page .detail-value {
+  font-size: 1rem;
+  font-weight: 500;
+  color: var(--text-dark);
+}
+
+.payroll-reimbursement-page .receipt-link {
+  color: var(--brand-red);
+  text-decoration: none;
+  font-weight: 600;
+  transition: color 0.2s;
+}
+
+.payroll-reimbursement-page .receipt-link:hover {
+  color: var(--brand-red-dark);
+  text-decoration: underline;
+}
+
+.payroll-reimbursement-page .rejection-reason {
+  padding: 0.75rem 1rem;
+  background: var(--status-error-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-left: 3px solid var(--brand-red);
+  border-radius: var(--radius-md);
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin-bottom: 1rem;
+}
+
+.payroll-reimbursement-page .rejection-label {
+  font-size: var(--font-label);
+  font-weight: 700;
+  color: var(--brand-red-dark);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.payroll-reimbursement-page .rejection-text {
+  font-size: 1rem;
+  color: var(--text-dark);
+}
+
+.payroll-reimbursement-page .action-btn-inline:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.payroll-content {
+  padding: var(--space-empty-state-padding);
+  text-align: center;
+}
+
+.payroll-reimbursement-page .empty-state {
+  font-size: 1.1875rem;
+  color: var(--text-gray);
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .payroll-reimbursement-page .tab-buttons {
+    width: 100%;
+  }
+
+  .payroll-reimbursement-page .tab-btn {
+    flex: 1;
+    padding: 0.75rem 1rem;
+    font-size: 1rem;
+  }
+
+  .content-card {
+    padding: var(--space-card-padding-tablet);
+  }
+
+  .request-item {
+    padding: var(--space-item-padding-mobile);
+  }
+
+  .request-header {
+    flex-wrap: wrap;
+  }
+
+  .request-dates {
+    margin-left: 0;
+    width: 100%;
+  }
+
+  .request-row {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .request-actions {
+    justify-content: center;
+  }
+}
+
+/* ============ Payroll admin UI (pr-*) ============ */
+.pr-page-title {
+  font-size: var(--font-card-title);
+  font-weight: var(--font-card-title-weight);
+  color: var(--text-heading);
+  margin: 0 0 1.25rem;
+}
+
+.pr-tab { display: flex; flex-direction: column; }
+
+.pr-section-title {
+  font-size: var(--font-subsection-title);
+  font-weight: var(--font-subsection-title-weight);
+  color: var(--text-heading);
+  margin: 0 0 1rem;
+}
+.pr-mt { margin-top: 2rem; }
+
+.pr-form-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 0.5rem 1rem;
+  /* Top-aligned, not bottom: with end-alignment, a field whose error message
+     makes its wrapper taller than its row-mates got its whole box pushed
+     upward to keep bottoms level, so the boxes in a row went visibly uneven
+     the moment any one field showed a validation error. Aligning to the top
+     keeps every box level regardless of how tall an error message below it
+     grows — restored to end-alignment below for the Overtime filter row
+     (.pr-form-grid-3), which relies on it and has no error messages to worry
+     about. */
+  align-items: start;
+}
+
+/* Keep selects the same compact size as the text inputs in this form. */
+.pr-form-grid .select-wrapper {
+  margin-bottom: 1.25rem;
+}
+
+.pr-form-grid .select-field {
+  min-height: 42px;
+  padding: 0.6875rem 2.75rem 0.6875rem 0.875rem;
+}
+
+.pr-form-grid-3 { grid-template-columns: repeat(3, minmax(180px, 1fr)); }
+.pr-form-grid.pr-form-grid-3 { align-items: end; }
+
+.pr-inline-actions { display: flex; gap: 0.6rem; align-items: center; padding-bottom: 1.5rem; }
+.pr-form-actions { display: flex; justify-content: flex-end; margin-top: 0.5rem; }
+
+.pr-hint {
+  font-size: 0.875rem;
+  color: var(--text-gray);
+  margin: 0.25rem 0 1rem;
+  line-height: 1.5;
+}
+
+/* Cap the payroll records list so a long history scrolls inside its own box
+   instead of stretching the page. */
+.pr-list-scroll {
+  max-height: 560px;
+  overflow-y: auto;
+  padding-right: 6px;
+}
+
+.pr-historical-toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  margin: 0.85rem 0 0.35rem;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+.pr-historical-toggle input {
+  width: 16px;
+  height: 16px;
+  cursor: pointer;
+  accent-color: #e02424;
+}
+
+.pr-list { display: flex; flex-direction: column; gap: 1rem; }
+
+/* Payroll card */
+.pr-card {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 1.1rem 1.25rem;
+  box-shadow: var(--glass-shadow);
+}
+
+.pr-card-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 0.9rem;
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--glass-border);
+}
+
+.pr-emp { font-weight: 600; color: var(--text-heading); display: block; }
+.pr-period { font-size: 0.875rem; color: var(--text-gray); }
+
+.pr-head-right { display: flex; align-items: center; gap: 0.75rem; }
+.pr-net { font-size: 1.1875rem; font-weight: 700; color: var(--text-heading); }
+
+.pr-breakdown {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1.25rem;
+}
+@media (max-width: 560px) { .pr-breakdown { grid-template-columns: 1fr; } }
+
+.pr-col-title {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.pr-row {
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  padding: 0.3rem 0;
+  font-size: 0.9375rem;
+}
+.pr-row-label { color: var(--text-gray); }
+.pr-row-value { color: var(--text-heading); font-weight: 500; }
+.pr-row-highlight .pr-row-label,
+
+.pr-row-highlight .pr-row-value { color: var(--accent-green); font-weight: 600; }
+
+.pr-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 1rem;
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--glass-border);
+  flex-wrap: wrap;
+}
+
+.pr-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: 999px;
+  border: 1px solid var(--glass-border);
+  background: transparent;
+  color: var(--text-secondary);
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+.pr-btn-ghost:hover { border-color: var(--brand-red); color: var(--brand-red); }
+.pr-btn-primary {
+  background: linear-gradient(135deg, var(--brand-red), var(--brand-red-dark));
+  color: #fff; border-color: transparent;
+}
+.pr-btn-primary:hover { box-shadow: 0 4px 12px rgba(232, 53, 42, 0.35); transform: translateY(-1px); }
+.pr-btn-danger { color: #e5484d; border-color: rgba(229, 72, 77, 0.4); }
+.pr-btn-danger:hover { background: rgba(229, 72, 77, 0.1); }
+
+/* Overtime row */
+.pr-ot-row {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-lg);
+  padding: 0.85rem 1.1rem;
+  box-shadow: var(--glass-shadow);
+}
+.pr-ot-info { display: flex; flex-direction: column; min-width: 140px; }
+.pr-ot-hours { display: flex; flex-direction: column; gap: .15rem; font-size: 0.9375rem; color: var(--text-heading); font-weight: 600; flex: 1; }
+/* Neutral while it is only an estimate — green once it is actually on a payslip. */
+.pr-ot-pay { display: flex; flex-direction: column; align-items: flex-end; gap: .15rem; min-width: 110px; color: var(--text-heading); font-weight: 700; text-align: right; }
+.pr-ot-pay.is-paid { color: var(--accent-green); }
+.pr-ot-hours small, .pr-ot-pay small { color: var(--text-gray); font-size: 0.75rem; font-weight: 500; }
+.pr-ot-actions { display: flex; gap: 0.5rem; }
+
+.payroll-reimbursement-page .status-badge.status-rejected { background: var(--status-error-bg); color: var(--status-error-text); border: 1px solid var(--status-error-border); }
+
+@media (max-width: 560px) {
+  .pr-ot-row { flex-wrap: wrap; }
+  .pr-form-grid-3 { grid-template-columns: 1fr; }
+  .pr-inline-actions { padding-bottom: 0; }
+}
+
+/* Edit payslip dialog. Page-prefixed: page CSS is bundled globally. */
+.pr-edit-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay, 1000);
+  display: grid;
+  place-items: center;
+  padding: 1.25rem;
+  background: rgba(0, 0, 0, .45);
+}
+.pr-edit-dialog {
+  width: min(46rem, 100%);
+  max-height: 90vh;
+  overflow-y: auto;
+  padding: 1.35rem 1.5rem 1.5rem;
+  border: 1px solid var(--border-gray);
+  border-radius: 12px;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  box-shadow: 0 18px 48px rgba(0, 0, 0, .28);
+}
+.pr-edit-dialog > header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.pr-edit-dialog h3 { margin: 0; font-size: 1.125rem; }
+.pr-edit-dialog > header p { margin: .2rem 0 0; color: var(--text-gray); font-size: 0.8125rem; }
+.pr-edit-dialog > header button {
+  display: grid; place-items: center; width: 2rem; height: 2rem;
+  border: 0; border-radius: 6px; background: transparent; color: var(--text-gray); cursor: pointer;
+}
+.pr-edit-dialog > header button:hover { background: var(--bg-card-hover); color: var(--text-dark); }
+.pr-edit-note {
+  margin: .9rem 0 1.1rem;
+  padding: .6rem .7rem;
+  border: 1px solid var(--status-info-border);
+  border-radius: 6px;
+  background: var(--status-info-bg);
+  color: var(--status-info-text);
+  font-size: 0.8125rem;
+  line-height: 1.5;
+}
+.pr-edit-reason { display: flex; flex-direction: column; gap: .35rem; margin-top: 1rem; }
+.pr-edit-reason > span { color: var(--text-dark); font-size: 0.875rem; font-weight: 600; }
+.pr-edit-reason textarea {
+  width: 100%;
+  padding: .65rem .75rem;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+.pr-edit-reason textarea:focus-visible { outline: none; border-color: var(--brand-red); box-shadow: var(--glow-red); }
+.pr-edit-reason small { color: var(--text-gray); font-size: 0.75rem; }
+.pr-edit-error,
+.pr-form-error {
+  margin: .8rem 0 0;
+  padding: .55rem .7rem;
+  border: 1px solid var(--status-error-border);
+  border-radius: 6px;
+  background: var(--status-error-bg);
+  color: var(--status-error-text);
+  font-size: 0.8125rem;
+}
+.pr-edit-actions { display: flex; justify-content: flex-end; gap: .6rem; margin-top: 1.25rem; }
+
+/* Payroll Queries tab */
+.pr-tab-badge {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 1.25rem;
+  height: 1.25rem;
+  padding: 0 0.4rem;
+  border-radius: 999px;
+  background: var(--brand-red, #E8352A);
+  color: #fff;
+  font-size: 0.75rem;
+  font-weight: 700;
+  line-height: 1;
+}
+
+.pr-dispute-comment {
+  margin: 0 0 0.5rem;
+  font-size: 0.9375rem;
+  color: var(--text-dark);
+  line-height: 1.5;
+  white-space: pre-wrap;
+}
+
+.pr-dispute-attachment {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  font-size: 0.8125rem;
+  color: var(--brand-red, #E8352A);
+  text-decoration: none;
+}
+.pr-dispute-attachment:hover { text-decoration: underline; }
+
+.pr-dispute-response {
+  margin-top: 0.85rem;
+  padding: 0.7rem 0.9rem;
+  border-radius: 8px;
+  background: var(--glass-bg-strong, rgba(0, 0, 0, 0.03));
+  border: 1px solid var(--glass-border);
+}
+.pr-dispute-response span {
+  display: block;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  color: var(--text-muted);
+  margin-bottom: 0.3rem;
+}
+.pr-dispute-response p { margin: 0; font-size: 0.875rem; color: var(--text-dark); white-space: pre-wrap; }
+
+.pr-dispute-reply { margin-top: 0.85rem; }
+.pr-dispute-reply textarea {
+  width: 100%;
+  padding: .65rem .75rem;
+  border: 1px solid var(--input-border);
+  border-radius: 6px;
+  background: transparent;
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.875rem;
+  resize: vertical;
+}
+.pr-dispute-reply textarea:focus-visible { outline: none; border-color: var(--brand-red); box-shadow: var(--glow-red); }
+
+/* Tax is editable but its provenance matters: a pinned figure survives a
+   recompute, a calculated one does not. The note says which is in play. */
+.pr-tax-field { display: grid; gap: .35rem; }
+.pr-tax-note {
+  display: flex; align-items: center; flex-wrap: wrap; gap: .35rem;
+  margin: 0; font-size: .75rem; line-height: 1.4; color: var(--text-secondary);
+}
+.pr-tax-note button {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font-size: .75rem; font-weight: 600; color: var(--primary-color, #2563eb);
+  text-decoration: underline;
+}
+.pr-tax-note button:hover { opacity: .8; }
+
+/* A payslip that has been issued cannot be edited or deleted, so the row says
+   so rather than offering buttons the server will refuse. */
+.pr-locked {
+  display: inline-flex; align-items: center; gap: .3rem;
+  padding: .35rem .6rem; border-radius: var(--radius-md);
+  background: var(--status-neutral-bg); color: var(--text-secondary);
+  font-size: .72rem; font-weight: 700;
+}

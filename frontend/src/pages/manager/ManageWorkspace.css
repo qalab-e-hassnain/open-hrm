@@ -1,0 +1,718 @@
+/* Shared approval-workspace styles for Manage Leaves and Manage Reimbursements.
+   Every selector here is prefixed `ml-` (or scoped under .manage-leaves-page)
+   because Vite concatenates every page stylesheet into one global bundle, so a
+   bare single-class selector would be resolved by emit order and could end up
+   styling a different page.
+
+   Both pages import this file explicitly rather than relying on one page's
+   stylesheet happening to be in the bundle — that implicit coupling is how
+   PayrollSheet ended up depending on selectors it did not own. */
+
+/* Leave-type accent, declared in both themes. A var() pointing at a property
+   that does not exist invalidates the whole declaration, so the tint would
+   silently disappear rather than fall back. */
+:root {
+  --ml-leavetype-text: #1D4ED8;
+  --ml-leavetype-bg: rgba(59, 130, 246, 0.12);
+}
+
+[data-theme="dark"] {
+  --ml-leavetype-text: #93C5FD;
+  --ml-leavetype-bg: rgba(59, 130, 246, 0.18);
+}
+
+.manage-leaves-page,
+.manage-reimbursement-page {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  color: var(--text-heading);
+}
+
+.manage-leaves-loading,
+.manage-reimbursement-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.ml-toolbar {
+  display: flex;
+  justify-content: flex-end;
+  gap: .5rem;
+}
+
+.ml-toolbar-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  min-height: 34px;
+  padding: .45rem .8rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease;
+}
+
+.ml-toolbar-btn:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.ml-toolbar-btn:disabled { opacity: .55; cursor: not-allowed; }
+
+.ml-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  padding: .6rem .85rem;
+  border-radius: 5px;
+  font-size: 0.8125rem;
+}
+
+.ml-notice-success { background: rgba(22, 163, 74, .1); color: #15803d; }
+.ml-notice-error { background: rgba(192, 57, 43, .08); color: var(--brand-red-dark); }
+.ml-notice button {
+  display: inline-flex;
+  align-items: center;
+  border: 0;
+  background: transparent;
+  color: inherit;
+  font: inherit;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+/* ---- KPI row ---- */
+
+.ml-kpi-grid {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  gap: .8rem;
+}
+
+/* Leaves has 3 KPI cards (Reimbursement, sharing this same grid class, still
+   has 4) — a dedicated modifier rather than changing the shared rule, so
+   fixing one page's card count doesn't squeeze the other's. */
+.ml-kpi-grid-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
+
+.ml-kpi {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .75rem;
+  padding: .9rem 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+}
+
+.ml-kpi-icon {
+  width: 36px;
+  height: 36px;
+  flex: 0 0 36px;
+  display: grid;
+  place-items: center;
+  border-radius: 8px;
+  font-size: 1.125rem;
+}
+
+.ml-kpi-red { background: rgba(192, 57, 43, .1); color: var(--brand-red); }
+.ml-kpi-green { background: rgba(22, 163, 74, .1); color: #15803d; }
+.ml-kpi-blue { background: rgba(37, 99, 235, .09); color: #1d4ed8; }
+.ml-kpi-amber { background: rgba(217, 119, 6, .12); color: #b45309; }
+
+.ml-kpi > div { min-width: 0; display: flex; flex-direction: column; }
+.ml-kpi-label { color: var(--text-gray); font-size: 0.75rem; font-weight: 600; }
+.ml-kpi strong { color: var(--text-heading); font-size: 1.6875rem; line-height: 1.15; font-variant-numeric: tabular-nums; }
+.ml-kpi small { color: var(--text-muted); font-size: 0.75rem; }
+
+/* ---- Layout ---- */
+
+.ml-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(250px, 290px);
+  gap: 1rem;
+  align-items: start;
+}
+
+.ml-main { min-width: 0; display: flex; flex-direction: column; gap: .8rem; }
+
+/* ---- Filters ---- */
+
+.ml-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: .6rem;
+  padding: .85rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+}
+
+.ml-search {
+  flex: 1 1 220px;
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+  min-height: 38px;
+  padding: 0 .6rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-muted);
+}
+
+.ml-search:focus-within { border-color: var(--brand-red); box-shadow: var(--glow-red); }
+.ml-search input {
+  flex: 1;
+  min-width: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.8125rem;
+}
+.ml-search input:focus { outline: none; }
+.ml-search button {
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+
+.ml-field { display: flex; flex-direction: column; gap: .25rem; min-width: 0; }
+.ml-field > span { color: var(--text-gray); font-size: 0.75rem; font-weight: 600; }
+.ml-field select {
+  min-height: 38px;
+  min-width: 130px;
+  padding: 0 .55rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.8125rem;
+  cursor: pointer;
+}
+.ml-field select:focus { outline: none; border-color: var(--brand-red); box-shadow: var(--glow-red); }
+
+.ml-reset {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  min-height: 38px;
+  padding: 0 .75rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.ml-reset:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.ml-reset:disabled { opacity: .5; cursor: not-allowed; }
+
+.ml-custom-range { flex: 1 1 100%; display: flex; gap: .6rem; }
+.ml-custom-range label { display: flex; flex-direction: column; gap: .25rem; }
+.ml-custom-range span { color: var(--text-gray); font-size: 0.75rem; font-weight: 600; }
+.ml-custom-range input {
+  min-height: 38px;
+  padding: 0 .55rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.8125rem;
+  /* Without this the native date picker renders light-on-dark in dark mode. */
+  color-scheme: light dark;
+}
+
+/* ---- Request table ---- */
+
+.ml-table-wrap {
+  min-width: 0;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+}
+
+.ml-table-head,
+.ml-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1.7fr) minmax(0, 1.15fr) minmax(0, .7fr) minmax(0, .8fr) minmax(0, .75fr) minmax(0, 1.05fr) minmax(0, .8fr) minmax(0, 1.3fr);
+  align-items: center;
+  gap: .6rem;
+}
+
+.ml-table-head {
+  padding: .6rem .85rem;
+  border-bottom: 1px solid var(--border-light);
+  background: var(--bg-card-hover);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.ml-row-group { border-bottom: 1px solid var(--border-light); }
+.ml-row-group:last-child { border-bottom: 0; }
+.ml-row-group.is-expanded { background: var(--bg-card-hover); }
+
+/* A left edge marks a request whose dates clash with another one. */
+.ml-row-group.is-flagged { box-shadow: inset 3px 0 0 #d97706; }
+.ml-row-group.is-expanded.is-flagged { box-shadow: inset 3px 0 0 var(--brand-red); }
+
+.ml-row {
+  min-height: 62px;
+  padding: .6rem .85rem;
+  font-size: 0.8125rem;
+}
+
+.ml-cell { min-width: 0; display: flex; flex-direction: column; gap: .1rem; }
+.ml-cell strong { overflow: hidden; color: var(--text-heading); font-size: 0.8125rem; font-weight: 650; text-overflow: ellipsis; white-space: nowrap; }
+.ml-cell small { overflow: hidden; color: var(--text-muted); font-size: 0.75rem; text-overflow: ellipsis; white-space: nowrap; }
+
+.ml-cell-employee { min-width: 0; display: flex; align-items: center; gap: .55rem; }
+.ml-cell-employee > span { min-width: 0; display: flex; flex-direction: column; gap: .1rem; }
+.ml-cell-employee strong { overflow: hidden; color: var(--text-heading); font-size: 0.8125rem; text-overflow: ellipsis; white-space: nowrap; }
+.ml-cell-employee small { color: var(--text-muted); font-size: 0.75rem; }
+
+.ml-avatar {
+  width: 30px;
+  height: 30px;
+  flex: 0 0 30px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-style: normal;
+}
+
+.ml-type-badge {
+  width: fit-content;
+  margin-top: .1rem;
+  padding: .1rem .4rem;
+  border-radius: 3px;
+  background: var(--ml-leavetype-bg);
+  color: var(--ml-leavetype-text);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 650;
+}
+
+/* Overrides the .ml-cell small ellipsis/nowrap rule above — that rule is
+   right for a truncated name or date, but silently cutting a warning off
+   mid-word ("Overlaps another rec…") defeats the point of the warning. This
+   also gives it a filled pill instead of plain muted-colored text, so it
+   reads as an alert at a glance instead of blending into the metadata under
+   the date range. */
+.ml-flag {
+  display: inline-flex;
+  width: fit-content;
+  align-items: center;
+  gap: .25rem;
+  margin-top: .15rem;
+  padding: .1rem .4rem;
+  border-radius: 3px;
+  background: rgba(217, 119, 6, .14);
+  color: #b45309 !important;
+  font-weight: 700;
+  overflow: visible;
+  white-space: nowrap;
+  text-overflow: unset;
+}
+.ml-flag svg { flex: 0 0 auto; width: 11px; height: 11px; }
+
+.ml-badge {
+  max-width: 100%;
+  width: fit-content;
+  padding: .2rem .45rem;
+  border-radius: 3px;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-transform: uppercase;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Green only for a finished approval — a request still moving through the chain
+   stays amber, so colour never implies a decision that has not been made. */
+.ml-badge-approved { background: rgba(22, 163, 74, .12); color: #15803d; }
+.ml-badge-pending { background: rgba(217, 119, 6, .14); color: #b45309; }
+.ml-badge-rejected { background: rgba(192, 57, 43, .1); color: var(--brand-red-dark); }
+.ml-badge-neutral { background: rgba(120, 113, 108, .12); color: var(--text-gray); }
+
+.ml-actions-col { flex-direction: row !important; align-items: center; justify-content: flex-end; gap: .3rem; }
+
+.ml-icon-btn {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: border-color 140ms ease, background 140ms ease, color 140ms ease;
+}
+
+.ml-icon-btn:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.ml-icon-btn:disabled { opacity: .5; cursor: wait; }
+
+.ml-icon-approve { border-color: rgba(22, 163, 74, .4); background: rgba(22, 163, 74, .1); color: #15803d; }
+.ml-icon-approve:hover:not(:disabled) { border-color: #15803d; background: #16a34a; color: #fff; }
+.ml-icon-reject { border-color: rgba(192, 57, 43, .35); background: rgba(192, 57, 43, .08); color: var(--brand-red); }
+.ml-icon-reject:hover:not(:disabled) { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+
+.ml-chevron svg { transition: transform 160ms ease; }
+.ml-chevron.is-open svg { transform: rotate(90deg); }
+
+.ml-self-flag { flex: 0 0 auto; display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; color: #b45309; }
+.ml-self-flag svg { width: 16px; height: 16px; }
+.ml-self-note { justify-content: flex-start; margin: 0 0 .6rem; }
+
+/* ---- Expanded detail ---- */
+
+.ml-detail {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 1.2rem;
+  padding: .2rem 1rem 1rem 1.4rem;
+  border-top: 1px dashed var(--border-strong);
+}
+
+.ml-detail-left,
+.ml-detail-right { min-width: 0; display: flex; flex-direction: column; gap: .7rem; padding-top: .8rem; }
+
+.ml-detail-block { min-width: 0; }
+.ml-detail-label { display: block; margin-bottom: .25rem; color: var(--text-muted); font-size: 0.75rem; font-weight: 700; letter-spacing: .02em; text-transform: uppercase; }
+.ml-detail-label em { font-style: normal; font-weight: 600; text-transform: none; letter-spacing: 0; }
+.ml-detail p { margin: 0; color: var(--text-gray); font-size: 0.8125rem; line-height: 1.5; }
+.ml-muted { color: var(--text-muted) !important; }
+.ml-warning { display: flex; align-items: center; gap: .3rem; color: #b45309 !important; font-size: 0.75rem !important; }
+
+.ml-balance-chips { display: flex; flex-wrap: wrap; gap: .35rem; }
+.ml-chip {
+  padding: .22rem .5rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 999px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  font-size: 0.75rem;
+  font-weight: 600;
+}
+/* The type actually being requested is the one the approver needs to weigh. */
+.ml-chip-active { border-color: var(--brand-red); background: var(--brand-red-soft); color: var(--brand-red-dark); }
+
+.ml-doc-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  padding: .38rem .7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-heading);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.ml-doc-btn:hover { border-color: var(--brand-red); color: var(--brand-red); }
+
+.ml-note-field { display: flex; flex-direction: column; }
+.ml-note-field textarea {
+  width: 100%;
+  padding: .55rem .65rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.8125rem;
+  resize: vertical;
+}
+.ml-note-field textarea:focus { outline: none; border-color: var(--brand-red); box-shadow: var(--glow-red); }
+
+.ml-detail-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .45rem; }
+.ml-detail-actions button {
+  min-height: 36px;
+  padding: .45rem .9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-heading);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.ml-detail-actions button:disabled { opacity: .6; cursor: wait; }
+.ml-detail-actions .ml-approve { border-color: #15803d; background: #16a34a; color: #fff; }
+.ml-detail-actions .ml-reject { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+
+/* ---- Empty state ---- */
+
+.ml-empty {
+  min-height: 200px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .3rem;
+  padding: 1.5rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.ml-empty strong { color: var(--text-heading); font-size: 0.9375rem; }
+.ml-empty span { max-width: 320px; font-size: 0.75rem; line-height: 1.5; }
+.ml-empty button {
+  margin-top: .6rem;
+  padding: .4rem .8rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-heading);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+/* ---- Side panels ---- */
+
+.ml-side { display: flex; flex-direction: column; gap: .8rem; }
+
+.ml-panel {
+  padding: 1rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+}
+
+.ml-panel h3 {
+  margin: 0 0 .75rem;
+  padding-left: .5rem;
+  border-left: 3px solid var(--brand-red);
+  color: var(--text-heading);
+  font-size: 0.875rem;
+}
+
+.ml-panel > p { margin: 0; color: var(--text-muted); font-size: 0.75rem; }
+
+.ml-upcoming { display: flex; flex-direction: column; gap: .55rem; margin: 0; padding: 0; list-style: none; }
+.ml-upcoming li { display: flex; align-items: flex-start; gap: .55rem; }
+.ml-upcoming i {
+  width: 28px;
+  height: 28px;
+  flex: 0 0 28px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--ml-leavetype-bg);
+  color: var(--ml-leavetype-text);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-style: normal;
+}
+.ml-upcoming li > span { min-width: 0; display: flex; flex-direction: column; }
+.ml-upcoming strong { overflow: hidden; color: var(--text-heading); font-size: 0.8125rem; text-overflow: ellipsis; white-space: nowrap; }
+.ml-upcoming small { color: var(--text-muted); font-size: 0.75rem; }
+.ml-upcoming em {
+  width: fit-content;
+  margin-top: .18rem;
+  padding: .1rem .4rem;
+  border-radius: 3px;
+  background: var(--ml-leavetype-bg);
+  color: var(--ml-leavetype-text);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 650;
+}
+
+.ml-flow { display: flex; flex-direction: column; gap: 0; margin: 0; padding: 0; list-style: none; }
+.ml-flow li {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  padding-bottom: 1rem;
+}
+.ml-flow li:last-child { padding-bottom: 0; }
+/* Connector between steps. */
+.ml-flow li:not(:last-child)::after {
+  content: '';
+  position: absolute;
+  top: 26px;
+  left: 11px;
+  width: 1px;
+  height: calc(100% - 26px);
+  background: var(--border-strong);
+}
+.ml-flow i {
+  width: 23px;
+  height: 23px;
+  flex: 0 0 23px;
+  display: grid;
+  place-items: center;
+  border: 1px solid var(--border-strong);
+  border-radius: 50%;
+  background: var(--bg-white);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  font-style: normal;
+}
+.ml-flow li.is-current i { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+.ml-flow li.is-done i { border-color: #15803d; background: rgba(22, 163, 74, .12); color: #15803d; }
+.ml-flow li > span { min-width: 0; display: flex; flex-direction: column; }
+.ml-flow strong { color: var(--text-heading); font-size: 0.8125rem; }
+.ml-flow small { color: var(--text-muted); font-size: 0.75rem; line-height: 1.4; }
+.ml-flow em {
+  align-self: flex-start;
+  margin-left: auto;
+  padding: .12rem .4rem;
+  border-radius: 3px;
+  background: var(--brand-red-soft);
+  color: var(--brand-red-dark);
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 700;
+  white-space: nowrap;
+}
+
+.ml-flow-note {
+  display: flex;
+  align-items: flex-start;
+  gap: .35rem;
+  margin: .8rem 0 0;
+  padding-top: .7rem;
+  border-top: 1px solid var(--border-light);
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+/* ---- Document viewer ---- */
+
+.ml-doc-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: 1.5rem;
+  background: rgba(10, 10, 10, .55);
+}
+
+.ml-doc-viewer {
+  width: min(100%, 860px);
+  height: min(88vh, 780px);
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+}
+
+.ml-doc-viewer header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: .7rem .9rem;
+  border-bottom: 1px solid var(--border-light);
+  color: var(--text-heading);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.ml-doc-viewer header > span { display: inline-flex; align-items: center; gap: .4rem; min-width: 0; }
+.ml-doc-tools { flex: 0 0 auto; gap: .6rem !important; }
+.ml-doc-tools a { color: var(--brand-red); font-size: 0.75rem; font-weight: 650; text-decoration: none; }
+.ml-doc-tools a:hover { text-decoration: underline; text-underline-offset: 3px; }
+.ml-doc-tools button {
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  border: 1px solid var(--border-strong);
+  border-radius: 5px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  cursor: pointer;
+}
+.ml-doc-tools button:hover { border-color: var(--brand-red); color: var(--brand-red); }
+
+.ml-doc-viewer object { flex: 1; width: 100%; border: 0; background: var(--bg-page); }
+
+.ml-doc-fallback {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: .5rem;
+  color: var(--text-muted);
+  text-align: center;
+}
+.ml-doc-fallback > svg { font-size: 1.75rem; }
+.ml-doc-fallback p { margin: 0; font-size: 0.8125rem; }
+.ml-doc-fallback a { color: var(--brand-red); font-size: 0.8125rem; font-weight: 650; }
+
+.manage-leaves-page :where(a, button, select, textarea, input):focus-visible,
+.manage-reimbursement-page :where(a, button, select, textarea, input):focus-visible {
+  outline: 3px solid rgba(192, 57, 43, .25);
+  outline-offset: 2px;
+}
+
+/* ---- Responsive ---- */
+
+@media (max-width: 1200px) {
+  .ml-layout { grid-template-columns: 1fr; }
+  .ml-side { flex-direction: row; flex-wrap: wrap; }
+  .ml-side .ml-panel { flex: 1 1 260px; }
+}
+
+@media (max-width: 1080px) {
+  .ml-kpi-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  /* The grid table cannot compress further, so it scrolls sideways inside its
+     own container rather than making the page scroll. */
+  .ml-table-wrap { overflow-x: auto; }
+  .ml-table-head, .ml-row { min-width: 940px; }
+  .ml-detail { grid-template-columns: 1fr; }
+}
+
+@media (max-width: 640px) {
+  .ml-kpi-grid { grid-template-columns: 1fr; }
+  .ml-filters { flex-direction: column; align-items: stretch; }
+  /* .ml-search/.ml-custom-range's `flex: N N <length>` basis is a *width* in
+     the row layout above — switching the container to flex-direction:column
+     without resetting it turns that same length into a *height* instead (and
+     flex-grow:1 then stretches it to fill whatever vertical space is left),
+     producing a tall near-empty box instead of a normal search field. */
+  .ml-search,
+  .ml-custom-range { flex: 0 0 auto; width: 100%; }
+  .ml-field select { min-width: 0; width: 100%; }
+}

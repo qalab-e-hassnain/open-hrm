@@ -1,0 +1,73 @@
+.idt-page { padding: 1.5rem; max-width: 68rem; margin: 0 auto; }
+
+.idt-back {
+  display: inline-flex; align-items: center; gap: .3rem; margin-bottom: .8rem;
+  font-size: var(--font-subtitle); color: var(--text-secondary); text-decoration: none;
+}
+.idt-back:hover { color: var(--brand-red); }
+
+.idt-head {
+  display: flex; flex-wrap: wrap; justify-content: space-between; gap: .75rem;
+  margin-bottom: .9rem;
+}
+.idt-head h1 {
+  margin: .25rem 0 0; font-size: var(--font-page-title);
+  font-weight: var(--font-page-title-weight); color: var(--text-heading);
+}
+.idt-tag {
+  padding: .1rem .4rem; border-radius: var(--radius-md);
+  background: var(--status-neutral-bg); color: var(--text-secondary);
+  font-size: .78rem; letter-spacing: .03em;
+}
+.idt-sub { margin: .25rem 0 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.idt-chips { display: flex; flex-wrap: wrap; align-content: flex-start; gap: .35rem; }
+
+.idt-alert {
+  display: flex; align-items: flex-start; gap: .55rem;
+  padding: .7rem .85rem; margin-bottom: 1rem;
+  border-radius: var(--radius-md); font-size: var(--font-subtitle);
+}
+.idt-alert svg { flex: none; margin-top: .15rem; }
+.idt-alert-error { background: var(--status-error-bg); color: var(--status-error-text); }
+.idt-alert-ok { background: var(--status-success-bg); color: var(--status-success-text); }
+
+.idt-where { margin: 0 0 1rem; font-size: 1.05rem; font-weight: 600; color: var(--text-secondary); }
+
+.idt-actions { margin-bottom: 1.25rem; }
+
+.idt-columns {
+  display: grid; gap: 1rem;
+  grid-template-columns: repeat(auto-fit, minmax(19rem, 1fr));
+  align-items: start;
+}
+.idt-panel {
+  padding: 1rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg); background: var(--bg-white);
+}
+.idt-panel-head {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .5rem; margin-bottom: .75rem;
+}
+.idt-panel-head h2 { margin: 0; font-size: 1rem; color: var(--text-heading); }
+.idt-panel-tools { display: flex; gap: .4rem; }
+.idt-panel-tools .inv-btn { padding: .35rem .6rem; font-size: .82rem; }
+
+.idt-facts { margin: 0; display: flex; flex-direction: column; }
+.idt-row {
+  display: flex; flex-wrap: wrap; gap: .5rem; justify-content: space-between;
+  padding: .45rem 0; border-bottom: 1px dashed var(--border-gray);
+  font-size: var(--font-subtitle);
+}
+.idt-row:last-child { border-bottom: 0; }
+.idt-row dt { margin: 0; color: var(--text-gray); }
+.idt-row dd { margin: 0; color: var(--text-dark); text-align: right; word-break: break-word; }
+
+.idt-datasheet {
+  display: inline-flex; align-items: center; gap: .3rem; margin-top: .75rem;
+  font-size: var(--font-subtitle); color: var(--brand-red); text-decoration: none;
+}
+
+.idt-edit { display: grid; gap: .7rem; grid-template-columns: repeat(auto-fit, minmax(11rem, 1fr)); }
+.idt-edit-wide, .idt-edit-note, .idt-edit-foot { grid-column: 1 / -1; }
+.idt-edit-note { margin: 0; font-size: .8rem; color: var(--text-gray); }
+.idt-edit-foot { display: flex; justify-content: flex-end; gap: .5rem; }

@@ -1,0 +1,67 @@
+.tk-bar {
+  display: flex; align-items: center; gap: .75rem;
+  margin-bottom: 1rem; padding: .55rem .85rem;
+  border: 1px solid var(--border-gray); border-left: 3px solid var(--brand-red);
+  border-radius: var(--radius-lg); background: var(--bg-white);
+  overflow: hidden;
+}
+
+.tk-badge {
+  display: inline-flex; align-items: center; gap: .35rem; flex: none;
+  padding: .2rem .55rem; border-radius: var(--radius-full);
+  background: var(--brand-red); color: #fff;
+  font-size: .68rem; font-weight: 700; letter-spacing: .04em;
+  text-transform: uppercase; white-space: nowrap;
+}
+
+/* The window clips; the track is what moves. Masking both edges stops
+   messages appearing and vanishing at a hard line. */
+.tk-window {
+  position: relative; flex: 1; min-width: 0; overflow: hidden;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
+  mask-image: linear-gradient(90deg, transparent, #000 2rem, #000 calc(100% - 2rem), transparent);
+}
+
+.tk-track {
+  display: inline-flex; align-items: center; white-space: nowrap;
+  will-change: transform;
+  animation-name: tk-scroll;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+.tk-dup { display: inline-flex; align-items: center; }
+
+/* Exactly one copy's width, which is half the track. */
+@keyframes tk-scroll {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+
+/* Readable on the way past: stop it while somebody is actually looking. */
+.tk-bar:hover .tk-track,
+.tk-bar:focus-within .tk-track { animation-play-state: paused; }
+
+.tk-item {
+  display: inline-flex; align-items: baseline; gap: .45rem;
+  padding-right: 2.5rem; font-size: var(--font-subtitle);
+}
+.tk-item b { color: var(--text-primary); }
+.tk-text { color: var(--text-secondary); }
+/* A dot between notices, so two run-on sentences do not read as one. */
+.tk-item::after {
+  content: '•'; margin-left: 2.5rem;
+  color: var(--border-gray); font-weight: 700;
+}
+
+@media (max-width: 640px) {
+  .tk-badge span { display: none; }
+  .tk-item { font-size: .8rem; }
+}
+
+/* Motion that cannot be stopped is a problem for anyone who has asked for
+   less of it. They get a strip they can scroll themselves instead. */
+@media (prefers-reduced-motion: reduce) {
+  .tk-track { animation: none; }
+  .tk-window { overflow-x: auto; -webkit-mask-image: none; mask-image: none; }
+  .tk-dup { display: none; }
+}

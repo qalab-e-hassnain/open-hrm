@@ -1,0 +1,31 @@
+.ah-card {
+  margin-top: 1rem; padding: .9rem 1rem;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-lg);
+  background: var(--bg-subtle, #f8fafc);
+}
+.ah-card h4 {
+  display: flex; align-items: center; gap: .4rem; margin: 0 0 .6rem;
+  font-size: .85rem; color: var(--text-heading);
+}
+.ah-card ul { margin: 0; padding: 0; list-style: none; }
+.ah-card li {
+  display: flex; flex-direction: column; padding: .4rem 0;
+  border-bottom: 1px solid var(--border-light, #f1f5f9);
+}
+.ah-card li:last-child { border-bottom: 0; }
+.ah-name {
+  display: flex; align-items: center; gap: .4rem; flex-wrap: wrap;
+  font-size: var(--font-subtitle); font-weight: 600; color: var(--text-primary);
+}
+.ah-name code {
+  padding: .1rem .35rem; border-radius: var(--radius-sm, 4px);
+  background: var(--status-neutral-bg); color: var(--text-secondary);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .72rem; font-weight: 400;
+}
+.ah-card small { font-size: .74rem; color: var(--text-secondary); }
+.ah-note { margin: .6rem 0 0; font-size: .74rem; color: var(--text-secondary); }
+
+/* Overdue is the server's own flag, not a date compared in the browser. */
+.ah-card li.ah-overdue { border-left: 2px solid var(--status-error-text); padding-left: .5rem; }
+.ah-card .ah-name a { color: inherit; text-decoration: none; }
+.ah-card .ah-name a:hover { text-decoration: underline; }

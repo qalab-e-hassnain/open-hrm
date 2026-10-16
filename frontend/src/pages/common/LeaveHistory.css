@@ -1,0 +1,667 @@
+:root {
+  --lh-card-hover-border: #F3D4D4;
+  --lh-avatar-bg: #F3D4D4;
+  --lh-status-pending-bg: #FEF3C7;
+  --lh-status-pending-text: #92400E;
+  --lh-status-manager-bg: #DBEAFE;
+  --lh-status-manager-text: #1E40AF;
+  --lh-status-approved-bg: #D1FAE5;
+  --lh-status-approved-text: #065F46;
+  --lh-status-rejected-bg: #FEE2E2;
+  --lh-status-rejected-text: #991B1B;
+  --lh-status-cancelled-bg: #F3F4F6;
+  --lh-status-cancelled-text: #4B5563;
+  --lh-rejection-red: #DC2626;
+  --lh-toggle-bg: rgba(31, 41, 55, 0.06);
+  /* Reason panel tint — brand-soft, kept as a token so dark mode can lighten it
+     rather than inheriting an unreadable wash. */
+  --lh-reason-bg: rgba(192, 57, 43, 0.045);
+}
+
+[data-theme="dark"] {
+  --lh-card-hover-border: rgba(232, 53, 42, 0.35);
+  --lh-avatar-bg: rgba(232, 53, 42, 0.22);
+  --lh-status-pending-bg: rgba(245, 158, 11, 0.18);
+  --lh-status-pending-text: #FCD34D;
+  --lh-status-manager-bg: rgba(59, 130, 246, 0.18);
+  --lh-status-manager-text: #93C5FD;
+  --lh-status-approved-bg: rgba(16, 185, 129, 0.18);
+  --lh-status-approved-text: #6EE7B7;
+  --lh-status-rejected-bg: rgba(239, 68, 68, 0.18);
+  --lh-status-rejected-text: #FCA5A5;
+  --lh-status-cancelled-bg: rgba(255, 255, 255, 0.08);
+  --lh-status-cancelled-text: #D1D5DB;
+  --lh-rejection-red: #F87171;
+  --lh-toggle-bg: rgba(255, 255, 255, 0.06);
+  --lh-reason-bg: rgba(255, 255, 255, 0.04);
+}
+
+.leave-history-page {
+  width: 100%;
+  max-width: var(--content-max-width);
+  margin: 0 auto;
+}
+
+.leave-history-loading {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.leave-history-card {
+  padding: var(--space-card-padding);
+}
+
+.leave-history-page .page-header {
+  margin-bottom: var(--space-header-gap);
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.leave-history-page .page-title {
+  font-size: var(--font-page-title);
+  font-weight: var(--font-page-title-weight);
+  color: var(--text-dark);
+  margin: 0 0 0.5rem 0;
+}
+
+.leave-history-page .page-subtitle {
+  font-size: var(--font-subtitle);
+  color: var(--text-gray);
+  margin: 0;
+}
+
+.lh-scope-row {
+  display: flex;
+  padding-bottom: .85rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.lh-segmented {
+  display: flex;
+  padding: .2rem;
+  border: 1px solid var(--border-light);
+  border-radius: .45rem;
+  background: var(--bg-card-hover);
+}
+
+.lh-segmented button {
+  position: relative;
+  min-height: 2.4rem;
+  display: flex;
+  align-items: center;
+  gap: .4rem;
+  padding: 0 1rem;
+  border: 0;
+  border-radius: .3rem;
+  background: transparent;
+  color: var(--text-gray);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.lh-segmented button.active {
+  background: var(--bg-white);
+  color: var(--text-dark);
+}
+
+.lh-segmented button.active::after {
+  content: "";
+  position: absolute;
+  right: .65rem;
+  bottom: -.2rem;
+  left: .65rem;
+  height: 2px;
+  border-radius: 2px;
+  background: var(--brand-red);
+}
+
+@media (max-width: 480px) {
+  .lh-segmented { width: 100%; }
+  .lh-segmented button { flex: 1; justify-content: center; }
+}
+
+.history-filters {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 1.5rem;
+  margin-bottom: 2rem;
+  --select-label-float: var(--accent-red);
+}
+
+/* Employee/Status row sits above the toggle,
+ so tighten its bottom gap */
+.lh-top-filters {
+  margin-bottom: 1.25rem;
+}
+
+.lh-date-filters {
+  margin-bottom: 1.5rem;
+}
+
+/* Date-filter mode toggle + result count bar */
+.lh-filter-bar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.25rem;
+}
+
+.lh-filter-toggle {
+  display: flex;
+  background: var(--lh-toggle-bg);
+  border-radius: 10px;
+  padding: 3px;
+  width: fit-content;
+}
+
+.lh-toggle-btn {
+  padding: 0.45rem 1.25rem;
+  border: none;
+  background: transparent;
+  border-radius: 8px;
+  font-size: 0.9375rem;
+  font-weight: 500;
+  color: var(--text-gray);
+  cursor: pointer;
+  transition: all 0.15s ease;
+  font-family: inherit;
+}
+
+.lh-toggle-active {
+  background: linear-gradient(135deg, var(--brand-red, #E8352A), var(--brand-red-dark, #C42B22));
+  color: #ffffff;
+  box-shadow: 0 2px 8px rgba(232, 53, 42, 0.35);
+}
+
+.lh-filter-count {
+  font-size: 0.9375rem;
+  font-weight: 600;
+  color: var(--text-gray);
+  white-space: nowrap;
+}
+
+.history-filters .input-label,
+
+.history-filters .select-label {
+  color: var(--text-gray);
+}
+
+.history-filters .input-field:focus + .input-label,
+
+.history-filters .input-field:not(:placeholder-shown) + .input-label,
+
+.history-filters input[type="date"] + .input-label {
+  color: var(--accent-red);
+}
+
+.history-filters input[type="date"] + .input-label {
+  top: 0;
+  transform: translateY(-50%) scale(0.85);
+  background-color: var(--bg-white);
+  font-weight: 600;
+}
+
+/* Capped height + internal scroll so a long history doesn't stretch the whole
+   page; only the list scrolls while the filters above stay put. */
+/* The list scrolls inside itself so a long history does not stretch the page.
+   Sized in vh rather than a fixed pixel height so it adapts to the window and
+   still shows two or three of these taller cards at a time. */
+.leaves-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  max-height: 68vh;
+  min-height: 18rem;
+  overflow-y: auto;
+  /* Room for the scrollbar so it never sits on top of a card's border. */
+  padding-right: .5rem;
+}
+
+.leaves-history-list::-webkit-scrollbar {
+  width: 8px;
+}
+
+.leaves-history-list::-webkit-scrollbar-thumb {
+  background: var(--lh-toggle-bg);
+  border-radius: 8px;
+}
+
+/* A record card: identity header, a divided row of facts, the reason, then a
+   tinted footer strip carrying the approval trail. */
+.leave-history-item {
+  /* A flex item shrinks by default. Inside the capped, scrolling list that let
+     every card be squashed to fit — and `overflow: hidden` then cut the leave
+     type and footer off. Holding its natural height is also what gives the list
+     something to scroll. */
+  flex: 0 0 auto;
+  overflow: hidden;
+  border: 1px solid var(--border-light);
+  border-radius: 14px;
+  background: var(--bg-white);
+  transition: border-color .18s ease, box-shadow .18s ease;
+}
+
+.leave-history-item:hover {
+  border-color: var(--lh-card-hover-border);
+  box-shadow: 0 6px 20px rgba(31, 41, 55, .07);
+}
+
+.leave-history-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 1rem;
+  padding: 1.15rem 1.25rem 1rem;
+  border-bottom: 1px solid var(--border-light);
+}
+
+.leave-history-employee {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .9rem;
+}
+
+.leave-avatar {
+  width: 52px;
+  height: 52px;
+  flex: 0 0 52px;
+  display: grid;
+  place-items: center;
+  border-radius: 50%;
+  background: var(--lh-avatar-bg);
+  color: var(--brand-red-dark);
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+}
+
+.leave-employee-details {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.4rem;
+}
+
+.leave-history-page .leave-employee-name {
+  overflow: hidden;
+  color: var(--text-heading);
+  font-size: 1.1875rem;
+  font-weight: 700;
+  letter-spacing: -.015em;
+  text-overflow: ellipsis;
+}
+
+.leave-type {
+  display: inline-block;
+  width: fit-content;
+  padding: 0.22rem 0.6rem;
+  border-radius: 6px;
+  background: var(--lh-status-pending-bg);
+  color: var(--lh-status-pending-text);
+  font-size: 0.8125rem;
+  font-weight: 650;
+}
+
+.leave-history-page .status-badge {
+  flex: 0 0 auto;
+  display: inline-flex;
+  align-items: center;
+  gap: .4rem;
+  padding: 0.45rem 0.9rem;
+  border-radius: var(--radius-full);
+  font-size: 0.875rem;
+  font-weight: 650;
+  letter-spacing: 0;
+  text-transform: none;
+  white-space: nowrap;
+}
+
+.leave-history-page .status-badge svg { flex: 0 0 auto; font-size: 1.0625rem; }
+
+.leave-history-page .status-pending {
+  background: var(--lh-status-pending-bg);
+  color: var(--lh-status-pending-text);
+}
+
+.status-manager-approved {
+  background: var(--lh-status-manager-bg);
+  color: var(--lh-status-manager-text);
+}
+
+.leave-history-page .status-approved {
+  background: var(--lh-status-approved-bg);
+  color: var(--lh-status-approved-text);
+}
+
+.leave-history-page .status-rejected {
+  background: var(--lh-status-rejected-bg);
+  color: var(--lh-status-rejected-text);
+}
+
+.status-cancelled {
+  background: var(--lh-status-cancelled-bg);
+  color: var(--lh-status-cancelled-text);
+}
+
+.leave-history-body {
+  display: flex;
+  flex-direction: column;
+}
+
+/* Four facts across, separated by hairlines rather than boxes — the row reads as
+   one band of information instead of four nested cards. */
+.leave-dates-info {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  padding: 1.05rem 1.25rem;
+}
+
+.date-item {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  gap: .6rem;
+  padding: 0 1rem;
+  border-left: 1px solid var(--border-light);
+}
+
+.date-item:first-child { padding-left: 0; border-left: 0; }
+
+.date-icon {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  color: var(--brand-red);
+  font-size: 1.125rem;
+}
+
+.date-copy { min-width: 0; display: flex; flex-direction: column; gap: .15rem; }
+
+.date-label {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.date-value {
+  overflow: hidden;
+  color: var(--text-heading);
+  font-size: 1rem;
+  font-weight: 700;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+/* Tinted panel, brand-soft rather than grey, so the employee's own words are the
+   most legible block on the card. */
+.leave-reason {
+  display: flex;
+  align-items: flex-start;
+  gap: .6rem;
+  margin: 0 1.25rem 1.15rem;
+  padding: .85rem 1rem;
+  border-radius: 10px;
+  background: var(--lh-reason-bg);
+}
+
+/* Scoped: ReimbursementHistory.css declares the same two class names for its own
+   description panel, and an unscoped rule would be settled by bundle emit order. */
+.leave-history-page .reason-icon { flex: 0 0 auto; display: grid; place-items: center; margin-top: .1rem; color: var(--text-muted); font-size: 1.0625rem; }
+.leave-history-page .reason-copy { min-width: 0; display: flex; flex-direction: column; gap: .15rem; }
+
+.leave-history-page .reason-label {
+  color: var(--text-muted);
+  font-size: 0.875rem;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+
+.leave-history-page .reason-text {
+  color: var(--text-heading);
+  font-size: 1rem;
+  font-weight: 500;
+  line-height: 1.55;
+  overflow-wrap: anywhere;
+}
+
+/* Rejection reason styling - displayed when leave is rejected */
+/* Inset to match the reason panel, since the card body itself is unpadded. */
+.leave-rejection-reason {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+  margin: 0 1.25rem 1.15rem;
+  padding: 0.85rem 1rem;
+  border-left: 3px solid var(--lh-rejection-red);
+  border-radius: 8px;
+  background: var(--lh-status-rejected-bg);
+}
+
+.leave-history-page .rejection-label {
+  font-size: var(--font-label);
+  font-weight: 700;
+  color: var(--lh-rejection-red);
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.leave-history-page .rejection-text {
+  font-size: 1rem;
+  color: var(--text-dark);
+  line-height: 1.5;
+}
+
+.leave-meta {
+  min-width: 0;
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: .3rem 0;
+  color: var(--text-gray);
+  font-size: 0.875rem;
+}
+
+/* Trail entries are divided by a hairline rather than a bullet, matching the
+   column dividers above. */
+.lh-meta-item { display: inline-flex; align-items: center; gap: .4rem; padding: 0 .85rem; border-left: 1px solid var(--border-strong); }
+.lh-meta-item:first-child { padding-left: 0; border-left: 0; }
+.lh-meta-item svg { flex: 0 0 auto; color: var(--text-muted); font-size: 1rem; }
+.lh-meta-item strong { color: var(--text-heading); font-weight: 650; }
+
+/* Footer strip: the approval trail plus the admin's delete action, tinted so it
+   reads as metadata rather than part of the record itself. */
+.leave-history-footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  flex-wrap: wrap;
+  padding: .8rem 1.25rem;
+  border-top: 1px solid var(--border-light);
+  background: var(--bg-card-hover);
+}
+
+.lh-footer-actions {
+  display: flex;
+  align-items: center;
+  gap: .5rem;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+}
+
+.lh-cancel-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: .35rem;
+  flex: 0 0 auto;
+  padding: .35rem .7rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-white);
+  color: var(--text-gray);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  cursor: pointer;
+  transition: border-color 150ms ease, color 150ms ease, background 150ms ease;
+}
+
+/* Destructive, so it only takes on the brand red on intent, not at rest. */
+.lh-cancel-btn:hover {
+  border-color: var(--brand-red);
+  background: var(--brand-red-soft);
+  color: var(--brand-red-dark);
+}
+
+.lh-notice {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  padding: .6rem .8rem;
+  border-radius: 5px;
+  font-size: 0.8125rem;
+}
+
+.lh-notice-success { background: rgba(22, 163, 74, .1); color: #15803d; }
+.lh-notice-error { background: rgba(192, 57, 43, .08); color: var(--brand-red-dark); }
+.lh-notice button { display: grid; place-items: center; border: 0; background: transparent; color: inherit; cursor: pointer; }
+
+.lh-confirm-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(10, 10, 10, .45);
+}
+
+.lh-confirm {
+  width: min(100%, 420px);
+  padding: 1.4rem;
+  border: 1px solid var(--border-light);
+  border-radius: 8px;
+  background: var(--bg-white);
+  text-align: center;
+}
+
+.lh-confirm > svg { margin-bottom: .6rem; font-size: 1.625rem; color: var(--brand-red); }
+.lh-confirm h3 { margin: 0 0 .5rem; color: var(--text-heading); font-size: 1rem; }
+.lh-confirm p { margin: 0 0 .4rem; color: var(--text-gray); font-size: 0.875rem; line-height: 1.5; }
+.lh-confirm strong { color: var(--text-heading); }
+.lh-confirm-note { color: var(--text-muted) !important; font-size: 0.75rem !important; }
+
+.lh-confirm footer {
+  display: flex;
+  justify-content: center;
+  gap: .5rem;
+  margin-top: 1.1rem;
+}
+
+.lh-confirm footer button {
+  min-height: 36px;
+  padding: .5rem .9rem;
+  border: 1px solid var(--border-strong);
+  border-radius: 4px;
+  background: var(--bg-white);
+  color: var(--text-heading);
+  font: inherit;
+  font-size: 0.8125rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+.lh-confirm footer button:disabled { opacity: .6; cursor: wait; }
+
+.lh-confirm-danger {
+  border-color: var(--brand-red) !important;
+  background: var(--brand-red) !important;
+  color: #fff !important;
+}
+
+.lh-confirm-danger:hover { background: var(--brand-red-dark) !important; }
+
+.leave-history-page .empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-empty-state-padding);
+  color: var(--text-gray);
+  text-align: center;
+}
+
+.leave-history-page .empty-state svg {
+  margin-bottom: 1rem;
+  opacity: 0.5;
+}
+
+.leave-history-page .empty-state p {
+  font-size: 1.1875rem;
+  margin: 0;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .leave-history-card {
+    padding: var(--space-card-padding-tablet);
+  }
+
+  .history-filters {
+    grid-template-columns: 1fr;
+  }
+
+  .leave-history-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 1rem;
+  }
+
+  /* Stacked: the vertical dividers become horizontal ones so each fact still
+     reads as a separate line. */
+  .leave-dates-info {
+    grid-template-columns: 1fr;
+    gap: .8rem;
+  }
+
+  .date-item {
+    padding: 0;
+    border-left: 0;
+  }
+
+  .lh-meta-item {
+    padding: 0;
+    border-left: 0;
+  }
+
+  .leave-meta {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: .35rem;
+  }
+}
+
+@media (max-width: 1080px) and (min-width: 769px) {
+  /* Two-by-two before stacking, so values are never squeezed to an ellipsis. */
+  .leave-dates-info {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: .9rem 0;
+  }
+
+  .date-item:nth-child(3) { padding-left: 0; border-left: 0; }
+}
+

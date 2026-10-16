@@ -1,0 +1,199 @@
+.aw-page { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
+
+.aw-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.25rem;
+}
+.aw-head h1 {
+  margin: 0 0 .25rem;
+  font-size: var(--font-page-title); font-weight: var(--font-page-title-weight);
+  color: var(--text-heading);
+}
+.aw-head p { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+
+.aw-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .5rem .9rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.aw-btn-primary { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+.aw-btn-primary:hover:not(:disabled) { filter: brightness(.94); }
+.aw-btn:disabled, .aw-btn-primary:disabled { opacity: .55; cursor: not-allowed; }
+
+.aw-alert {
+  display: flex; align-items: flex-start; gap: .55rem; padding: .75rem .9rem; margin-bottom: 1rem;
+  border-radius: var(--radius-md); font-size: var(--font-subtitle);
+}
+.aw-alert svg { flex: none; margin-top: .1rem; }
+.aw-alert-error { background: var(--status-error-bg); color: var(--status-error-text); }
+.aw-alert-ok { background: var(--status-success-bg); color: var(--status-success-text); }
+
+.aw-empty {
+  display: flex; flex-direction: column; align-items: center; gap: .5rem;
+  padding: 2.5rem 1rem; border: 1px dashed var(--border-gray); border-radius: var(--radius-lg);
+  color: var(--text-secondary); font-size: var(--font-subtitle);
+}
+.aw-empty svg { font-size: 1.6rem; opacity: .6; }
+.aw-empty p { margin: 0; }
+
+.aw-open {
+  padding: 1.1rem 1.2rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg); background: var(--bg-white);
+}
+.aw-open-head { display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.aw-open h2 { margin: 0 0 .15rem; font-size: 1.05rem; color: var(--text-heading); }
+.aw-open-head p { margin: 0; font-size: .78rem; color: var(--text-secondary); }
+
+.aw-hidden {
+  display: flex; align-items: center; gap: .45rem;
+  margin: .9rem 0 0; padding: .55rem .75rem; border-radius: var(--radius-md);
+  background: var(--status-neutral-bg); color: var(--text-secondary); font-size: .78rem;
+}
+
+.aw-form { display: flex; flex-direction: column; gap: .75rem; margin-top: 1rem; }
+.aw-form label, .aw-field {
+  display: flex; flex-direction: column; gap: .25rem;
+  font-size: var(--font-subtitle); font-weight: 600; color: var(--text-primary);
+}
+.aw-form select, .aw-form textarea, .aw-field textarea {
+  padding: .55rem .7rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  font: inherit; font-weight: 400; color: var(--text-primary); background: var(--bg-white); resize: vertical;
+}
+.aw-form small, .aw-field small { font-weight: 400; font-size: .72rem; color: var(--text-secondary); }
+.aw-form small.is-short { color: var(--brand-red); }
+.aw-form button { align-self: flex-start; }
+
+.aw-mine { margin-top: 1.1rem; padding-top: .9rem; border-top: 1px solid var(--border-gray); }
+.aw-mine h3 {
+  margin: 0 0 .5rem; font-size: .7rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-secondary);
+}
+.aw-mine-row {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem;
+  padding: .55rem .7rem; border-radius: var(--radius-md); background: var(--bg-subtle, #f8fafc);
+  margin-bottom: .4rem;
+}
+.aw-mine-row strong { font-size: var(--font-subtitle); color: var(--text-primary); }
+.aw-mine-row p { margin: .15rem 0 0; font-size: .76rem; color: var(--text-secondary); }
+.aw-mine-row button { flex: none; border: 0; background: transparent; color: var(--text-secondary); cursor: pointer; padding: .2rem; }
+
+.aw-past { margin-top: 1.75rem; }
+.aw-past h2 { margin: 0 0 .75rem; font-size: 1rem; color: var(--text-heading); }
+.aw-past-list { display: grid; grid-template-columns: repeat(auto-fill, minmax(17rem, 1fr)); gap: .75rem; }
+.aw-winner {
+  padding: .8rem .95rem; border: 1px solid var(--border-gray);
+  border-left: 3px solid #d97706; border-radius: var(--radius-lg); background: var(--bg-white);
+}
+.aw-winner.is-none { border-left-color: var(--border-gray); }
+.aw-winner-head { display: flex; flex-direction: column; gap: .1rem; }
+.aw-month { font-size: .68rem; font-weight: 700; letter-spacing: .05em; text-transform: uppercase; color: var(--text-secondary); }
+.aw-winner strong { display: flex; align-items: center; gap: .3rem; font-size: .95rem; color: var(--text-heading); }
+.aw-winner strong svg { color: #d97706; }
+.aw-noaward { color: var(--text-secondary) !important; font-weight: 600; font-size: .85rem !important; }
+.aw-winner p { margin: .4rem 0 0; font-size: .78rem; color: var(--text-secondary); }
+
+.aw-overlay {
+  position: fixed; inset: 0; z-index: 70;
+  /* Centred and NOT scrollable. It used to scroll, which is what carried the
+     dialog's header — its title and close button — up off the top of the
+     screen once the table had a full team in it. The dialog now fits the
+     viewport and scrolls inside itself instead. */
+  display: flex; align-items: center; justify-content: center;
+  padding: 1.5rem 1rem; background: rgba(15, 23, 42, .5);
+}
+.aw-dialog {
+  width: min(56rem, 100%);
+  max-height: 100%;
+  display: flex; flex-direction: column;
+  padding: 1.35rem; border-radius: var(--radius-lg); background: var(--bg-white);
+  overflow: hidden;
+}
+/* Header and footer are fixed; everything between them scrolls. */
+.aw-dialog > header { flex: none; padding-bottom: 1rem; }
+.aw-dialog-body {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 1rem;
+  /* Room for the scrollbar so it never sits on the content. */
+  padding-right: .25rem;
+}
+/* Nothing in here may be squeezed: this is a column of flex items, so by
+   default each one shrinks to help the column fit. The candidates table
+   scrolls sideways, which gives it a minimum height of zero — so once a full
+   team loaded, it was flattened out of existence and the dialog opened on
+   the nominations. The body scrolls; its sections keep their own height. */
+.aw-dialog-body > * { flex: 0 0 auto; }
+.aw-dialog > footer { flex: none; padding-top: 1rem; border-top: 1px solid var(--border-light, #f1f5f9); }
+.aw-dialog header { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; }
+.aw-dialog h2 { margin: 0 0 .15rem; font-size: 1.1rem; color: var(--text-heading); }
+.aw-dialog header p { margin: 0; font-size: .78rem; color: var(--text-secondary); }
+.aw-dialog header button { padding: .3rem; border: 0; background: transparent; color: var(--text-secondary); cursor: pointer; font-size: 1.1rem; }
+
+.aw-table-wrap { overflow-x: auto; border: 1px solid var(--border-gray); border-radius: var(--radius-md); }
+.aw-table { width: 100%; border-collapse: collapse; font-size: .78rem; }
+.aw-table th {
+  padding: .5rem .6rem; text-align: left; background: var(--bg-subtle, #f8fafc);
+  color: var(--text-secondary); font-size: .66rem; font-weight: 700;
+  letter-spacing: .04em; text-transform: uppercase; white-space: nowrap;
+  border-bottom: 1px solid var(--border-gray);
+}
+.aw-table td { padding: .5rem .6rem; border-bottom: 1px solid var(--border-light, #f1f5f9); vertical-align: middle; }
+.aw-table tr:last-child td { border-bottom: 0; }
+.aw-table tr.is-picked { background: var(--status-warning-bg); }
+.aw-table strong { display: block; color: var(--text-primary); }
+.aw-table small { display: block; font-size: .68rem; color: var(--text-secondary); }
+.aw-strong { font-weight: 700; color: var(--brand-red); }
+.aw-warn { color: #b45309; font-weight: 600; }
+
+.aw-reasons { padding: .7rem .85rem; border-radius: var(--radius-md); background: var(--bg-subtle, #f8fafc); }
+.aw-reasons h3 {
+  margin: 0 0 .4rem; font-size: .68rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-secondary);
+}
+.aw-reasons p { margin: 0 0 .35rem; font-size: .78rem; color: var(--text-primary); }
+.aw-reasons span { color: var(--text-secondary); }
+
+/* One block per nominee, so a count in the table above can be read as the
+   people behind it. */
+.aw-nominee { padding: .45rem 0; border-top: 1px solid var(--border-light, var(--border-gray)); }
+.aw-nominee:first-of-type { border-top: 0; }
+.aw-nominee.is-picked { background: var(--status-success-bg, #ecfdf5); border-radius: var(--radius-sm); padding-inline: .5rem; }
+.aw-nominee h4 {
+  display: flex; align-items: baseline; gap: .5rem; margin: 0 0 .25rem;
+  font-size: .82rem; font-weight: 700; color: var(--text-primary);
+}
+.aw-nominee h4 span {
+  font-size: .68rem; font-weight: 600; letter-spacing: .04em;
+  text-transform: uppercase; color: var(--text-secondary);
+}
+.aw-by { font-weight: 600; color: var(--text-primary); }
+
+/* Loading, failure and genuinely-empty all look different now. */
+.aw-table-state { padding: .9rem .75rem; text-align: center; font-size: .8rem; color: var(--text-secondary); }
+.aw-retry {
+  border: 0; background: none; padding: 0; cursor: pointer;
+  font: inherit; font-weight: 700; color: var(--brand-red); text-decoration: underline;
+}
+
+.aw-field em {
+  margin-left: .35rem; padding: .08rem .35rem; border-radius: var(--radius-full);
+  background: var(--status-error-bg); color: var(--status-error-text);
+  font-size: .6rem; font-style: normal; font-weight: 700;
+}
+.aw-check { display: flex; align-items: flex-start; gap: .55rem; font-size: var(--font-subtitle); }
+.aw-check input { margin-top: .2rem; }
+.aw-check span { display: flex; flex-direction: column; }
+.aw-check small { font-size: .72rem; color: var(--text-secondary); }
+
+.aw-dialog footer { display: flex; justify-content: flex-end; gap: .5rem; }
+@media (max-height: 560px) { .aw-dialog { max-height: 100%; } }
+.aw-dialog footer button {
+  padding: .55rem 1rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-secondary); font: inherit; font-weight: 600; cursor: pointer;
+}
+.aw-dialog footer .aw-btn-primary { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+
+@media (max-width: 640px) {
+  .aw-page { padding: 1rem; }
+  .aw-past-list { grid-template-columns: 1fr; }
+}

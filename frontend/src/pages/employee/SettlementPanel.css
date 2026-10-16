@@ -1,0 +1,96 @@
+.st-panel {
+  margin-top: 1rem; padding: 1rem 1.1rem;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-lg);
+  background: var(--bg-subtle, #f8fafc);
+}
+.st-loading, .st-none { display: flex; align-items: center; justify-content: space-between; gap: 1rem; flex-wrap: wrap; }
+.st-none h4, .st-head h4 { margin: 0 0 .2rem; font-size: .95rem; color: var(--text-heading); }
+.st-none p { margin: 0; max-width: 46ch; font-size: var(--font-subtitle); color: var(--text-secondary); }
+
+.st-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 1rem; margin-bottom: .8rem; }
+.st-head p { margin: 0; font-size: .78rem; color: var(--text-secondary); }
+
+.st-status {
+  flex: none; padding: .2rem .55rem; border-radius: var(--radius-full);
+  font-size: .7rem; font-weight: 700;
+}
+.st-status-draft { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.st-status-approved { background: var(--status-success-bg); color: var(--status-success-text); }
+.st-status-paid { background: var(--status-neutral-bg); color: var(--status-neutral-text); }
+
+.st-error, .st-warn, .st-hint {
+  display: flex; align-items: flex-start; gap: .45rem; margin: 0 0 .75rem;
+  padding: .55rem .7rem; border-radius: var(--radius-md); font-size: .78rem;
+}
+.st-error, .st-warn { background: var(--status-error-bg); color: var(--status-error-text); }
+.st-hint { background: var(--status-neutral-bg); color: var(--text-secondary); }
+.st-error svg, .st-warn svg, .st-hint svg { flex: none; margin-top: .1rem; }
+
+.st-columns { display: grid; grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr)); gap: 1rem 1.5rem; }
+.st-columns h5 {
+  margin: 0 0 .4rem; font-size: .7rem; font-weight: 700; letter-spacing: .05em;
+  text-transform: uppercase; color: var(--text-secondary);
+}
+
+.st-lines { margin: 0; padding: 0; list-style: none; }
+.st-lines li {
+  display: flex; align-items: flex-start; justify-content: space-between; gap: .75rem;
+  padding: .35rem 0; border-bottom: 1px solid var(--border-light, #f1f5f9);
+  font-size: var(--font-subtitle);
+}
+.st-lines li:last-child { border-bottom: 0; }
+.st-line-label { display: flex; flex-direction: column; min-width: 0; color: var(--text-primary); }
+.st-line-label svg { display: inline; margin-left: .3rem; color: var(--brand-red); vertical-align: -1px; }
+.st-line-label small { font-size: .72rem; color: var(--text-secondary); }
+.st-line-amount { flex: none; font-variant-numeric: tabular-nums; color: var(--text-primary); }
+.st-lines li.is-manual .st-line-label { font-weight: 600; }
+.st-lines input {
+  flex: none; width: 8rem; padding: .3rem .45rem;
+  border: 1px solid var(--brand-red); border-radius: var(--radius-md);
+  font: inherit; text-align: right;
+}
+.st-nothing { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+
+.st-subtotal, .st-net {
+  display: flex; justify-content: space-between; gap: 1rem;
+  margin: .5rem 0 0; padding-top: .5rem; border-top: 1px solid var(--border-gray);
+  font-size: var(--font-subtitle);
+}
+.st-subtotal b, .st-net b { font-variant-numeric: tabular-nums; }
+.st-net {
+  margin-top: .9rem; padding: .6rem .7rem; border-radius: var(--radius-md);
+  background: var(--status-success-bg); color: var(--status-success-text);
+  font-size: .95rem; font-weight: 700; border-top: 0;
+}
+.st-net.is-negative { background: var(--status-error-bg); color: var(--status-error-text); }
+
+.st-field { display: flex; flex-direction: column; gap: .3rem; margin-top: .75rem; font-size: var(--font-subtitle); font-weight: 600; }
+.st-field textarea {
+  padding: .5rem .65rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  font: inherit; font-weight: 400; resize: vertical;
+}
+
+/* The rules that produced the numbers. Somebody reading this in a year
+   should not have to guess which policy was in force. */
+.st-policy {
+  display: flex; flex-wrap: wrap; gap: .25rem .9rem; margin: .9rem 0 0;
+  font-size: .72rem; color: var(--text-secondary);
+}
+
+.st-actions { display: flex; flex-wrap: wrap; align-items: center; gap: .5rem; margin-top: 1rem; }
+.st-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .45rem .85rem; border: 1px solid var(--border-gray); border-radius: var(--radius-md);
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.st-btn:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.st-btn-primary { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+.st-btn-primary:hover:not(:disabled) { filter: brightness(.94); color: #fff; }
+.st-btn:disabled { opacity: .55; cursor: not-allowed; }
+.st-paid { display: inline-flex; align-items: center; gap: .35rem; margin: 0; font-size: var(--font-subtitle); color: var(--status-success-text); font-weight: 600; }
+
+@media (max-width: 560px) {
+  .st-columns { grid-template-columns: 1fr; }
+  .st-actions .st-btn { flex: 1 1 auto; justify-content: center; }
+}

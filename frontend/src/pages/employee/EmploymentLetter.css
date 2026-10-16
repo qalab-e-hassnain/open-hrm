@@ -1,0 +1,183 @@
+.el-page { padding: 1.5rem; max-width: 940px; margin: 0 auto; }
+
+/* ------------------------------- Toolbar ------------------------------- */
+.el-toolbar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1.25rem;
+}
+.el-toolbar h1 {
+  margin: 0 0 .25rem;
+  font-size: var(--font-page-title);
+  font-weight: var(--font-page-title-weight);
+  color: var(--text-heading);
+}
+.el-toolbar p { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.el-actions { display: flex; flex-wrap: wrap; align-items: flex-end; gap: .6rem; }
+
+.el-control { display: grid; gap: .3rem; }
+.el-control span {
+  font-size: var(--font-label);
+  font-weight: var(--font-label-weight);
+  color: var(--text-secondary);
+}
+.el-control select {
+  padding: .5rem .7rem;
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-xl);
+  background: var(--bg-white);
+  color: var(--text-dark);
+  font-size: var(--font-subtitle);
+}
+
+.el-btn {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .55rem 1rem;
+  border-radius: var(--radius-xl);
+  font-size: var(--font-subtitle); font-weight: 600;
+  cursor: pointer;
+}
+.el-btn-primary { border: 0; background: var(--brand-red); color: #fff; }
+.el-btn-primary:hover:not(:disabled) { background: var(--brand-red-dark); }
+.el-btn-ghost { border: 1px solid var(--border-gray); background: var(--bg-white); color: var(--text-dark); }
+.el-btn-ghost:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.el-btn:disabled { opacity: .5; cursor: not-allowed; }
+
+.el-status {
+  padding: 1rem 1.15rem;
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-xl);
+  background: var(--bg-white);
+  font-size: var(--font-subtitle);
+  color: var(--text-secondary);
+}
+.el-status.el-error { border-color: var(--status-error-border); background: var(--status-error-bg); color: var(--status-error-text); }
+.el-placeholder { display: flex; align-items: center; gap: .5rem; }
+
+/* -------------------------------- Letter ------------------------------- */
+/* Fixed white regardless of theme: this is paper, and it is captured as an
+   image for the PDF, so a dark-theme background would print black. */
+.el-sheet {
+  /* A page, not a card that ends where the words do. A letter this short left
+     the bottom third of the sheet empty with the footer floating in the middle
+     of it — and the PDF, captured at the element's own height, carried that
+     emptiness onto the paper. A4 proportions plus a footer pushed down give
+     the page a foot to sit on. */
+  display: flex;
+  flex-direction: column;
+  aspect-ratio: 1 / 1.414;
+  /* Grow rather than spill if a long designation ever pushes past one page. */
+  min-height: fit-content;
+  padding: 2.5rem 2.75rem;
+  border: 1px solid #E7E5E4;
+  border-radius: .35rem;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(16, 24, 40, .1);
+  color: #171717;
+  font-size: .9rem;
+  line-height: 1.7;
+}
+
+/* Card chrome belongs on screen, not in the exported page — the PDF was
+   showing the border and its rounded corners as part of the document. */
+.el-sheet.is-exporting {
+  border-color: transparent;
+  border-radius: 0;
+  box-shadow: none;
+}
+
+.el-letterhead { display: flex; align-items: center; gap: 1rem; }
+.el-logo { width: 46px; height: 46px; object-fit: contain; flex-shrink: 0; }
+.el-letterhead h2 { margin: 0; font-size: 1.25rem; font-weight: 750; color: #0A0A0A; }
+.el-letterhead p { margin: 0; font-size: .75rem; color: #667085; }
+.el-ntn { margin-left: auto; display: grid; justify-items: end; gap: .05rem; }
+.el-ntn span { font-size: .625rem; text-transform: uppercase; letter-spacing: .05em; color: #98A2B3; }
+.el-ntn strong { font-size: .875rem; }
+
+.el-accent { height: 2px; margin: .85rem 0 1.25rem; background: var(--brand-red); }
+
+.el-meta {
+  display: flex; justify-content: space-between; flex-wrap: wrap; gap: .5rem;
+  font-size: .78rem; color: #667085;
+}
+
+.el-title {
+  margin: 1.5rem 0 1.25rem;
+  font-size: 1rem;
+  font-weight: 700;
+  letter-spacing: .02em;
+  text-align: center;
+  text-transform: uppercase;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.el-body p { margin: 0 0 1rem; text-align: justify; }
+
+.el-signoff { margin-top: 2rem; }
+.el-signoff p { margin: 0; }
+
+.el-footer {
+  display: flex; align-items: center; gap: .7rem;
+  /* Pushed to the foot of the page rather than trailing the last paragraph. */
+  margin-top: auto; padding-top: .9rem;
+  border-top: 1px solid #E5E8ED;
+}
+.el-footer > div { display: grid; gap: .1rem; min-width: 0; }
+.el-footer strong { font-size: .7rem; color: #172033; }
+.el-footer span { font-size: .65rem; line-height: 1.45; color: #667085; overflow-wrap: anywhere; }
+.el-qr { flex-shrink: 0; width: 2.6rem; height: 2.6rem; image-rendering: pixelated; }
+
+/* --------------------------------- Print ------------------------------- */
+@media print {
+  body { background: #fff !important; }
+  body:has(.el-sheet) * { visibility: hidden !important; }
+  .el-page .el-sheet,
+  .el-page .el-sheet * { visibility: visible !important; }
+
+  /* .main-layout and .main-content are position: relative, so an absolutely
+     positioned sheet would anchor to the padded, max-width content box rather
+     than the page. Same fix as the payslip and tax certificate. */
+  .main-layout,
+  .main-content { position: static !important; }
+
+  .el-sheet {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* One whole sheet, so margin-top:auto has a bottom to push the footer to. */
+    height: 297mm;
+    aspect-ratio: auto;
+    min-height: 0;
+    border: 0 !important;
+    border-radius: 0 !important;
+    box-shadow: none !important;
+    /* The margin lives here, not on @page: with no positioned ancestor left,
+       the sheet's containing block is the page box, outside the @page margin,
+       so a margin declared there is bypassed. */
+    padding: 16mm 18mm 14mm !important;
+    font-size: 11pt;
+  }
+  .el-qr { width: 17mm; height: 17mm; }
+  * { -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+  @page { size: A4; margin: 0; }
+}
+
+@media (max-width: 640px) {
+  .el-sheet { padding: 1.5rem 1.25rem; }
+  .el-letterhead { flex-wrap: wrap; }
+  .el-ntn { margin-left: 0; justify-items: start; }
+}
+
+/* Signatory block — an attribution, not a signature line. The rule that used
+   to sit above the name read as somewhere to sign, and nobody signs this: it
+   is issued electronically and the footer says so. The gap that reserved room
+   for a signature goes with it. */
+.el-signatory { margin-top: 1rem; display: grid; gap: .1rem; }
+.el-signatory-name { font-weight: 700; }
+.el-signatory-title { font-size: .8rem; color: #344054; }
+.el-signatory-company { font-size: .75rem; color: #667085; }

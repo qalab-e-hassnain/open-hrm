@@ -1,0 +1,171 @@
+/* Public page, but it is still the portal: everything below reads the shared
+   tokens from index.css, so it follows the light/dark theme the rest of the
+   app does and uses the brand accent rather than a colour of its own. */
+.vp-page {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 2rem 1rem;
+  background: var(--bg-page);
+  color: var(--text-dark);
+}
+
+.vp-card {
+  width: 100%;
+  max-width: 640px;
+  background: var(--glass-bg);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: 2rem;
+  box-shadow: var(--glass-shadow);
+}
+
+.vp-header { display: flex; gap: 1rem; align-items: flex-start; margin-bottom: 1.75rem; }
+.vp-header i {
+  display: grid; place-items: center;
+  width: 44px; height: 44px; flex-shrink: 0;
+  border-radius: var(--radius-xl);
+  background: var(--brand-red-soft);
+  color: var(--brand-red);
+  font-size: 1.25rem;
+}
+.vp-header h1 {
+  margin: 0 0 .35rem;
+  font-size: var(--font-card-title);
+  font-weight: var(--font-card-title-weight);
+  color: var(--text-heading);
+}
+.vp-header p {
+  margin: 0;
+  font-size: var(--font-subtitle);
+  line-height: 1.55;
+  color: var(--text-secondary);
+}
+
+.vp-form label {
+  display: block; margin-bottom: .45rem;
+  font-size: var(--font-label);
+  font-weight: var(--font-label-weight);
+  color: var(--text-secondary);
+}
+.vp-input-row { display: flex; gap: .5rem; flex-wrap: wrap; }
+.vp-input-row input {
+  flex: 1 1 240px;
+  padding: .7rem .85rem;
+  border: 1px solid var(--border-gray);
+  border-radius: var(--radius-xl);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: var(--font-card-body);
+  letter-spacing: .02em;
+  background: var(--bg-white);
+  color: var(--text-dark);
+}
+.vp-input-row input::placeholder { color: var(--text-muted); }
+.vp-input-row input:focus {
+  outline: none;
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px var(--brand-red-soft);
+}
+.vp-input-row button {
+  display: inline-flex; align-items: center; gap: .4rem;
+  padding: .7rem 1.15rem;
+  border: 0; border-radius: var(--radius-xl);
+  background: var(--brand-red); color: #fff;
+  font-size: var(--font-subtitle); font-weight: 600;
+  cursor: pointer;
+  transition: background .15s ease;
+}
+.vp-input-row button:hover:not(:disabled) { background: var(--brand-red-dark); }
+.vp-input-row button:disabled { opacity: .55; cursor: not-allowed; }
+
+.vp-error {
+  margin: 1rem 0 0;
+  font-size: var(--font-label);
+  color: var(--status-error-text);
+}
+
+.vp-result {
+  margin-top: 1.75rem;
+  padding: 1.25rem;
+  border-radius: var(--radius-xl);
+}
+.vp-result h2 {
+  display: flex; align-items: center; gap: .5rem;
+  margin: 0 0 .4rem;
+  font-size: var(--font-subsection-title);
+  font-weight: var(--font-subsection-title-weight);
+}
+.vp-result > p { margin: 0; font-size: var(--font-subtitle); line-height: 1.55; }
+
+.vp-valid {
+  background: var(--status-success-bg);
+  border: 1px solid var(--status-success-border);
+}
+.vp-valid h2, .vp-valid > p { color: var(--status-success-text); }
+
+.vp-invalid {
+  background: var(--status-error-bg);
+  border: 1px solid var(--status-error-border);
+}
+.vp-invalid h2, .vp-invalid > p { color: var(--status-error-text); }
+
+.vp-result dl {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: .9rem; margin: 1.25rem 0 0;
+}
+.vp-result dl div { display: grid; gap: .15rem; }
+.vp-result dt {
+  font-size: 0.6875rem; text-transform: uppercase; letter-spacing: .04em;
+  font-weight: var(--font-label-weight);
+  color: var(--text-secondary);
+}
+.vp-result dd {
+  margin: 0;
+  font-size: var(--font-card-body); font-weight: 600;
+  color: var(--text-heading);
+}
+.vp-status { text-transform: capitalize; }
+
+.vp-revision {
+  margin: 1.15rem 0 0; padding-top: .9rem;
+  border-top: 1px solid var(--status-success-border);
+  font-size: var(--font-label); font-weight: 400; line-height: 1.55;
+  color: var(--status-success-text);
+}
+
+.vp-footer {
+  margin-top: 1.75rem; padding-top: 1rem;
+  border-top: 1px solid var(--border-gray);
+  font-size: var(--font-label); font-weight: 400; line-height: 1.55;
+  color: var(--text-muted);
+}
+
+@media (max-width: 480px) {
+  .vp-card { padding: 1.35rem; }
+  .vp-input-row button { width: 100%; justify-content: center; }
+}
+
+/* Shared with the employment-verification page. */
+.vp-note {
+  margin: 1.25rem 0 0;
+  font-size: var(--font-subtitle);
+  line-height: 1.6;
+  color: var(--text-secondary);
+}
+.vp-note a {
+  display: inline-flex; align-items: center; gap: .25rem;
+  color: var(--brand-red); font-weight: 600;
+}
+
+/* Third verification state: the document is genuine but the fact it asserts
+   no longer holds. Amber, because it is neither a pass nor a forgery. */
+.vp-warning {
+  background: var(--status-warning-bg);
+  border: 1px solid var(--status-warning-border);
+}
+.vp-warning h2, .vp-warning > p { color: var(--status-warning-text); }
+.vp-warning dt { color: var(--status-warning-text); opacity: .75; }
+.vp-warning dd { color: var(--status-warning-text); }
+/* Inside a result panel the note inherits that panel's colour. */
+.vp-result .vp-note { margin-top: .9rem; font-size: var(--font-label); color: inherit; }

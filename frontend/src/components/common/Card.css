@@ -1,0 +1,411 @@
+/* ========================================
+   CSS VARIABLES - Glassmorphic Card Theme
+   ======================================== */
+:root {
+  /* Background Colors */
+  --card-bg: var(--glass-bg);
+  --card-blur: var(--glass-blur);
+  --card-border-color: var(--glass-border);
+
+  /* Text Colors */
+  --card-text-primary: var(--text-dark);
+  --card-text-secondary: var(--text-gray);
+  --card-text-muted: var(--text-muted);
+
+  /* Shadows */
+  --card-shadow-base: var(--glass-shadow);
+  --card-shadow-hover: var(--glass-shadow-hover);
+  --card-separator: rgba(31, 41, 55, 0.08);
+  --card-shadow-tint: rgba(31, 41, 55, 0.06);
+
+  /* Spacing */
+  --card-radius: 24px;
+  --card-padding: var(--space-card-padding);
+  --card-margin: 1.5rem 0;
+  --header-spacing: 1.75rem;
+
+  /* Transitions */
+  --transition-card: all 0.35s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+  --transition-smooth: all 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+[data-theme="dark"] {
+  --card-separator: rgba(255, 255, 255, 0.08);
+  --card-shadow-tint: rgba(0, 0, 0, 0.3);
+}
+
+/* ========================================
+   CARD COMPONENT - Main Container
+   ======================================== */
+.card-component {
+  /* Layout */
+  position: relative;
+  display: flex;
+  flex-direction: column;
+
+  /* Spacing */
+  margin: var(--card-margin);
+  padding: var(--card-padding);
+
+  /* Appearance - frosted glass */
+  background: var(--card-bg);
+  -webkit-backdrop-filter: var(--card-blur);
+  backdrop-filter: var(--card-blur);
+  border-radius: var(--card-radius);
+  border: 1px solid var(--card-border-color);
+
+  /* Soft ambient shadow */
+  box-shadow: var(--card-shadow-base);
+
+  /* Smooth Transitions */
+  transition: var(--transition-card);
+
+  /* Prevent content overflow */
+  overflow: hidden;
+}
+
+/* ========================================
+   HOVER STATE - Gentle Lift Effect
+   ======================================== */
+.card-component:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--card-shadow-hover);
+  border-color: rgba(232, 53, 42, 0.22);
+}
+
+/* ========================================
+   ACTIVE STATE - Optional Press Effect
+   ======================================== */
+.card-component:active {
+  transform: translateY(-2px);
+  transition: all 0.15s ease;
+}
+
+/* ========================================
+   CARD HEADER - Title & Action Container
+   ======================================== */
+.card-header {
+  /* Layout */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+
+  /* Spacing */
+  margin-bottom: var(--header-spacing);
+  padding-bottom: 1rem;
+
+  /* Subtle separator */
+  border-bottom: 1px solid var(--card-separator);
+
+  transition: var(--transition-card);
+}
+
+/* ========================================
+   CARD TITLE - Heading Text
+   ======================================== */
+.card-title {
+  /* Typography */
+  font-size: var(--font-card-title);
+  font-weight: var(--font-card-title-weight);
+  letter-spacing: -0.02em;
+  line-height: 1.4;
+
+  /* Color */
+  color: var(--card-text-primary);
+
+  /* Spacing */
+  margin: 0;
+  padding: 0 0 0 var(--space-accent-bar-offset);
+
+  /* Left brand accent bar */
+  position: relative;
+  display: inline-block;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  transition: var(--transition-card);
+}
+
+.card-title::before {
+  content: '';
+  position: absolute;
+  left: 0;
+  top: 0.12em;
+  bottom: 0.12em;
+  width: 4px;
+  border-radius: 4px;
+  background: linear-gradient(180deg, var(--brand-red), var(--brand-red-light));
+}
+
+/* ========================================
+   CARD TITLE ICON
+   ======================================== */
+.card-title-icon {
+  display: inline-flex;
+  align-items: center;
+  color: var(--brand-red);
+}
+
+/* ========================================
+   CARD HEADER ACTION - Action Buttons/Icons
+   ======================================== */
+.card-header-action {
+  /* Layout */
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+
+  /* Color */
+  color: var(--card-text-muted);
+
+  transition: var(--transition-card);
+}
+
+.card-header-action:hover {
+  color: var(--brand-red);
+  transform: scale(1.05);
+}
+
+/* ========================================
+   CARD BODY - Content Area
+   ======================================== */
+.card-body {
+  /* Layout */
+  flex: 1;
+
+  /* Color */
+  color: var(--card-text-secondary);
+
+  /* Typography */
+  font-size: var(--font-card-body);
+  line-height: 1.6;
+
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  transition: var(--transition-card);
+}
+
+/* ========================================
+   CARD VARIANTS - Modifier Classes
+   ======================================== */
+
+/* Compact Card - Less padding */
+.card-component.card-compact {
+  padding: 1.5rem;
+}
+
+.card-component.card-compact .card-header {
+  margin-bottom: 1rem;
+}
+
+/* Large Card - More padding and larger radius */
+.card-component.card-large {
+  padding: 2.5rem;
+  border-radius: 30px;
+}
+
+/* Flat Card - Minimal shadow for less emphasis */
+.card-component.card-flat {
+  box-shadow: 0 2px 12px var(--card-shadow-tint);
+}
+
+.card-component.card-flat:hover {
+  box-shadow: 0 8px 22px rgba(232, 53, 42, 0.1);
+  transform: translateY(-2px);
+}
+
+/* Interactive Card - Enhanced hover */
+.card-component.card-interactive {
+  cursor: pointer;
+  transition: var(--transition-smooth);
+}
+
+.card-component.card-interactive:hover {
+  transform: translateY(-8px) scale(1.015);
+}
+
+/* ========================================
+   RESPONSIVE DESIGN
+   ======================================== */
+
+/* Tablet screens */
+@media (max-width: 1024px) {
+  :root {
+    --card-padding: 1.75rem;
+    --card-margin: 1.25rem 0;
+    --card-radius: 22px;
+  }
+
+  .card-title {
+    font-size: 1.25rem;
+  }
+
+  .card-body {
+    font-size: 1rem;
+  }
+}
+
+/* Mobile screens */
+@media (max-width: 768px) {
+  :root {
+    --card-padding: var(--space-card-padding-tablet);
+    --card-margin: 1rem 0;
+    --card-radius: 20px;
+    --header-spacing: 1.25rem;
+  }
+
+  .card-component:hover {
+    transform: translateY(-2px);
+  }
+
+  .card-title {
+    font-size: 1.1875rem;
+  }
+
+  .card-body {
+    font-size: 1rem;
+    line-height: 1.55;
+  }
+
+  .card-header {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .card-header-action {
+    width: 100%;
+    justify-content: flex-end;
+  }
+}
+
+/* Small mobile screens */
+@media (max-width: 480px) {
+  :root {
+    --card-padding: var(--space-card-padding-mobile);
+    --card-margin: 0.75rem 0;
+    --card-radius: 18px;
+  }
+
+  .card-title {
+    font-size: 1.0625rem;
+  }
+
+  .card-body {
+    font-size: 0.9375rem;
+  }
+}
+
+/* ========================================
+   ACCESSIBILITY
+   ======================================== */
+
+/* Focus state for keyboard navigation. The hard offset outline that used to
+   live here stacked on top of the brand glow defined in index.css, giving a
+   focused card two concentric red rings; the glow is the single indicator now
+   (see the press/focus layer in index.css). */
+.card-component:focus-within {
+  border-radius: var(--card-radius);
+}
+
+/* Respect reduced motion preferences */
+@media (prefers-reduced-motion: reduce) {
+  .card-component,
+  .card-title,
+  .card-header-action,
+  .card-body {
+    transition: none;
+  }
+
+  .card-component:hover {
+    transform: none;
+  }
+}
+
+/* ========================================
+   PRINT STYLES
+   ======================================== */
+@media print {
+  .card-component {
+    box-shadow: none;
+    border: 1px solid #e2e8f0;
+    background: #ffffff;
+    margin: 1rem 0;
+    page-break-inside: avoid;
+  }
+
+  .card-component:hover {
+    transform: none;
+  }
+}
+
+/* the portal card foundation */
+.card-component {
+  margin: 0 0 var(--space-section-gap);
+  padding: var(--space-card-padding);
+  background: var(--bg-white);
+  /* --border-strong, not --border-gray: at #E7E5E4 a card edge on white was
+     nearly invisible, which is what made panels read as floating text. */
+  border: 1px solid var(--border-strong);
+  border-radius: 8px;
+  box-shadow: var(--shadow-sm);
+  -webkit-backdrop-filter: none;
+  backdrop-filter: none;
+  transition: border-color 160ms ease, box-shadow 160ms ease;
+}
+
+/* Hover is a quiet darkening — it is not a commitment, so it stays neutral. */
+.card-component:hover {
+  border-color: var(--text-muted);
+  box-shadow: var(--shadow-sm);
+  transform: none;
+}
+
+/* Press and focus answer in brand red. Repeated here rather than left to
+   index.css because this stylesheet loads later and would otherwise win at
+   equal specificity and cancel the glow. */
+.card-component:active,
+.card-component:focus-within {
+  border-color: var(--brand-red);
+  box-shadow: var(--glow-red);
+  transform: none;
+}
+
+.card-component.card-interactive:active {
+  box-shadow: var(--glow-red-strong);
+}
+
+.card-header {
+  margin-bottom: 1.25rem;
+  padding-bottom: 1rem;
+  border-bottom: 1px solid var(--border-gray);
+}
+
+.card-title {
+  padding-left: 0;
+  color: var(--text-heading);
+  font-weight: 700;
+  letter-spacing: -0.025em;
+}
+
+.card-title::before {
+  display: none;
+}
+
+.card-body {
+  color: var(--text-secondary);
+  line-height: 1.55;
+}
+
+.card-component.card-large,
+.card-component.card-compact {
+  border-radius: 8px;
+}
+
+.card-component.card-interactive:hover {
+  border-color: rgba(192, 57, 43, 0.35);
+  box-shadow: 0 8px 24px rgba(10, 10, 10, 0.08);
+  transform: translateY(-1px);
+}

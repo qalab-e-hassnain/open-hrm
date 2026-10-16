@@ -1,0 +1,75 @@
+.nd-backdrop {
+  position: fixed; inset: 0; z-index: 10000;
+  display: flex; align-items: center; justify-content: center;
+  padding: 1rem;
+  background: rgba(17, 24, 39, 0.45);
+  -webkit-backdrop-filter: blur(2px); backdrop-filter: blur(2px);
+}
+
+.nd-dialog {
+  width: min(560px, 100%);
+  max-height: min(80vh, 640px);
+  display: flex; flex-direction: column;
+  background: var(--bg-white); color: var(--text-primary);
+  border: 1px solid var(--notif-dropdown-border, var(--border-gray));
+  border-radius: var(--radius-xl, 14px);
+  box-shadow: 0 18px 48px var(--notif-dropdown-shadow, rgba(31, 41, 55, 0.2));
+  overflow: hidden;
+}
+
+.nd-head {
+  display: flex; align-items: flex-start; gap: .6rem;
+  padding: 1rem 1.1rem;
+  border-bottom: 1px solid var(--notif-separator, var(--border-gray));
+  background: var(--notif-tint, transparent);
+}
+.nd-head h2 {
+  flex: 1; margin: 0;
+  font-size: 1.0625rem; font-weight: 600; line-height: 1.35;
+  color: var(--text-heading); word-break: break-word;
+}
+.nd-icon { flex: none; margin-top: .15rem; }
+.nd-icon.success { color: var(--status-success-text, #166534); }
+.nd-icon.error   { color: var(--status-error-text, #991b1b); }
+.nd-icon.warning { color: var(--status-warning-text, #92400e); }
+.nd-icon.info    { color: var(--brand-red, #e8352a); }
+
+.nd-close {
+  flex: none; border: 0; background: none; cursor: pointer;
+  padding: .25rem; border-radius: var(--radius-sm, 6px);
+  color: var(--text-secondary); line-height: 0;
+}
+.nd-close:hover { color: var(--text-primary); background: var(--notif-separator-soft, rgba(0,0,0,.05)); }
+.nd-close:focus-visible { outline: 2px solid var(--brand-red); outline-offset: 2px; }
+
+/* The announcement body is the point of this dialog, so it gets the room and
+   the scroll; the header and footer stay put. */
+.nd-body {
+  flex: 1; overflow-y: auto;
+  padding: 1rem 1.1rem;
+  font-size: 0.9375rem; line-height: 1.6; color: var(--text-gray);
+}
+.nd-body p { margin: 0 0 .85rem; word-break: break-word; }
+.nd-body p:last-child { margin-bottom: 0; }
+
+.nd-foot {
+  display: flex; align-items: center; justify-content: space-between; gap: .75rem;
+  padding: .75rem 1.1rem;
+  border-top: 1px solid var(--notif-separator, var(--border-gray));
+  font-size: 0.8125rem; color: var(--text-secondary);
+}
+.nd-go {
+  display: inline-flex; align-items: center; gap: .35rem; flex: none;
+  padding: .45rem .8rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md, 8px);
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-weight: 600; cursor: pointer;
+}
+.nd-go:hover { border-color: var(--brand-red); color: var(--brand-red); }
+.nd-go:focus-visible { outline: 2px solid var(--brand-red); outline-offset: 2px; }
+
+@media (max-width: 520px) {
+  .nd-dialog { max-height: 86vh; }
+  .nd-foot { flex-direction: column; align-items: stretch; }
+  .nd-go { justify-content: center; }
+}

@@ -1,0 +1,625 @@
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+:root {
+  /* Layering. The sidebar + topbar wrapper (.app-navigation) sits at z-index
+     1000, so anything meant to be modal — a drawer, a dialog, a document
+     preview — has to clear that or the nav stays lit and clickable behind it.
+     Use these two instead of inventing a number per page:
+       --z-overlay        backdrops (dim the whole app, nav included)
+       --z-overlay-nested a dialog opened from inside another overlay */
+  --z-overlay: 1300;
+  --z-overlay-nested: 1400;
+
+  /* Colors */
+  --dark-blue: #0F172A; /* only used by the fixed dark auth-card gradients (Login/Register/reset/terms/AuthLayout) — not theme-following */
+  --accent-green: #10B981;
+  --accent-red: #E8352A;
+  --text-dark: #171717;
+  --text-heading: #0A0A0A;
+  --text-secondary: #57534E;
+  --text-gray: #78716C;
+  /* Was #A8A29E (stone-400): only ~2.52:1 contrast on white, failing WCAG AA
+     (4.5:1) at the small caption sizes this token is used at — the exact
+     "light text is hard to read" QA reported. Now roughly halfway between
+     stone-500 (--text-gray) and stone-600 (--text-secondary), ~6:1 contrast. */
+  --text-muted: #68625D;
+  --border-gray: #E7E5E4;
+  --border-light: #DEDFE3;
+  --bg-white: #FFFFFF;
+  --bg-page: #F1F2F4;
+  --bg-sidebar: #FAFAFA;
+  --bg-card-hover: #F7F7F8;
+  --scrollbar-track: #EFEEEC;
+
+  /* Brand (brand logo) — fixed accent, identical in light & dark */
+  --brand-red: #C0392B;
+  --brand-red-dark: #A93226;
+  --brand-red-darker: #8F2C22;
+  --brand-red-light: #D9685D;
+  --brand-red-soft: rgba(192, 57, 43, 0.1);
+
+  /* Status (semantic — used by badges across leaves/reimbursements/attendance) */
+  --status-success-bg: rgba(209, 250, 229, 0.9);
+  --status-success-text: #065F46;
+  --status-success-border: rgba(6, 95, 70, 0.15);
+  --status-warning-bg: rgba(254, 243, 199, 0.9);
+  --status-warning-text: #92400E;
+  --status-warning-border: rgba(146, 64, 14, 0.15);
+  --status-error-bg: rgba(254, 226, 226, 0.9);
+  --status-error-text: #991B1B;
+  --status-error-border: rgba(153, 27, 27, 0.15);
+  --status-info-bg: rgba(219, 234, 254, 0.9);
+  --status-info-text: #1E40AF;
+  --status-info-border: rgba(29, 78, 216, 0.15);
+  --status-neutral-bg: rgba(243, 244, 246, 0.9);
+  --status-neutral-text: #4B5563;
+  --status-neutral-border: rgba(75, 85, 99, 0.15);
+
+  /* Glassmorphism */
+  --glass-bg: #FFFFFF;
+  --glass-bg-strong: #FFFFFF;
+  --glass-border: #E7E5E4;
+  --glass-blur: none;
+  --glass-shadow: 0 1px 2px rgba(10, 10, 10, 0.04);
+  --glass-shadow-hover: 0 8px 24px rgba(10, 10, 10, 0.08);
+  --radius-2xl: 0.625rem;
+
+  /* Typography */
+  font-family: 'Geist', -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  /* Layout — single source of truth for how wide page content may grow.
+     Below this the content is fluid (100% width minus padding), so it
+     adapts to any screen size; above it, content is centered with margins.
+     Change this one value to widen/narrow the whole app. */
+  --content-max-width: 1440px;
+
+  /* Spacing */
+  --spacing-xs: 0.25rem;
+  --spacing-sm: 0.5rem;
+  --spacing-md: 1rem;
+  --spacing-lg: 1.5rem;
+  --spacing-xl: 2rem;
+  --spacing-2xl: 3rem;
+
+  /* Spacing tokens — shared rhythm for cards, page sections and headings.
+     Keeps padding/gaps consistent across every page instead of each one
+     picking its own values. */
+  --space-card-padding: 2rem;          /* inner padding of top-level page cards (desktop) */
+  --space-card-padding-tablet: 1.5rem; /* <=768px */
+  --space-card-padding-mobile: 1.25rem; /* <=480px */
+  --space-item-padding: 1.5rem;        /* inner padding of nested list-item cards (leave rows, etc.) */
+  --space-item-padding-mobile: 1.25rem; /* <=768px */
+  --space-section-gap: 2rem;          /* gap between major sections/cards on a page */
+  --space-header-gap: 1.5rem;         /* space below a page header before content starts */
+  --space-empty-state-padding: 3rem 2rem; /* empty-state placeholder padding */
+  --space-accent-bar-offset: 1rem;    /* text offset next to a decorative left accent bar */
+
+  /* Type scale — one size/weight per semantic role, reused by every page instead of
+     each page picking its own value. Roles, largest to smallest:
+     page-title > section-title > card-title > subsection-title > body > subtitle > label */
+  --font-page-title: 1.875rem;         /* 30px - top-level heading for a page */
+  --font-page-title-weight: 700;
+  --font-section-title: 1.625rem;       /* 26px - major section heading within a page */
+  --font-section-title-weight: 600;
+  --font-card-title: 1.375rem;         /* 22px - card/panel header title */
+  --font-card-title-weight: 700;
+  --font-subsection-title: 1.375rem;   /* 22px - sub-heading inside a card or section (semibold sibling of card-title) */
+  --font-subsection-title-weight: 600;
+  --font-body: 1.125rem;                  /* 18px - default body copy */
+  --font-body-weight: 400;
+  --font-card-body: 1rem;          /* 16px - text inside cards (Card component) */
+  --font-subtitle: 0.9375rem;          /* 15px - secondary/descriptive text under a title */
+  --font-subtitle-weight: 400;
+  --font-label: 0.8125rem;              /* 13px - field labels, detail labels, captions */
+  --font-label-weight: 600;
+
+  /* Border Radius */
+  --radius-sm: 0.1875rem;
+  --radius-md: 0.25rem;
+  --radius-lg: 0.375rem;
+  --radius-xl: 0.5rem;
+  --radius-full: 9999px;
+
+  /* Shadows */
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+
+  /* Interaction — one definition of "focused" / "pressed" for the whole app.
+     The shared controls (Input/Select/TextArea/Button) and Card all point at
+     these, so the brand-red glow is identical everywhere and can be retuned
+     from one place. Before this, four components each hand-rolled their own
+     ring in two different reds at three different opacities.
+     --border-strong is the visible edge for controls and cards; --border-gray
+     stays the lighter tone for internal dividers, which should not compete
+     with the outline of the thing that contains them. */
+  --border-strong: #D1D5DB;
+  --glow-red-soft: 0 0 0 3px rgba(192, 57, 43, 0.12);
+  --glow-red: 0 0 0 3px rgba(192, 57, 43, 0.18);
+  --glow-red-strong: 0 0 0 4px rgba(192, 57, 43, 0.26);
+}
+
+/* Dark theme — every themed token above gets a dark-mode counterpart here.
+   Brand red (--brand-red / -dark / -darker / -light / -soft) and --accent-green/--accent-red
+   are intentionally NOT overridden: brand red stays the fixed accent in both themes. */
+[data-theme="dark"] {
+  --text-dark: #E9EAEC;
+  --text-heading: #F5F6F7;
+  --text-secondary: #D0D2D7;
+  --text-gray: #B2B6C0;
+  --text-muted: #9298A5;
+  --border-gray: #2A2D35;
+  --border-light: #2A2D35;
+  --bg-white: #1C1E24;
+  --bg-page: #101114;
+  --bg-sidebar: #191A20;
+  --bg-card-hover: #22252C;
+  --scrollbar-track: #191A20;
+
+  --status-success-bg: rgba(16, 185, 129, 0.18);
+  --status-success-text: #6EE7B7;
+  --status-success-border: rgba(16, 185, 129, 0.35);
+  --status-warning-bg: rgba(245, 158, 11, 0.18);
+  --status-warning-text: #FCD34D;
+  --status-warning-border: rgba(245, 158, 11, 0.35);
+  --status-error-bg: rgba(239, 68, 68, 0.18);
+  --status-error-text: #FCA5A5;
+  --status-error-border: rgba(239, 68, 68, 0.35);
+  --status-info-bg: rgba(59, 130, 246, 0.18);
+  --status-info-text: #93C5FD;
+  --status-info-border: rgba(59, 130, 246, 0.35);
+  --status-neutral-bg: rgba(255, 255, 255, 0.08);
+  --status-neutral-text: #D1D5DB;
+  --status-neutral-border: rgba(255, 255, 255, 0.18);
+
+  --glass-bg: rgba(32, 32, 38, 0.55);
+  --glass-bg-strong: rgba(32, 32, 38, 0.75);
+  --glass-border: rgba(255, 255, 255, 0.1);
+  --glass-shadow: 0 8px 32px rgba(0, 0, 0, 0.45), 0 1px 2px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(255, 255, 255, 0.04);
+  --glass-shadow-hover: 0 14px 36px rgba(232, 53, 42, 0.25), 0 4px 14px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.06);
+
+  --shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.5);
+
+  /* Brand red itself stays fixed across themes, but a #C0392B glow is nearly
+     invisible against a dark surface — so the glow (and only the glow) uses
+     the lighter brand tint here, at a higher opacity to carry on dark. */
+  --border-strong: rgba(255, 255, 255, 0.18);
+  --glow-red-soft: 0 0 0 3px rgba(217, 104, 93, 0.20);
+  --glow-red: 0 0 0 3px rgba(217, 104, 93, 0.30);
+  --glow-red-strong: 0 0 0 4px rgba(217, 104, 93, 0.38);
+}
+
+body {
+  margin: 0;
+  min-height: 100dvh;
+  background-color: var(--bg-page);
+  color: var(--text-dark);
+  line-height: 1.5;
+  transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+/* While any modal overlay is open, the page behind it must not also scroll —
+   otherwise the modal's own internal scrollbar (max-height + overflow-y:auto)
+   and the page's scrollbar are both active at once, showing two scrollbars. */
+body:has(.modal-overlay) {
+  overflow: hidden;
+}
+
+/* Keyboard focus. The solid ring stays — a glow alone is too easy to miss and
+   would weaken keyboard navigation — but it now sits on the brand red and is
+   paired with the glow below on surfaces that can carry one. */
+:focus-visible {
+  outline: 2px solid var(--brand-red);
+  outline-offset: 2px;
+}
+
+/* ---- Press / focus glow on surfaces -------------------------------------
+   Clicking a card, panel, row or field wrapper answers with a soft brand-red
+   glow and a red edge. Declared once here so every page behaves the same
+   instead of each one inventing its own press state.
+
+   `:focus-within` covers the real cases: clicking a card usually moves focus
+   to something inside it (a button, an input), and a card that merely
+   contains the caret should read as active. `:active` covers the press
+   itself, including on non-focusable containers.
+
+   Only surfaces that already draw a border opt in, so this can never add a
+   ring to a borderless inner element and double up on its container. */
+.card-component:active,
+.card-component:focus-within,
+[data-glow]:active,
+[data-glow]:focus-within,
+/* Page-level surfaces. These are not .card-component instances — each page
+   builds its own panel — so they are listed explicitly. Anything not covered
+   here can opt in by adding a `data-glow` attribute rather than growing this
+   list indefinitely. */
+.reimbursement-page .reimbursement-card:focus-within,
+.reimbursements-page .rb-tabs:focus-within,
+.payslips-page .ps-card:focus-within,
+.payslips-page .ps-summary:focus-within,
+.payslips-page .ps-ytd:focus-within,
+.payslips-page .ps-filters:focus-within,
+.payslips-page .ps-support:focus-within,
+.payslips-page .ps-admin:focus-within,
+.leave-apply-page .leave-request-card:focus-within,
+.leave-apply-page .leave-balance-cards:focus-within,
+.leave-apply-page .leave-calendar:focus-within,
+.leave-apply-page .leave-upcoming:focus-within,
+.profile-page .profile-section-card:focus-within,
+.profile-page .profile-identity-card:focus-within {
+  border-color: var(--brand-red);
+  box-shadow: var(--glow-red);
+}
+
+/* A pressed clickable surface gets the stronger ring — it is a deliberate
+   action rather than an incidental focus. */
+.card-component.card-interactive:active,
+[data-glow][role="button"]:active,
+button[data-glow]:active {
+  box-shadow: var(--glow-red-strong);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card-component:active,
+  [data-glow]:active {
+    transition: none;
+  }
+}
+
+#root {
+  min-height: 100vh;
+}
+
+/* Typography */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-weight: 700;
+  line-height: 1.15;
+  letter-spacing: -0.025em;
+  color: var(--text-dark);
+}
+
+h1 {
+  font-size: 2.25rem;
+}
+
+h2 {
+  font-size: 1.75rem;
+}
+
+h3 {
+  font-size: 1.375rem;
+}
+
+h4 {
+  font-size: 1.25rem;
+}
+
+h5 {
+  font-size: 1.125rem;
+}
+
+h6 {
+  font-size: 0.9375rem;
+}
+
+/* Page header primitives — .page-header / .page-title / .page-subtitle are
+   used by Employees, LeaveHistory, ReimbursementHistory, ManageLeaves and
+   ManageReimbursement. They used to be re-declared in several page
+   stylesheets at identical specificity, so whichever sheet Vite emitted last
+   styled them everywhere (Employees' borderless flex header and
+   LeaveHistory's bordered one fought over both pages). The shared baseline
+   lives here; a page that wants something different scopes its own rule under
+   its page root, which then wins on specificity. */
+.page-header {
+  margin-bottom: var(--space-header-gap);
+}
+
+.page-title {
+  margin: 0;
+  color: var(--text-dark);
+  font-size: var(--font-page-title);
+  font-weight: var(--font-page-title-weight);
+}
+
+.page-subtitle {
+  margin: 0.25rem 0 0;
+  color: var(--text-gray);
+  font-size: var(--font-subtitle);
+}
+
+/* Status pills and empty states — the same shared-primitive story as the page
+   header above. .status-badge was re-declared by seven page stylesheets and
+   .empty-state by five, all near-identically, so one arbitrary winner styled
+   every page. The baseline lives here; a page scopes its own rule under its
+   page root when it genuinely needs something different. Declaring them
+   globally also means a panel rendered inside another page (PayrollSheet
+   inside PayrollReimbursement, say) no longer depends on its parent's sheet. */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  width: fit-content;
+  padding: 0.3rem 0.75rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+}
+
+.status-pending {
+  border-color: var(--status-warning-border);
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text);
+}
+
+.status-approved {
+  border-color: var(--status-success-border);
+  background: var(--status-success-bg);
+  color: var(--status-success-text);
+}
+
+.status-rejected {
+  border-color: var(--status-error-border);
+  background: var(--status-error-bg);
+  color: var(--status-error-text);
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: var(--space-empty-state-padding);
+  color: var(--text-gray);
+  text-align: center;
+}
+
+/* Links */
+a {
+  color: var(--brand-red);
+  text-decoration: none;
+  transition: color 0.2s;
+}
+
+a:hover {
+  color: var(--brand-red-dark);
+}
+
+/* Buttons */
+button {
+  font-family: inherit;
+  cursor: pointer;
+  border: none;
+  outline: none;
+  transition: all 0.2s;
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Inputs — each field component (Input/Select/TextArea, plus the page-level
+   custom fields like .login-input/.att-select) already draws its own on-brand
+   focus ring via border-color + box-shadow. A blanket `:focus` outline here
+   would stack on top of that ring and double the border, so unstyled
+   focus feedback is left to the generic :focus-visible rule above instead. */
+input,
+textarea,
+select {
+  font-family: inherit;
+  font-size: 1rem;
+  outline: none;
+  transition: all 0.2s;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--scrollbar-track);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-gray);
+  border-radius: var(--radius-full);
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--text-gray);
+}
+
+/* Utility Classes */
+.container {
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 var(--spacing-lg);
+}
+
+.card {
+  background: var(--glass-bg);
+  -webkit-backdrop-filter: var(--glass-blur);
+  backdrop-filter: var(--glass-blur);
+  border: 1px solid var(--glass-border);
+  border-radius: var(--radius-2xl);
+  padding: var(--spacing-xl);
+  box-shadow: var(--glass-shadow);
+}
+
+.btn-primary {
+  background: var(--brand-red);
+  color: white;
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.btn-primary:hover {
+  background: var(--brand-red-dark);
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-md);
+}
+
+.btn-secondary {
+  background: transparent;
+  color: var(--accent-red);
+  border: 2px solid var(--accent-red);
+  padding: 0.75rem 2rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 1rem;
+}
+
+.btn-secondary:hover {
+  background: var(--accent-red);
+  color: white;
+}
+
+.text-muted {
+  color: var(--text-gray);
+}
+
+.text-center {
+  text-align: center;
+}
+
+.flex {
+  display: flex;
+}
+
+.flex-col {
+  flex-direction: column;
+}
+
+.items-center {
+  align-items: center;
+}
+
+.justify-center {
+  justify-content: center;
+}
+
+.justify-between {
+  justify-content: space-between;
+}
+
+.gap-sm {
+  gap: var(--spacing-sm);
+}
+
+.gap-md {
+  gap: var(--spacing-md);
+}
+
+.gap-lg {
+  gap: var(--spacing-lg);
+}
+
+.gap-xl {
+  gap: var(--spacing-xl);
+}
+
+.mt-sm {
+  margin-top: var(--spacing-sm);
+}
+
+.mt-md {
+  margin-top: var(--spacing-md);
+}
+
+.mt-lg {
+  margin-top: var(--spacing-lg);
+}
+
+.mt-xl {
+  margin-top: var(--spacing-xl);
+}
+
+.mb-sm {
+  margin-bottom: var(--spacing-sm);
+}
+
+.mb-md {
+  margin-bottom: var(--spacing-md);
+}
+
+.mb-lg {
+  margin-bottom: var(--spacing-lg);
+}
+
+.mb-xl {
+  margin-bottom: var(--spacing-xl);
+}
+
+.p-sm {
+  padding: var(--spacing-sm);
+}
+
+.p-md {
+  padding: var(--spacing-md);
+}
+
+.p-lg {
+  padding: var(--spacing-lg);
+}
+
+.p-xl {
+  padding: var(--spacing-xl);
+}
+
+/* Loading Spinner */
+.spinner {
+  border: 3px solid var(--border-gray);
+  border-top: 3px solid var(--brand-red);
+  border-radius: 50%;
+  width: 40px;
+  height: 40px;
+  animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  .container {
+    padding: 0 var(--spacing-md);
+  }
+
+  .card {
+    padding: var(--spacing-lg);
+  }
+}
+
+/* Fallback for the few routes that render outside MainLayout — the login,
+   terms and public verification pages. Full height so the page does not
+   flash a collapsed body before its chunk arrives. */
+.route-loading { min-height: 100dvh; background: var(--bg-page); }

@@ -1,0 +1,194 @@
+.doc-page { padding: 1.5rem; max-width: 900px; margin: 0 auto; }
+
+.doc-back {
+  display: inline-flex; align-items: center; gap: .3rem;
+  margin-bottom: .9rem; padding: 0;
+  border: 0; background: none; cursor: pointer;
+  font-size: var(--font-subtitle); font-weight: 600; color: var(--text-secondary);
+}
+.doc-back:hover { color: var(--brand-red); }
+
+.doc-head {
+  display: flex; flex-wrap: wrap; align-items: flex-start; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.25rem;
+}
+.doc-head h1 {
+  margin: 0 0 .25rem;
+  font-size: var(--font-page-title); font-weight: var(--font-page-title-weight);
+  color: var(--text-heading);
+  overflow-wrap: anywhere;
+}
+.doc-head p { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.doc-meta { margin: 0; font-size: var(--font-label); color: var(--text-secondary); overflow-wrap: anywhere; }
+.doc-meta code {
+  padding: .05rem .3rem; border-radius: var(--radius-md);
+  background: var(--bg-card-hover); font-size: .95em;
+}
+
+.doc-card {
+  padding: 1.15rem;
+  border: 1px solid var(--glass-border); border-radius: var(--radius-2xl);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow);
+}
+.doc-empty {
+  display: flex; align-items: center; justify-content: center; gap: .5rem;
+  color: var(--text-secondary); font-size: var(--font-subtitle);
+}
+.doc-list { display: grid; gap: .8rem; }
+
+.doc-item {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: .8rem;
+}
+.doc-item h3 {
+  margin: 0 0 .2rem;
+  font-size: var(--font-card-body); font-weight: 700; color: var(--text-heading);
+  overflow-wrap: anywhere;
+}
+.doc-item > div { min-width: 0; }
+.doc-item-right { display: flex; align-items: center; gap: .6rem; flex-wrap: wrap; }
+
+.doc-status {
+  padding: .2rem .6rem; border-radius: var(--radius-full);
+  font-size: .7rem; font-weight: 700; white-space: nowrap;
+}
+.doc-status-wait { background: var(--status-warning-bg); color: var(--status-warning-text); }
+.doc-status-ok { background: var(--status-success-bg); color: var(--status-success-text); }
+.doc-status-bad { background: var(--status-error-bg); color: var(--status-error-text); }
+.doc-status-muted { background: var(--status-neutral-bg); color: var(--status-neutral-text); }
+
+.doc-btn {
+  display: inline-flex; align-items: center; gap: .35rem;
+  padding: .5rem .95rem; border-radius: var(--radius-xl);
+  font-size: var(--font-subtitle); font-weight: 600; cursor: pointer;
+}
+.doc-btn:disabled { opacity: .5; cursor: not-allowed; }
+.doc-btn-primary { border: 0; background: var(--brand-red); color: #fff; }
+.doc-btn-primary:hover:not(:disabled) { background: var(--brand-red-dark); }
+.doc-btn-ghost { border: 1px solid var(--border-gray); background: var(--bg-white); color: var(--text-secondary); }
+.doc-btn-danger { border: 1px solid var(--status-error-border); background: var(--status-error-bg); color: var(--status-error-text); }
+
+.doc-notice {
+  margin-bottom: 1rem; padding: .7rem .9rem;
+  border-radius: var(--radius-xl); font-size: var(--font-subtitle);
+}
+.doc-notice-bad {
+  background: var(--status-error-bg);
+  border: 1px solid var(--status-error-border);
+  color: var(--status-error-text);
+}
+
+/* ------------------------------ Reading ------------------------------- */
+/* A fixed, scrollable panel rather than a page that grows: the sign control
+   has to be reachable while the document is still on screen, and scroll
+   position is what tells us it was read. */
+.doc-body {
+  max-height: 60vh;
+  overflow-y: auto;
+  margin-bottom: 1rem;
+  font-size: .9rem;
+  line-height: 1.7;
+  color: var(--text-dark);
+  overflow-wrap: anywhere;
+}
+.doc-body:focus-visible { outline: 2px solid var(--brand-red); outline-offset: 2px; }
+.doc-body h1, .doc-body h2, .doc-body h3 { color: var(--text-heading); }
+.doc-body table { width: 100%; border-collapse: collapse; }
+.doc-body td, .doc-body th { padding: .35rem .5rem; border: 1px solid var(--border-gray); }
+.doc-body img { max-width: 100%; }
+
+/* ------------------------------ Signing ------------------------------- */
+.doc-sign { display: grid; gap: .9rem; }
+.doc-sign h2 { margin: 0; font-size: var(--font-subsection-title); color: var(--text-heading); }
+
+.doc-scroll-hint {
+  display: flex; align-items: center; gap: .4rem;
+  margin: 0; padding: .55rem .75rem;
+  border-radius: var(--radius-xl);
+  background: var(--status-warning-bg); color: var(--status-warning-text);
+  font-size: var(--font-label);
+}
+
+.doc-agree {
+  display: flex; align-items: flex-start; gap: .6rem;
+  padding: .75rem .85rem;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-xl);
+  background: var(--bg-card-hover);
+  font-size: var(--font-subtitle); line-height: 1.5;
+  cursor: pointer;
+}
+.doc-agree input { margin-top: .2rem; flex-shrink: 0; }
+.doc-agree.is-locked { opacity: .55; cursor: not-allowed; }
+
+.doc-field { display: grid; gap: .3rem; }
+.doc-field > span {
+  font-size: var(--font-label); font-weight: var(--font-label-weight);
+  color: var(--text-secondary);
+}
+.doc-field input, .doc-field textarea {
+  padding: .6rem .75rem;
+  border: 1px solid var(--border-gray); border-radius: var(--radius-xl);
+  background: var(--bg-white); color: var(--text-dark);
+  font-size: var(--font-subtitle); font-family: inherit;
+}
+.doc-field input:disabled { opacity: .55; }
+.doc-field textarea { resize: vertical; }
+
+.doc-sign-actions { display: flex; flex-wrap: wrap; justify-content: flex-end; gap: .5rem; }
+
+/* ---------------------------- Signed record --------------------------- */
+.doc-signed {
+  background: var(--status-success-bg);
+  border-color: var(--status-success-border);
+  color: var(--status-success-text);
+}
+.doc-signed h2 {
+  display: flex; align-items: center; gap: .4rem;
+  margin: 0 0 .75rem; font-size: var(--font-subsection-title);
+}
+.doc-signed dl {
+  display: grid; grid-template-columns: repeat(auto-fit, minmax(170px, 1fr));
+  gap: .8rem; margin: 0;
+}
+.doc-signed dl div { display: grid; gap: .1rem; min-width: 0; }
+.doc-signed dt { font-size: .7rem; text-transform: uppercase; letter-spacing: .04em; opacity: .8; }
+.doc-signed dd { margin: 0; font-weight: 600; overflow-wrap: anywhere; }
+.doc-intent-record {
+  display: flex; align-items: flex-start; gap: .35rem;
+  margin: .9rem 0 0; padding-top: .75rem;
+  border-top: 1px solid var(--status-success-border);
+  font-size: var(--font-label); font-style: italic;
+}
+
+/* A tampered document is not shown at all — rendering it with a warning
+   attached invites signing it anyway. */
+.doc-tampered {
+  background: var(--status-error-bg);
+  border-color: var(--status-error-border);
+  color: var(--status-error-text);
+}
+.doc-tampered h2 {
+  display: flex; align-items: center; gap: .4rem;
+  margin: 0 0 .5rem; font-size: var(--font-subsection-title);
+}
+.doc-tampered p { margin: 0; font-size: var(--font-subtitle); line-height: 1.6; }
+
+/* ------------------------------ Dialog -------------------------------- */
+.doc-backdrop {
+  position: fixed; inset: 0; z-index: var(--z-overlay);
+  display: grid; place-items: center; padding: 1rem;
+  background: rgba(16, 22, 29, .45);
+}
+.doc-dialog {
+  display: grid; gap: .8rem;
+  width: 100%; max-width: 420px; padding: 1.35rem;
+  border-radius: var(--radius-2xl);
+  background: var(--glass-bg);
+  box-shadow: var(--glass-shadow-hover);
+}
+.doc-dialog h2 { margin: 0; font-size: var(--font-subsection-title); color: var(--text-heading); }
+
+@media (max-width: 640px) {
+  .doc-item, .doc-item-right { width: 100%; }
+  .doc-body { max-height: 50vh; }
+}

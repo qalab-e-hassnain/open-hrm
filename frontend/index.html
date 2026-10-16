@@ -1,0 +1,38 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" type="image/webp" href="/logo.webp" />
+    <link rel="apple-touch-icon" href="/logo.webp" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta
+      name="description"
+      content="Attendance, leave, payroll, documents and equipment for your company."
+    />
+    <meta name="theme-color" content="#0a0a0a" />
+    <!-- The API is on another origin, so without this the browser only learns
+         it exists once the bundle has downloaded, parsed and fired its first
+         request — and then pays a ~1s TLS handshake before any data moves.
+         This starts the handshake alongside the bundle download instead, so it
+         is already finished when the first call goes out. `crossorigin` is
+         required: the socket it warms has to be the CORS one the API calls
+         actually use, or they open a second connection and pay again.
+         The host is also set as VITE_API_BASE_URL in
+         .github/workflows/azure-static-web-apps-calm-plant-01ccac000.yml —
+         change both together. -->
+    <title>%VITE_BRAND_NAME%</title>
+    <script>
+      (function () {
+        try {
+          if (localStorage.getItem('theme') === 'dark') {
+            document.documentElement.setAttribute('data-theme', 'dark');
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+  </body>
+</html>

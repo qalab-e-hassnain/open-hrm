@@ -1,0 +1,550 @@
+/* Local tokens -> project palette (index.css). The names this file used
+   before (--primary-color / --surface-color / --background-color /
+   --border-color / --text-primary) are not declared anywhere in the project,
+   which made every rule referencing them invalid at computed-value time, so
+   the borders and backgrounds collapsed to transparent.
+   --la-border mirrors --lv-tab-border in Leaves.css so both leave screens
+   draw the same visible control border. */
+:root {
+  --la-border: var(--border-strong);
+}
+
+[data-theme="dark"] {
+  --la-border: var(--border-strong);
+}
+
+.leave-apply-page {
+  width: 100%;
+  max-width: 1280px;
+  margin-inline: auto;
+  color: var(--text-dark);
+}
+
+/* Sits in normal flow. It used to be pulled up 56px to tuck alongside the page
+   heading, which lives in Leaves.tsx outside this component — so the links
+   overlapped whatever was above them and, on narrower widths, ran into the tab
+   bar. Right-aligned in place instead. */
+.leave-quick-links {
+  display: flex;
+  justify-content: flex-end;
+  flex-wrap: wrap;
+  gap: 18px;
+  margin: 0 0 16px;
+}
+
+.leave-quick-links a {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  color: var(--text-secondary);
+  font-size: 13px;
+  font-weight: 650;
+  text-decoration: none;
+}
+
+.leave-quick-links a:hover { color: var(--brand-red); }
+
+.leave-warning {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  margin-bottom: 14px;
+  padding: 10px 13px;
+  border: 1px solid color-mix(in srgb, #d97706 35%, var(--la-border));
+  border-radius: 8px;
+  background: color-mix(in srgb, #d97706 7%, var(--bg-white));
+  font-size: 12px;
+}
+.leave-warning > svg { margin-top: 2px; color: #d97706; }
+.leave-warning > div { display: grid; gap: 2px; flex: 1; }
+.leave-warning button { border: 0; background: none; color: var(--text-secondary); cursor: pointer; }
+
+.leave-policy-caution {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr) auto;
+  align-items: center;
+  gap: .75rem;
+  margin-bottom: 1rem;
+  padding: .8rem .9rem;
+  border: 1px solid color-mix(in srgb, var(--brand-red) 32%, var(--la-border));
+  border-left: 3px solid var(--brand-red);
+  border-radius: .5rem;
+  background: color-mix(in srgb, var(--brand-red) 6%, var(--bg-white));
+}
+
+.leave-policy-caution > svg {
+  color: var(--brand-red);
+}
+
+.leave-policy-caution > div {
+  display: grid;
+  gap: .18rem;
+}
+
+.leave-policy-caution strong {
+  color: var(--text-heading);
+  font-size: 0.8125rem;
+}
+
+.leave-policy-caution span {
+  color: var(--text-secondary);
+  font-size: 0.75rem;
+  line-height: 1.45;
+}
+
+.leave-policy-caution button {
+  min-height: 2.2rem;
+  padding: 0 .75rem;
+  border: 1px solid var(--brand-red);
+  border-radius: .4rem;
+  background: var(--brand-red);
+  color: #fff;
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background 160ms ease, transform 160ms ease;
+}
+
+.leave-policy-caution button:hover {
+  background: var(--brand-red-dark);
+}
+
+.leave-policy-caution button:active {
+  transform: translateY(1px);
+}
+
+.leave-policy-caution button:focus-visible {
+  outline: 2px solid var(--brand-red);
+  outline-offset: 2px;
+}
+
+.leave-main-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 68fr) minmax(285px, 32fr);
+  gap: 24px;
+  align-items: start;
+}
+
+@media (max-width: 640px) {
+  .leave-policy-caution {
+    grid-template-columns: auto minmax(0, 1fr);
+  }
+  .leave-policy-caution button {
+    grid-column: 2;
+    justify-self: start;
+  }
+}
+
+.leave-balance-cards,
+.leave-request-card,
+.leave-calendar,
+.leave-upcoming {
+  border: 1px solid var(--la-border);
+  border-radius: 11px;
+  background: var(--bg-white);
+  box-shadow: 0 2px 8px color-mix(in srgb, var(--text-dark) 5%, transparent);
+}
+
+.leave-balance-cards { margin-bottom: 24px; padding: 20px; }
+.leave-balance-cards > header { display:flex; align-items:flex-end; justify-content:space-between; gap:16px; margin-bottom:14px; }
+.leave-balance-cards h2 { margin:0; font-size: 17px; }
+.leave-balance-cards header p { margin:3px 0 0; color:var(--text-secondary); font-size: 12px; }
+.leave-balance-cards header > span { color:var(--text-secondary); font-size: 12px; }
+/* auto-fit, not a hard 7 columns: seven tracks at a 120px minimum plus gaps
+   need ~888px, but this card sits in the 68fr column and only offers ~800px, so
+   a fixed count overflowed and the last card ran through the card's border.
+   auto-fit wraps to as many as actually fit instead. */
+.leave-balance-cards > div { display:grid; grid-template-columns:repeat(auto-fit,minmax(118px,1fr)); gap:8px; }
+.leave-balance-cards article { position:relative; min-width:0; padding:12px; border:1px solid var(--la-border); border-radius:8px; background:var(--bg-card-hover); }
+.leave-balance-cards article > span { display:block; color:var(--text-secondary); font-size: 12px; }
+.leave-balance-cards article > strong { display:block; margin:7px 0 3px; font-size: 18px; font-variant-numeric:tabular-nums; }
+.leave-balance-cards article > small { color:var(--text-secondary); font-size: 12px; }
+.leave-balance-cards article > i { display:block; height:3px; margin-top:10px; overflow:hidden; border-radius:3px; background:var(--la-border); }
+.leave-balance-cards article > i b { display:block; height:100%; background:#16a34a; }
+.leave-balance-cards article > em { display:block; margin-top:7px; color:#b45309; font-size: 12px; font-style:normal; font-weight:750; }
+.leave-balance-cards article.low > i b { background:#d97706; }
+.leave-balance-cards article.exhausted > i b { background:#dc2626; }
+.leave-balance-cards article.exhausted > em { color:#dc2626; }
+.leave-balance-cards article.unlimited > strong { color:var(--text-secondary); }
+.leave-balance-skeleton header,
+.leave-balance-skeleton article { min-height:72px; border-color:transparent; background:linear-gradient(90deg,var(--bg-card-hover),var(--la-border),var(--bg-card-hover)); background-size:220% 100%; animation:leave-shimmer 1.35s infinite linear; }
+
+.leave-balance-rail {
+  overflow: hidden;
+}
+
+.leave-balance-rail > header {
+  display: grid;
+  place-items: center;
+  padding: 20px 16px 15px;
+  text-align: center;
+}
+.leave-balance-rail > header > span {
+  justify-self: start;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .13em;
+  text-transform: uppercase;
+}
+.leave-balance-ring {
+  display: grid;
+  place-items: center;
+  width: 120px;
+  height: 120px;
+  margin: 18px 0 12px;
+  border-radius: 50%;
+  background: conic-gradient(var(--brand-red) var(--leave-used), var(--la-border) 0);
+}
+.leave-balance-ring::before {
+  content: "";
+  grid-area: 1 / 1;
+  width: 96px;
+  height: 96px;
+  border-radius: 50%;
+  background: var(--bg-white);
+}
+.leave-balance-ring > div { z-index: 1; grid-area: 1 / 1; display: grid; place-items: center; }
+.leave-balance-ring strong { font-size: 32px; font-variant-numeric: tabular-nums; line-height: 1; }
+.leave-balance-ring small { margin-top: 4px; color: var(--text-secondary); font-size: 12px; }
+.leave-balance-ring em { margin-top: 7px; color: var(--text-secondary); font-size: 12px; font-style: normal; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+.leave-balance-rail > header > b { display: inline-flex; align-items: center; gap: 5px; padding: 5px 8px; border: 1px solid rgb(217 119 6 / 35%); border-radius: 6px; background: rgb(217 119 6 / 7%); color: #b45309; font-size: 12px; }
+
+.leave-balance-rail ul,
+.leave-upcoming ul { margin: 0; padding: 0; list-style: none; }
+.leave-balance-rail li {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 47px;
+  margin-inline: 14px;
+  border-top: 1px solid var(--la-border);
+  font-size: 12px;
+}
+.leave-balance-rail li > span { display: flex; align-items: center; gap: 8px; }
+.leave-balance-rail li i {
+  display: grid;
+  place-items: center;
+  width: 25px;
+  height: 25px;
+  border-radius: 50%;
+  background: var(--bg-card-hover);
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-style: normal;
+  font-weight: 750;
+}
+.leave-balance-rail li strong { color: var(--text-secondary); font-size: 12px; font-weight: 600; }
+.leave-balance-rail > footer { display: grid; gap: 3px; padding: 14px; border-top: 1px solid var(--la-border); background: var(--bg-card-hover); }
+.leave-balance-rail > footer span { font-size: 12px; font-weight: 650; }
+.leave-balance-rail > footer small { color: var(--text-secondary); font-size: 12px; }
+
+.leave-rail-skeleton > header,
+.leave-rail-skeleton li {
+  min-height: 55px;
+  border-color: transparent;
+  background: linear-gradient(90deg, var(--bg-card-hover), var(--la-border), var(--bg-card-hover));
+  background-size: 220% 100%;
+  animation: leave-shimmer 1.35s infinite linear;
+}
+@keyframes leave-shimmer { to { background-position: -220% 0; } }
+
+.leave-request-card { overflow: hidden; }
+.leave-request-card > header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  padding: 20px 22px 15px;
+  border-bottom: 1px solid var(--la-border);
+}
+.leave-request-card > header span { color: var(--brand-red); font-size: 12px; font-weight: 750; letter-spacing: .12em; text-transform: uppercase; }
+.leave-request-card h2 { margin: 3px 0 0; font-size: 22px; letter-spacing: -.025em; }
+.leave-request-card > header small { color: var(--text-secondary); font-size: 12px; }
+.leave-request-card form { display:grid; padding:0; }
+.leave-request-card > header p { margin:4px 0 0; color:var(--text-secondary); font-size: 12px; }
+
+.leave-form-block { margin:0; padding:20px 22px 22px; border:0; border-bottom:1px solid var(--la-border); }
+/* Out of the visual flow, still announced: a painted legend lives in the
+   fieldset's top border area, which the block's padding-top cannot reach, so
+   the step number ended up sitting on the divider above it. */
+.leave-form-block > legend { position:absolute; width:1px; height:1px; margin:-1px; padding:0; overflow:hidden; clip-path:inset(50%); white-space:nowrap; border:0; }
+/* Flex, not a float: the step number was floated left, so a long section
+   subtitle wrapped underneath and ran back under the number instead of staying
+   in its own column. */
+.leave-form-heading { width:100%; display:flex; align-items:flex-start; gap:9px; margin:0 0 16px; padding:0; }
+.leave-form-heading > i { display:grid; flex:0 0 25px; place-items:center; width:25px; height:25px; border-radius:6px; background:color-mix(in srgb,var(--brand-red) 10%,transparent); color:var(--brand-red); font-size: 12px; font-style:normal; font-weight:800; }
+.leave-form-heading > span { min-width:0; display:grid; gap:2px; }
+.leave-form-heading strong { font-size: 14px; }
+.leave-form-heading small { color:var(--text-secondary); font-size: 12px; font-weight:450; }
+.leave-form-fields { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:16px; }
+.leave-form-fields .wide { grid-column:1 / -1; }
+
+.leave-control-group > label,
+.leave-mode-row > label {
+  display: block;
+  margin-bottom: 7px;
+  color: var(--text-secondary);
+  font-size: 12px;
+  font-weight: 750;
+  letter-spacing: .09em;
+  text-transform: uppercase;
+}
+.leave-type-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 7px; }
+.leave-type-grid button {
+  position: relative;
+  display: grid;
+  gap: 2px;
+  min-height: 68px;
+  padding: 10px 12px;
+  border: 1px solid var(--la-border);
+  border-radius: 7px;
+  background: var(--bg-card-hover);
+  color: var(--text-dark);
+  text-align: left;
+  cursor: pointer;
+  transition: border-color .16s ease, background .16s ease, transform .16s ease;
+}
+.leave-type-grid button:hover:not(:disabled) { border-color: color-mix(in srgb, var(--brand-red) 55%, var(--la-border)); transform: translateY(-1px); }
+.leave-type-grid button.selected { border-color: var(--brand-red); background: color-mix(in srgb, var(--brand-red) 7%, var(--bg-white)); }
+.leave-type-grid button:disabled { opacity: .42; cursor: not-allowed; }
+.leave-type-grid button > span { font-size: 12px; font-weight: 750; }
+.leave-type-grid button > strong { font-size: 12px; font-weight: 600; }
+.leave-type-grid button > small { color: var(--text-secondary); font-size: 12px; }
+.leave-type-grid button > i { position: absolute; top: 8px; right: 8px; display: grid; place-items: center; width: 18px; height: 18px; border-radius: 50%; background: var(--brand-red); color: #fff; font-size: 12px; }
+
+.leave-inline-policy {
+  display: flex;
+  gap: 8px;
+  padding: 9px 10px;
+  border: 1px solid rgb(217 119 6 / 35%);
+  border-radius: 7px;
+  background: rgb(217 119 6 / 7%);
+  color: #b45309;
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.leave-mode-row { display: flex; align-items: center; justify-content: space-between; }
+.leave-mode-row > label { margin: 0; }
+.leave-day-mode { display: inline-flex; padding: 2px; border: 1px solid var(--la-border); border-radius: 7px; background: var(--bg-card-hover); }
+.leave-day-mode button { min-height: 29px; padding: 0 11px; border: 0; border-radius: 5px; background: none; color: var(--text-secondary); font-size: 12px; font-weight: 650; cursor: pointer; }
+.leave-day-mode button.active { background: var(--bg-white); color: var(--brand-red); box-shadow: 0 1px 3px rgb(15 23 42 / 10%); }
+
+.leave-date-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 10px; }
+.leave-date-grid.single { grid-template-columns: 1fr; }
+.leave-field { position: relative; display: grid; gap: 6px; color: var(--text-secondary); font-size: 12px; font-weight: 750; letter-spacing: .06em; text-transform: uppercase; }
+.leave-field input,
+.leave-field select,
+.leave-field textarea {
+  width: 100%;
+  min-height: 42px;
+  padding: 9px 11px;
+  border: 1px solid var(--la-border);
+  border-radius: 7px;
+  outline: none;
+  background: var(--bg-card-hover);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 500;
+  letter-spacing: 0;
+  text-transform: none;
+}
+.leave-field select { appearance:auto; }
+.leave-field textarea { min-height: 72px; resize: vertical; line-height: 1.45; }
+.leave-field input:hover,
+.leave-field select:hover,
+.leave-field textarea:hover { border-color: color-mix(in srgb, var(--text-dark) 40%, var(--la-border)); }
+.leave-field input:focus,
+.leave-field select:focus,
+.leave-field textarea:focus { border-color: var(--brand-red); box-shadow: var(--glow-red); }
+.leave-field [aria-invalid="true"] { border-color: #dc2626; }
+.leave-field small.error { color: #dc2626; font-size: 12px; font-weight: 700; text-transform: none; letter-spacing: 0; }
+/* Sits under the box in normal flow rather than absolutely inside it. Overlaid,
+   it covered the textarea's resize handle and — when it carried a validation
+   message instead of the character count — printed straight over the last line
+   of the user's own text. */
+.leave-field small.counter { justify-self: end; color: var(--text-secondary); font-size: 12px; letter-spacing: 0; text-transform: none; text-align: right; }
+/* Same element doubles as the character counter and the error message, so
+   this needs its own colour — otherwise it silently inherits the counter's
+   muted grey instead of the red every other validation message uses. */
+.leave-field small.counter.error { justify-self: stretch; text-align: left; color: #dc2626; font-weight: 700; }
+
+.leave-mode-control { display:flex; align-items:center; justify-content:space-between; }
+.leave-mode-control > span { color:var(--text-secondary); font-size: 12px; font-weight:750; text-transform:uppercase; letter-spacing:.06em; }
+/* Read-only value shown beside real inputs in .leave-form-fields, so it copies
+   .leave-field's anatomy exactly: caption outside the box, then a box with the
+   same 42px min-height as an input. Putting the caption *inside* a single
+   tinted block is what made these read as oversized cards — the block was
+   being compared against the input alone, not against label+input. Matching
+   the anatomy also keeps a tile the right size when it has no field beside it,
+   which stretching alone could never fix. */
+.leave-readonly { display:grid; align-content:start; gap:6px; }
+.leave-readonly > small { color:var(--text-secondary); font-size: 12px; font-weight:750; letter-spacing:.06em; text-transform:uppercase; }
+.leave-readonly-box { display:grid; align-content:center; gap:1px; min-height:42px; padding:5px 11px; border:1px solid var(--la-border); border-radius:7px; background:color-mix(in srgb,var(--brand-red) 4%,var(--bg-card-hover)); }
+.leave-readonly-box > strong { color:var(--text-dark); font-size: 13px; }
+.leave-readonly-box > span { color:var(--text-secondary); font-size: 12px; }
+.leave-readonly > em { color:#dc2626; font-size: 12px; font-weight: 700; font-style:normal; }
+
+/* No negative top margin — it pulled the chips up into the textarea above them.
+   The grid gap already separates them. */
+.leave-reason-chips { display: flex; flex-wrap: wrap; gap: 5px; }
+.leave-reason-chips button { padding: 4px 8px; border: 1px solid var(--la-border); border-radius: 14px; background: transparent; color: var(--text-secondary); font-size: 12px; cursor: pointer; }
+.leave-reason-chips button:hover { border-color: var(--brand-red); color: var(--brand-red); }
+
+.leave-handover-row { display: flex; align-items: center; gap: 9px; padding: 9px 10px; border: 1px solid var(--la-border); border-radius: 7px; background: var(--bg-card-hover); }
+.leave-handover-row svg { color: var(--brand-red); }
+.leave-handover-row span { display: grid; gap: 2px; color: var(--text-secondary); font-size: 12px; }
+.leave-handover-row strong { color: var(--text-dark); font-size: 12px; }
+
+.leave-upload { border: 1px dashed var(--la-border); border-radius: 7px; background: var(--bg-card-hover); }
+.leave-upload:hover { border-color: var(--brand-red); }
+.leave-upload.invalid { border-color: #dc2626; }
+.leave-upload input { display: none; }
+.leave-upload-prompt { display: flex; align-items: center; gap: 9px; width: 100%; min-height: 56px; padding: 9px 11px; border: 0; background: none; color: var(--text-dark); text-align: left; cursor: pointer; }
+.leave-upload-prompt > svg { color: var(--brand-red); font-size: 18px; }
+.leave-upload-prompt > span { display: grid; gap: 2px; flex: 1; }
+.leave-upload-prompt strong { font-size: 12px; }
+.leave-upload-prompt small { color: var(--text-secondary); font-size: 12px; }
+.leave-upload-prompt em { padding: 6px 8px; border: 1px solid var(--la-border); border-radius: 5px; font-size: 12px; font-style: normal; font-weight: 700; }
+.leave-file-row { display: flex; align-items: center; gap: 9px; min-height: 56px; padding: 9px 11px; }
+.leave-file-row > svg { color: var(--brand-red); }
+.leave-file-row > span { display: grid; gap: 2px; flex: 1; }
+.leave-file-row strong { font-size: 12px; }
+.leave-file-row small { color: var(--text-secondary); font-size: 12px; }
+.leave-file-row button { border: 0; background: none; color: var(--text-secondary); cursor: pointer; }
+.leave-document-error { color: #dc2626; font-size: 12px; font-weight: 700; }
+.leave-submit-error { display: flex; gap: 7px; padding: 8px 10px; border-radius: 6px; background: rgb(220 38 38 / 8%); color: #dc2626; font-size: 12px; font-weight: 700; }
+
+.leave-form-footer {
+  position:sticky;
+  bottom:0;
+  z-index:2;
+  display:flex;
+  align-items:center;
+  justify-content:flex-end;
+  gap:8px;
+  padding:14px 22px;
+  border-top:1px solid var(--la-border);
+  background:var(--bg-white);
+}
+.leave-form-footer > span { margin-right:auto; color:var(--text-secondary); font-size: 12px; }
+.leave-form-footer button { display:inline-flex; align-items:center; justify-content:center; gap:6px; min-height:38px; padding:0 13px; border:1px solid var(--la-border); border-radius:7px; background:var(--bg-white); color:var(--text-dark); font-size: 12px; font-weight:700; cursor:pointer; }
+.leave-form-footer button.ghost { border-color:transparent; color:var(--text-secondary); }
+.leave-form-footer button.primary { border-color:var(--brand-red); background:var(--brand-red); color:#fff; }
+.leave-form-footer button:disabled { border-color:var(--la-border); background:var(--la-border); color:var(--text-secondary); cursor:not-allowed; }
+
+.leave-review-button {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 42px;
+  border: 1px solid var(--brand-red);
+  border-radius: 7px;
+  background: var(--brand-red);
+  color: #fff;
+  font-size: 12px;
+  font-weight: 750;
+  cursor: pointer;
+}
+.leave-review-button:hover { filter: brightness(.94); }
+.leave-review-button svg { transition: transform .16s ease; }
+.leave-review-button:hover svg { transform: translateX(3px); }
+.leave-review-button:disabled { opacity: .5; cursor: wait; }
+.leave-save-link { justify-self: center; display: inline-flex; align-items: center; gap: 5px; border: 0; background: none; color: var(--text-secondary); font-size: 12px; cursor: pointer; }
+.leave-save-link:hover { color: var(--brand-red); }
+
+.leave-context-rail { position: sticky; top: 82px; display: grid; gap: 14px; max-height: calc(100vh - 100px); overflow-y: auto; scrollbar-width: thin; }
+.leave-calendar,
+.leave-upcoming { padding: 15px; }
+.leave-calendar > header,
+.leave-upcoming > header { display: flex; align-items: center; justify-content: space-between; }
+.leave-calendar h3,
+.leave-upcoming h3 { margin: 0; font-size: 13px; }
+.leave-calendar header div { display: flex; gap: 4px; }
+.leave-calendar header button { display: grid; place-items: center; width: 26px; height: 26px; border: 0; border-radius: 5px; background: transparent; color: var(--text-dark); cursor: pointer; }
+.leave-calendar header button:hover { background: var(--bg-card-hover); }
+.leave-calendar > strong { display: block; margin: 13px 0 9px; text-align: center; font-size: 12px; }
+.leave-calendar-week,
+.leave-calendar-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 3px; }
+.leave-calendar-week span { padding: 3px 0; color: var(--text-secondary); text-align: center; font-size: 12px; font-weight: 650; }
+.leave-calendar-grid > button,
+.leave-calendar-grid > i { position: relative; aspect-ratio: 1; border: 0; border-radius: 50%; background: transparent; color: var(--text-dark); font-size: 12px; font-weight: 600; cursor: pointer; }
+.leave-calendar-grid > button:hover:not(:disabled) { background: var(--bg-card-hover); }
+.leave-calendar-grid > button.weekend { color: var(--text-secondary); opacity: .6; }
+.leave-calendar-grid > button:disabled { opacity: .32; cursor: default; }
+.leave-calendar-grid > button.today { outline: 1px solid var(--brand-red); outline-offset: -2px; }
+/* Full-circle tint instead of a small dot: easier to spot at a glance, and
+   still only two colours in play — green for an approved (confirmed) leave,
+   amber for one still pending — matching this app's colour rules elsewhere. */
+.leave-calendar-grid > button.approved { background: rgba(22, 163, 74, 0.18); color: #15803d; font-weight: 700; }
+.leave-calendar-grid > button.pending,
+.leave-calendar-grid > button.manager_approved { background: rgba(217, 119, 6, 0.18); color: #b45309; font-weight: 700; }
+.leave-calendar-grid > button.selected { background: var(--brand-red); color: #fff; }
+.leave-calendar-legend { display: flex; gap: 9px; margin-top: 10px; color: var(--text-secondary); font-size: 12px; }
+.leave-calendar-legend span { display: flex; align-items: center; gap: 4px; }
+.leave-calendar-legend i { width: 5px; height: 5px; border-radius: 50%; background: #16a34a; }
+.leave-calendar-legend i.pending { background: #d97706; }
+.leave-calendar-legend i.today { background: var(--brand-red); }
+
+.leave-upcoming > header a { color: var(--brand-red); font-size: 12px; font-weight: 650; text-decoration: none; }
+.leave-upcoming li { display: flex; align-items: center; gap: 8px; min-height: 48px; border-top: 1px solid var(--la-border); }
+.leave-upcoming li:first-child { margin-top: 10px; }
+.leave-upcoming li > i { display: grid; place-items: center; width: 28px; height: 28px; border-radius: 50%; background: color-mix(in srgb, var(--brand-red) 9%, var(--bg-card-hover)); color: var(--brand-red); font-size: 12px; font-style: normal; font-weight: 750; }
+.leave-upcoming li > span { display: grid; gap: 2px; flex: 1; }
+.leave-upcoming li strong { font-size: 12px; }
+.leave-upcoming li small { color: var(--text-secondary); font-size: 12px; }
+.leave-upcoming li > em { color: var(--text-secondary); font-size: 12px; font-style: normal; text-transform: capitalize; }
+.leave-upcoming-empty { display: grid; place-items: center; padding: 26px 10px 16px; text-align: center; }
+.leave-upcoming-empty svg { margin-bottom: 8px; color: var(--text-secondary); font-size: 22px; }
+.leave-upcoming-empty strong { font-size: 12px; }
+.leave-upcoming-empty span { margin-top: 3px; color: var(--text-secondary); font-size: 12px; }
+
+.leave-review-backdrop { position: fixed; inset: 0; z-index: var(--z-overlay); display: grid; place-items: center; padding: 20px; background: rgb(3 7 18 / 55%); backdrop-filter: blur(3px); }
+.leave-review { width: min(450px, 100%); overflow: hidden; border: 1px solid var(--la-border); border-radius: 11px; background: var(--bg-white); box-shadow: 0 22px 60px rgb(0 0 0 / 25%); }
+.leave-review header { display: flex; justify-content: space-between; padding: 19px; border-bottom: 1px solid var(--la-border); }
+.leave-review header p { margin: 0 0 4px; color: var(--brand-red); font-size: 12px; font-weight: 750; text-transform: uppercase; letter-spacing: .08em; }
+.leave-review h2 { margin: 0; font-size: 19px; }
+.leave-review header > button { width: 30px; height: 30px; border: 0; background: none; color: var(--text-secondary); cursor: pointer; }
+.leave-review dl { display: grid; grid-template-columns: 115px 1fr; gap: 11px; margin: 0; padding: 19px; font-size: 12px; }
+.leave-review dt { color: var(--text-secondary); }
+.leave-review dd { margin: 0; font-weight: 650; }
+.leave-review footer { display: flex; justify-content: flex-end; gap: 8px; padding: 11px 19px; border-top: 1px solid var(--la-border); background: var(--bg-card-hover); }
+.leave-review footer button { min-height: 36px; padding: 0 13px; border: 1px solid var(--la-border); border-radius: 6px; background: var(--bg-white); color: var(--text-dark); font-size: 12px; font-weight: 700; cursor: pointer; }
+.leave-review footer button.primary { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+
+.leave-success { display: grid; place-items: center; padding: 55px 20px; border: 1px solid var(--la-border); border-radius: 11px; background: var(--bg-white); text-align: center; }
+.leave-success > i { display: grid; place-items: center; width: 46px; height: 46px; border-radius: 50%; background: rgb(22 163 74 / 12%); color: #16a34a; font-size: 23px; }
+.leave-success h2 { margin: 15px 0 5px; font-size: 21px; }
+.leave-success p { margin: 0 0 13px; color: var(--text-secondary); font-size: 12px; }
+.leave-success > span { display: flex; align-items: center; gap: 6px; color: #d97706; font-size: 12px; }
+.leave-success > div { display: flex; gap: 8px; margin-top: 17px; }
+.leave-success a,
+.leave-success button { display: inline-flex; align-items: center; min-height: 37px; padding: 0 13px; border: 1px solid var(--la-border); border-radius: 6px; background: var(--bg-white); color: var(--text-dark); font-size: 12px; font-weight: 700; text-decoration: none; cursor: pointer; }
+.leave-success button { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+
+@media (max-width: 1100px) {
+  .leave-balance-cards > div { grid-template-columns:repeat(4,1fr); }
+  .leave-main-grid { grid-template-columns:minmax(0,1.55fr) minmax(260px,.7fr); gap:18px; }
+}
+
+@media (max-width: 760px) {
+  .leave-main-grid { grid-template-columns:1fr; }
+  .leave-context-rail { grid-column: auto; grid-template-columns: 1fr; }
+  .leave-balance-cards > div { display:flex; overflow-x:auto; }
+  .leave-balance-cards article { flex:0 0 140px; }
+}
+
+@media (max-width: 520px) {
+  .leave-request-card form,
+  .leave-request-card > header { padding-inline: 15px; }
+  .leave-form-fields { grid-template-columns:1fr; }
+  .leave-form-fields .wide { grid-column:auto; }
+  .leave-request-card > header small { display: none; }
+  .leave-form-footer { flex-wrap:wrap; }
+  .leave-form-footer > span { width:100%; }
+  .leave-form-footer button { flex:1; }
+}

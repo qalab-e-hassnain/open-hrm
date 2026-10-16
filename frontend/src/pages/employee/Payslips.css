@@ -1,0 +1,1013 @@
+/* ===================================================================
+   Payslips  ·  application UI (left) + document preview (right)
+
+   Every class is `ps-` prefixed and scoped under .payslips-page, following
+   the lv-/rb- convention used by Leaves and Reimbursements: page stylesheets
+   are concatenated into one bundle, so unprefixed names get captured by
+   whichever sheet Vite emits last.
+   =================================================================== */
+
+.payslips-page {
+  --ps-border: var(--border-strong);
+  --ps-surface: var(--bg-white);
+  --ps-canvas: #F6F7F9;
+  --ps-text: #172033;
+  --ps-muted: #667085;
+  --ps-success: #12A66A;
+  --ps-warning: #E59A20;
+  --ps-error: #D92D20;
+  --ps-info: #2970FF;
+
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  width: 100%;
+  max-width: 1440px;
+  margin: 0 auto;
+  color: var(--ps-text);
+}
+
+[data-theme="dark"] .payslips-page {
+  --ps-border: var(--border-strong);
+  --ps-canvas: #101114;
+  --ps-text: var(--text-dark);
+  --ps-muted: var(--text-gray);
+  --ps-success: #34D399;
+  --ps-warning: #FBBF24;
+  --ps-error: #F87171;
+  --ps-info: #60A5FA;
+
+  color-scheme: dark;
+}
+
+/* ---- Header ---- */
+.payslips-page .ps-breadcrumb {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  color: var(--ps-muted);
+  font-size: 0.8125rem;
+}
+.payslips-page .ps-breadcrumb a { color: var(--ps-muted); text-decoration: none; }
+.payslips-page .ps-breadcrumb a:hover { color: var(--brand-red); text-decoration: underline; }
+
+.payslips-page .ps-page-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 1rem;
+}
+.payslips-page .ps-page-title {
+  margin: 0;
+  color: var(--text-heading);
+  font-size: 1.875rem;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+}
+.payslips-page .ps-page-header p {
+  margin: 0.25rem 0 0;
+  color: var(--ps-muted);
+  font-size: 0.9375rem;
+}
+.payslips-page .ps-header-actions { display: flex; align-items: center; gap: 0.5rem; }
+.payslips-page .ps-header-actions button,
+.payslips-page .ps-tax-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  padding: 0 0.85rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.5rem;
+  background: var(--ps-surface);
+  color: var(--ps-text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  text-decoration: none;
+  cursor: pointer;
+}
+.payslips-page .ps-header-actions button:hover,
+.payslips-page .ps-tax-link:hover { border-color: var(--brand-red); color: var(--brand-red); }
+
+/* ---- Filters ---- */
+.payslips-page .ps-filters {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 0.75rem;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-surface);
+}
+.payslips-page .ps-field { display: grid; gap: 0.35rem; min-width: 9rem; }
+.payslips-page .ps-field > span {
+  color: var(--ps-text);
+  font-size: 0.8125rem;
+  font-weight: 600;
+}
+.payslips-page .ps-field > span small { color: var(--ps-muted); font-weight: 400; }
+.payslips-page .ps-field select,
+.payslips-page .ps-field input,
+.payslips-page .ps-field textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.5rem;
+  outline: none;
+  background: var(--ps-surface);
+  color: var(--ps-text);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+.payslips-page .ps-field textarea { min-height: 6rem; resize: vertical; line-height: 1.5; }
+.payslips-page .ps-field select:focus,
+.payslips-page .ps-field input:focus,
+.payslips-page .ps-field textarea:focus {
+  border-color: var(--brand-red);
+  box-shadow: var(--glow-red);
+}
+
+.payslips-page .ps-period-nav { display: flex; align-items: center; gap: 0.4rem; margin-left: auto; }
+.payslips-page .ps-period-nav button {
+  display: grid;
+  place-items: center;
+  min-width: 2.75rem;
+  min-height: 2.75rem;
+  padding: 0 0.75rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.5rem;
+  background: var(--ps-surface);
+  color: var(--ps-text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.payslips-page .ps-period-nav button:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.payslips-page .ps-period-nav button:disabled { opacity: 0.45; cursor: not-allowed; }
+
+/* ---- Layout ---- */
+.payslips-page .ps-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 54%) minmax(0, 46%);
+  align-items: start;
+  gap: 1.25rem;
+}
+.payslips-page .ps-column { display: flex; flex-direction: column; gap: 1rem; min-width: 0; }
+
+/* ---- Banners & notices ---- */
+.payslips-page .ps-callout,
+.payslips-page .ps-notice {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid transparent;
+  border-radius: 0.55rem;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+.payslips-page .ps-callout > svg,
+.payslips-page .ps-notice > svg { flex: 0 0 auto; }
+
+.payslips-page .ps-tone-success,
+.payslips-page .ps-notice-success {
+  border-color: color-mix(in srgb, var(--ps-success) 35%, transparent);
+  background: color-mix(in srgb, var(--ps-success) 10%, var(--ps-surface));
+  color: var(--ps-success);
+}
+.payslips-page .ps-tone-info {
+  border-color: color-mix(in srgb, var(--ps-info) 35%, transparent);
+  background: color-mix(in srgb, var(--ps-info) 10%, var(--ps-surface));
+  color: var(--ps-info);
+}
+.payslips-page .ps-tone-warning {
+  border-color: color-mix(in srgb, var(--ps-warning) 40%, transparent);
+  background: color-mix(in srgb, var(--ps-warning) 12%, var(--ps-surface));
+  color: var(--ps-warning);
+}
+.payslips-page .ps-tone-error,
+.payslips-page .ps-notice-error {
+  border-color: color-mix(in srgb, var(--ps-error) 35%, transparent);
+  background: color-mix(in srgb, var(--ps-error) 10%, var(--ps-surface));
+  color: var(--ps-error);
+}
+.payslips-page .ps-tone-neutral {
+  border-color: var(--ps-border);
+  background: var(--bg-card-hover);
+  color: var(--ps-muted);
+}
+
+/* ---- Payment summary ---- */
+.payslips-page .ps-summary {
+  display: grid;
+  /* Three, not four: payment date and method are no longer shown, since
+     neither is recorded and both read "Not set" on every payslip. */
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-surface);
+}
+.payslips-page .ps-summary > div {
+  display: grid;
+  align-content: start;
+  gap: 0.2rem;
+  padding: 1rem 1.1rem;
+  border-left: 1px solid var(--ps-border);
+  /* Grid and flex items default to min-width:auto, which refuses to shrink
+     below the content — that is what pushed "PKR 294,150.00" out of its card
+     rather than letting it reflow. */
+  min-width: 0;
+}
+.payslips-page .ps-summary > div:first-child { border-left: 0; }
+.payslips-page .ps-summary span { color: var(--ps-muted); font-size: 0.75rem; font-weight: 600; }
+.payslips-page .ps-summary strong {
+  color: var(--text-heading);
+  font-size: 1rem;
+  font-variant-numeric: tabular-nums;
+}
+.payslips-page .ps-summary small { color: var(--ps-muted); font-size: 0.75rem; }
+
+/* Net pay is the figure the page exists to communicate. */
+.payslips-page .ps-summary-net strong {
+  color: var(--ps-success);
+  /* Scales with the column instead of overflowing it. A seven-figure salary
+     in a narrow card needs a smaller number, not a wrapped one. */
+  font-size: clamp(1.15rem, 2.1vw + 0.4rem, 1.75rem);
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  overflow-wrap: anywhere;
+}
+.payslips-page .ps-badge {
+  justify-self: start;
+  margin-top: 0.25rem;
+  padding: 0.15rem 0.45rem;
+  border: 1px solid currentColor;
+  border-radius: 0.3rem;
+  font-size: 0.75rem;
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+}
+
+/* ---- Earnings / deductions ---- */
+.payslips-page .ps-breakdown {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 1rem;
+}
+.payslips-page .ps-card {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-surface);
+}
+.payslips-page .ps-card > header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.5rem;
+  padding: 0.9rem 1.1rem;
+  border-bottom: 1px solid var(--ps-border);
+}
+.payslips-page .ps-card h2 { margin: 0; color: var(--text-heading); font-size: 1.0625rem; font-weight: 650; }
+.payslips-page .ps-card > header span { color: var(--ps-muted); font-size: 0.75rem; font-weight: 600; }
+.payslips-page .ps-card ul { flex: 1; margin: 0; padding: 0; list-style: none; }
+.payslips-page .ps-card li {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.6rem 1.1rem;
+  border-bottom: 1px solid var(--border-gray);
+}
+.payslips-page .ps-card li > span { display: grid; gap: 0.1rem; min-width: 0; font-size: 0.875rem; }
+.payslips-page .ps-card li small { color: var(--ps-muted); font-size: 0.75rem; }
+/* Line items stay neutral — only the totals carry colour, so green/red keep
+   meaning instead of decorating every row. */
+.payslips-page .ps-card li > data {
+  color: var(--ps-text);
+  font-size: 0.9375rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+  white-space: nowrap;
+}
+.payslips-page .ps-card .ps-none span { color: var(--ps-muted); font-style: italic; }
+.payslips-page .ps-tag {
+  margin-left: 0.35rem;
+  padding: 0.05rem 0.3rem;
+  border-radius: 0.25rem;
+  background: var(--bg-card-hover);
+  color: var(--ps-muted);
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.payslips-page .ps-card > footer {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.8rem 1.1rem;
+  border-top: 2px solid var(--ps-border);
+  font-size: 0.9375rem;
+  font-weight: 700;
+}
+.payslips-page .ps-card > footer data { font-variant-numeric: tabular-nums; }
+.payslips-page .ps-total-earn data { color: var(--ps-success); }
+.payslips-page .ps-total-deduct data { color: var(--ps-error); }
+
+/* Taxable income — the base the tax line was computed from. Neutral, not
+   green: it is an input to the calculation, not money received. */
+.payslips-page .ps-taxable-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.75rem 1rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-surface);
+}
+.payslips-page .ps-taxable-row > span {
+  display: flex;
+  flex-direction: column;
+  gap: 0.15rem;
+  color: var(--text-heading);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+.payslips-page .ps-taxable-row small {
+  color: var(--text-muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.45;
+}
+.payslips-page .ps-taxable-row data {
+  flex: 0 0 auto;
+  color: var(--text-heading);
+  font-size: 1.0625rem;
+  font-weight: 700;
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---- Year to date ---- */
+.payslips-page .ps-ytd {
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-surface);
+}
+.payslips-page .ps-ytd > header {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  padding: 0.9rem 1.1rem 0.6rem;
+}
+.payslips-page .ps-ytd h2 { margin: 0; color: var(--text-heading); font-size: 1.0625rem; font-weight: 650; }
+.payslips-page .ps-ytd > header span { color: var(--ps-muted); font-size: 0.75rem; }
+.payslips-page .ps-ytd dl {
+  display: grid;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+  margin: 0;
+  padding: 0 1.1rem 1rem;
+}
+.payslips-page .ps-ytd dl > div {
+  display: grid;
+  gap: 0.2rem;
+  padding-left: 1rem;
+  border-left: 1px solid var(--ps-border);
+}
+.payslips-page .ps-ytd dl > div:first-child { padding-left: 0; border-left: 0; }
+.payslips-page .ps-ytd dt { color: var(--ps-muted); font-size: 0.75rem; font-weight: 600; }
+.payslips-page .ps-ytd dd {
+  margin: 0;
+  color: var(--text-heading);
+  font-size: 1.125rem;
+  font-weight: 650;
+  font-variant-numeric: tabular-nums;
+}
+.payslips-page .ps-ytd-compare {
+  margin: 0;
+  padding: 0.6rem 1.1rem;
+  border-top: 1px solid var(--ps-border);
+  color: var(--ps-muted);
+  font-size: 0.8125rem;
+}
+
+/* ---- Support & admin ---- */
+.payslips-page .ps-support,
+.payslips-page .ps-admin {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-surface);
+}
+.payslips-page .ps-support > div,
+.payslips-page .ps-admin > header { display: grid; gap: 0.15rem; }
+.payslips-page .ps-support strong,
+.payslips-page .ps-admin h2 { margin: 0; color: var(--text-heading); font-size: 1rem; font-weight: 650; }
+.payslips-page .ps-support span,
+.payslips-page .ps-admin > header span { color: var(--ps-muted); font-size: 0.8125rem; }
+.payslips-page .ps-support em {
+  color: var(--ps-warning);
+  font-size: 0.8125rem;
+  font-style: normal;
+  font-weight: 600;
+}
+.payslips-page .ps-admin > div { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.payslips-page .ps-support button,
+.payslips-page .ps-admin button {
+  min-height: 2.5rem;
+  padding: 0 0.9rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.5rem;
+  background: var(--ps-surface);
+  color: var(--ps-text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  white-space: nowrap;
+  cursor: pointer;
+}
+.payslips-page .ps-support button:hover,
+.payslips-page .ps-admin button:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.payslips-page .ps-admin button:disabled { opacity: 0.5; cursor: not-allowed; }
+.payslips-page .ps-admin .ps-danger:hover:not(:disabled) { border-color: var(--ps-error); color: var(--ps-error); }
+
+/* ---- Your queries ---- */
+.payslips-page .ps-my-disputes {
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  padding: 0.9rem 1.1rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-surface);
+}
+.payslips-page .ps-my-disputes > header { display: flex; align-items: baseline; justify-content: space-between; gap: 0.5rem; }
+.payslips-page .ps-my-disputes h2 { margin: 0; color: var(--text-heading); font-size: 1rem; font-weight: 650; }
+.payslips-page .ps-my-disputes > header span { color: var(--ps-muted); font-size: 0.8125rem; }
+.payslips-page .ps-my-disputes ul { display: flex; flex-direction: column; gap: 0.7rem; margin: 0; padding: 0; list-style: none; }
+.payslips-page .ps-my-disputes li {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  padding: 0.7rem 0.85rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.5rem;
+  background: var(--bg-card-hover);
+}
+.payslips-page .ps-my-dispute-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 0.6rem; }
+.payslips-page .ps-my-dispute-head > span { display: grid; gap: 0.1rem; min-width: 0; }
+.payslips-page .ps-my-dispute-head strong { color: var(--text-heading); font-size: 0.875rem; font-weight: 650; }
+.payslips-page .ps-my-dispute-head small { color: var(--ps-muted); font-size: 0.75rem; }
+.payslips-page .ps-my-disputes li > p { margin: 0; color: var(--ps-text); font-size: 0.8125rem; }
+.payslips-page .ps-my-dispute-response {
+  display: grid;
+  gap: 0.15rem;
+  padding: 0.55rem 0.7rem;
+  border-left: 2px solid var(--brand-red);
+  border-radius: 0.25rem;
+  background: var(--ps-surface);
+}
+.payslips-page .ps-my-dispute-response strong { color: var(--text-heading); font-size: 0.75rem; font-weight: 650; }
+.payslips-page .ps-my-dispute-response p { margin: 0; color: var(--ps-text); font-size: 0.8125rem; }
+
+/* ---- Document preview ---- */
+.payslips-page .ps-preview {
+  position: sticky;
+  top: 1rem;
+  display: flex;
+  flex-direction: column;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-canvas);
+}
+.payslips-page .ps-preview-toolbar {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.6rem 0.75rem;
+  border-bottom: 1px solid var(--ps-border);
+}
+.payslips-page .ps-preview-toolbar > strong {
+  margin-right: auto;
+  color: var(--text-heading);
+  font-size: 0.875rem;
+  font-weight: 650;
+}
+.payslips-page .ps-preview-toolbar button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.3rem;
+  min-height: 2.1rem;
+  padding: 0 0.6rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.4rem;
+  background: var(--ps-surface);
+  color: var(--ps-text);
+  font: inherit;
+  font-size: 0.75rem;
+  font-weight: 600;
+  cursor: pointer;
+}
+.payslips-page .ps-preview-toolbar button:hover:not(:disabled) { border-color: var(--brand-red); color: var(--brand-red); }
+.payslips-page .ps-preview-toolbar button:disabled { opacity: 0.45; cursor: not-allowed; }
+.payslips-page .ps-preview-surface {
+  max-height: calc(100vh - 12rem);
+  padding: 1.1rem;
+  overflow: auto;
+  background: var(--ps-canvas);
+}
+
+/* ---- The document itself ---- */
+.payslips-page .ps-doc {
+  position: relative;
+  /* No fixed A4 ratio. It held the card to one page's height, so a longer
+     payslip painted its footer outside the white card (overflow is visible),
+     and a shorter one left a dead gap above the address strip. Neither
+     output path used the ratio anyway — the print stylesheet and
+     handleSavePdf both override it to `auto` — so the preview now sizes to
+     its content and matches what actually prints. */
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  padding: 0;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.35rem;
+  background: #fff;
+  box-shadow: 0 4px 18px rgba(16, 24, 40, 0.1);
+  color: #172033;
+  font-size: 0.75rem;
+  overflow: visible;
+}
+.payslips-page .ps-doc-watermark {
+  position: absolute;
+  top: 45%;
+  left: 50%;
+  z-index: 1;
+  color: rgba(217, 45, 32, 0.12);
+  font-size: 3.875rem;
+  font-weight: 800;
+  letter-spacing: 0.1em;
+  pointer-events: none;
+  transform: translate(-50%, -50%) rotate(-24deg);
+  white-space: nowrap;
+}
+
+/* Everything except the letterhead band and the address stripe (both meant
+   to bleed edge-to-edge) lives in here, carrying the padding `.ps-doc`
+   itself no longer has — a genuinely full-width wrapper instead of negative
+   margins, because `.ps-doc` has to stay a definite, self-contained box:
+   Save PDF and this preview's own screenshot tooling both capture exactly
+   that box, and content escaping it via negative margin is silently
+   dropped from both, even though it renders fine live on screen. */
+.payslips-page .ps-doc-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.7rem;
+  min-height: 0;
+  padding: 0.9rem 1.4rem 0.7rem;
+}
+
+/* Letterhead band: logo on the left, a diagonal brand-red accent filling the
+   rest — the one place on the document that reads as the company name rather than
+   generic payroll paperwork. */
+.payslips-page .ps-doc-band {
+  display: flex;
+  flex-shrink: 0;
+  align-items: center;
+  height: 3rem;
+  overflow: hidden;
+}
+.payslips-page .ps-doc-band-logo {
+  flex-shrink: 0;
+  width: 2.3rem;
+  height: 2.3rem;
+  margin-left: 1.4rem;
+  object-fit: contain;
+}
+.payslips-page .ps-doc-band-stripe {
+  flex: 1;
+  align-self: stretch;
+  margin-left: 1.1rem;
+  background: linear-gradient(
+    105deg,
+    transparent 0%, transparent 54%,
+    var(--brand-red-light) 54%, var(--brand-red-light) 63%,
+    var(--brand-red) 63%, var(--brand-red) 100%
+  );
+}
+
+.payslips-page .ps-doc-companyblock {
+  display: grid;
+  justify-items: center;
+  gap: 0.1rem;
+  padding-top: 0.3rem;
+  text-align: center;
+}
+.payslips-page .ps-doc-companyblock strong { color: #172033; font-size: 1.0625rem; font-weight: 750; letter-spacing: -0.01em; }
+.payslips-page .ps-doc-companyblock span { color: #667085; font-size: 0.6875rem; }
+
+.payslips-page .ps-doc-statusrow {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.6rem;
+  padding-bottom: 0.55rem;
+  border-bottom: 2px solid var(--brand-red);
+  color: #667085;
+  font-size: 0.6875rem;
+}
+.payslips-page .ps-doc-status {
+  padding: 0.1rem 0.35rem;
+  border: 1px solid currentColor;
+  border-radius: 0.2rem;
+  font-size: 0.625rem;
+  font-style: normal;
+  font-weight: 700;
+  text-transform: uppercase;
+}
+.payslips-page .ps-status-processed,
+.payslips-page .ps-status-paid { color: #12A66A; }
+.payslips-page .ps-status-processing { color: #2970FF; }
+.payslips-page .ps-status-draft { color: #667085; }
+.payslips-page .ps-status-corrected { color: #E59A20; }
+.payslips-page .ps-status-cancelled { color: #D92D20; }
+
+.payslips-page .ps-doc-idblock { display: grid; grid-template-columns: 1fr 1fr; gap: 0.3rem 1.4rem; }
+.payslips-page .ps-doc-idblock dl { display: grid; gap: 0.3rem; margin: 0; }
+.payslips-page .ps-doc-idblock dl > div { display: flex; justify-content: space-between; gap: 0.6rem; }
+.payslips-page .ps-doc-idblock dt { color: #667085; font-size: 0.6875rem; }
+.payslips-page .ps-doc-idblock dd { margin: 0; font-size: 0.6875rem; font-weight: 650; text-align: right; }
+
+/* Single merged table so Earnings and Deductions read as one reconciled
+   statement (matches the printed-payslip convention) rather than two
+   unrelated cards — a plain grey header, no green/red, since that colour
+   coding is reserved for totals elsewhere in the app. */
+.payslips-page .ps-doc-table { width: 100%; border-collapse: collapse; border: 1px solid #D0D5DD; }
+.payslips-page .ps-doc-table th,
+.payslips-page .ps-doc-table td {
+  border: 1px solid #D0D5DD;
+  padding: 0.26rem 0.5rem;
+  font-size: 0.6875rem;
+  /* Descriptions here run long ("Approved unpaid leave: basic salary / 160
+     hours x 8 hours per working day") and have no spaces to break on in the
+     narrow preview column. */
+  overflow-wrap: anywhere;
+}
+/* Amounts are the one thing that must never wrap — a figure split across two
+   lines misreads. */
+.payslips-page .ps-doc-table tbody td,
+.payslips-page .ps-doc-table tfoot td { white-space: nowrap; }
+.payslips-page .ps-doc-table thead tr:first-child th {
+  background: #E4E7EC;
+  color: #172033;
+  font-size: 0.75rem;
+  font-weight: 700;
+  text-align: left;
+}
+.payslips-page .ps-doc-table thead tr:last-child th {
+  background: #F2F4F7;
+  color: #667085;
+  font-size: 0.625rem;
+  font-weight: 600;
+  text-align: left;
+  text-transform: uppercase;
+}
+.payslips-page .ps-doc-table thead th:nth-child(2n) { text-align: right; }
+.payslips-page .ps-doc-table tbody th { font-weight: 400; text-align: left; }
+.payslips-page .ps-doc-table tbody th small { display: block; color: #667085; font-size: 0.625rem; font-weight: 400; }
+.payslips-page .ps-doc-table tbody td { text-align: right; font-variant-numeric: tabular-nums; }
+.payslips-page .ps-doc-table tfoot th,
+.payslips-page .ps-doc-table tfoot td { font-weight: 700; text-align: left; }
+.payslips-page .ps-doc-table tfoot td { text-align: right; font-variant-numeric: tabular-nums; }
+.payslips-page .ps-doc-table .ps-doc-netrow th,
+.payslips-page .ps-doc-table .ps-doc-netrow td {
+  background: var(--brand-red-soft);
+  color: var(--brand-red-dark);
+  font-size: 0.75rem;
+}
+.payslips-page .ps-doc-table .ps-doc-netrow td:first-child { border: none; background: transparent; }
+
+/* Printable document: the taxable base, sized to the document's own deliberately
+   reduced scale (this preview prints at 10pt and is the one place below the
+   11px floor). */
+
+.payslips-page .ps-doc-note { margin: 0; color: #B42318; font-size: 0.625rem; }
+
+/* Replaces the old sign-here lines: the document is system-issued, so it
+   states that rather than leaving space for signatures nobody provides. */
+.payslips-page .ps-doc-sysnote {
+  margin: 0.35rem 0 0;
+  padding: 0.5rem 0.65rem;
+  border-left: 2px solid #D0D5DD;
+  color: #667085;
+  font-size: 0.625rem;
+  line-height: 1.5;
+}
+
+/* Address strip: contact info at the bottom of the padded body, then a
+   full-bleed diagonal accent (mirroring the letterhead band) as its own
+   flush-bottom sibling of `.ps-doc-body`, outside the padding. */
+.payslips-page .ps-doc-addrbar-items {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.2rem 1.4rem;
+  margin-top: auto;
+  padding-top: 0.5rem;
+  border-top: 1px solid #E5E8ED;
+  color: #667085;
+  font-size: 0.625rem;
+}
+.payslips-page .ps-doc-addrbar-item { display: grid; gap: 0.05rem; min-width: 0; overflow-wrap: anywhere; }
+.payslips-page .ps-doc-addrbar-item strong { color: #172033; font-weight: 650; }
+.payslips-page .ps-doc-addrbar-stripe {
+  flex-shrink: 0;
+  height: 0.55rem;
+  background: linear-gradient(
+    105deg,
+    var(--brand-red) 0%, var(--brand-red) 37%,
+    var(--brand-red-light) 37%, var(--brand-red-light) 46%,
+    transparent 46%, transparent 100%
+  );
+}
+
+/* ---- Loading / empty ---- */
+.payslips-page .ps-skeleton {
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: linear-gradient(90deg, var(--bg-card-hover), var(--ps-border), var(--bg-card-hover));
+  background-size: 220% 100%;
+  animation: ps-shimmer 1.4s infinite linear;
+}
+.payslips-page .ps-skeleton-summary { height: 6rem; }
+.payslips-page .ps-skeleton-cards { height: 17rem; }
+.payslips-page .ps-skeleton-ytd { height: 7rem; }
+.payslips-page .ps-skeleton-doc { height: 40rem; }
+@keyframes ps-shimmer { from { background-position: 220% 0; } to { background-position: -20% 0; } }
+@media (prefers-reduced-motion: reduce) { .payslips-page .ps-skeleton { animation: none; } }
+
+.payslips-page .ps-empty {
+  display: grid;
+  justify-items: center;
+  gap: 0.5rem;
+  padding: 4rem 2rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.7rem;
+  background: var(--ps-surface);
+  text-align: center;
+}
+.payslips-page .ps-empty > svg { width: 2rem; height: 2rem; color: var(--ps-muted); }
+.payslips-page .ps-empty h2 { margin: 0; color: var(--text-heading); font-size: 1.0625rem; }
+.payslips-page .ps-empty p { margin: 0; color: var(--ps-muted); font-size: 0.9375rem; }
+.payslips-page .ps-empty button {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  min-height: 2.5rem;
+  margin-top: 0.5rem;
+  padding: 0 1rem;
+  border: 1px solid var(--ps-border);
+  border-radius: 0.5rem;
+  background: var(--ps-surface);
+  color: var(--ps-text);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+
+/* ---- Dispute dialog ---- */
+.ps-dialog-backdrop {
+  position: fixed;
+  inset: 0;
+  z-index: var(--z-overlay);
+  display: grid;
+  place-items: center;
+  padding: 1rem;
+  background: rgba(16, 24, 40, 0.5);
+}
+.ps-dialog {
+  display: grid;
+  gap: 0.85rem;
+  width: min(30rem, 100%);
+  max-height: 90vh;
+  padding: 1.25rem;
+  overflow: auto;
+  border: 1px solid var(--border-gray);
+  border-radius: 0.7rem;
+  background: var(--bg-white);
+  color: var(--text-dark);
+}
+.ps-dialog > header { display: flex; align-items: center; justify-content: space-between; }
+.ps-dialog h2 { margin: 0; font-size: 1.125rem; font-weight: 650; }
+.ps-dialog > header button {
+  display: grid;
+  place-items: center;
+  width: 2rem;
+  height: 2rem;
+  border: 0;
+  border-radius: 0.4rem;
+  background: none;
+  color: var(--text-gray);
+  cursor: pointer;
+}
+.ps-dialog .ps-field { display: grid; gap: 0.35rem; }
+.ps-dialog .ps-field > span { font-size: 0.8125rem; font-weight: 600; }
+.ps-dialog .ps-field select,
+.ps-dialog .ps-field input,
+.ps-dialog .ps-field textarea {
+  width: 100%;
+  min-height: 2.75rem;
+  padding: 0.5rem 0.7rem;
+  border: 1px solid var(--border-gray);
+  border-radius: 0.5rem;
+  outline: none;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.9375rem;
+}
+.ps-dialog .ps-field textarea { min-height: 6rem; resize: vertical; }
+.ps-dialog-error { margin: 0; color: #D92D20; font-size: 0.8125rem; }
+.ps-dialog > footer { display: flex; justify-content: flex-end; gap: 0.5rem; }
+.ps-dialog > footer button {
+  min-height: 2.5rem;
+  padding: 0 1rem;
+  border: 1px solid var(--border-gray);
+  border-radius: 0.5rem;
+  background: var(--bg-white);
+  color: var(--text-dark);
+  font: inherit;
+  font-size: 0.875rem;
+  font-weight: 650;
+  cursor: pointer;
+}
+.ps-dialog > footer .ps-primary {
+  border-color: var(--brand-red);
+  background: var(--brand-red);
+  color: #fff;
+}
+.ps-dialog > footer button:disabled { opacity: 0.6; cursor: wait; }
+
+/* ---- Responsive ---- */
+@media (max-width: 1180px) {
+  .payslips-page .ps-layout { grid-template-columns: 1fr; }
+  .payslips-page .ps-preview { position: static; }
+  .payslips-page .ps-preview-surface { max-height: none; }
+}
+@media (max-width: 860px) {
+  .payslips-page .ps-summary { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .payslips-page .ps-summary > div:nth-child(-n + 2) { border-bottom: 1px solid var(--ps-border); }
+  .payslips-page .ps-summary > div:nth-child(odd) { border-left: 0; }
+  /* Three cards over two columns leaves the last one alone on its row; let it
+     take the width rather than sit half-empty. */
+  .payslips-page .ps-summary > div:nth-child(3) { grid-column: 1 / -1; }
+  .payslips-page .ps-breakdown { grid-template-columns: 1fr; }
+  .payslips-page .ps-ytd dl { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 0.85rem; }
+  .payslips-page .ps-ytd dl > div:nth-child(odd) { padding-left: 0; border-left: 0; }
+}
+@media (max-width: 640px) {
+  .payslips-page .ps-page-header { flex-direction: column; }
+  .payslips-page .ps-period-nav { margin-left: 0; }
+  .payslips-page .ps-doc { aspect-ratio: auto; }
+  .payslips-page .ps-doc-idblock,
+  .payslips-page .ps-support,
+  .payslips-page .ps-admin { flex-direction: column; align-items: stretch; }
+}
+
+/* ===================================================================
+   Print — the app chrome disappears and only the document is laid out on
+   the page, so "Print / save as PDF" produces the payslip the preview shows.
+   =================================================================== */
+@media print {
+  /* Scoped to when the payslips page is actually on screen — this used to be
+     a bare `body *`, which (since Vite bundles all page CSS globally) hid
+     every element on ANY page's print output, not just this one. Harmless
+     until another page added its own print/PDF button and printed a blank
+     page because nothing on it matched the .payslips-page .ps-doc un-hide
+     rule below. */
+  body:has(.payslips-page) * { visibility: hidden !important; }
+  .payslips-page .ps-doc,
+  .payslips-page .ps-doc * { visibility: visible !important; }
+
+  /* Same anchoring problem as the tax certificate: .main-layout and
+     .main-content are position: relative, and .ps-preview is position: sticky
+     (also a positioned ancestor), so the absolutely positioned document
+     anchored to those rather than to the page area — printing offset, and
+     tall enough to spill onto a second sheet. */
+  .main-layout,
+  .main-content,
+  .payslips-page .ps-preview { position: static !important; }
+
+  .payslips-page .ps-doc {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    /* Was 100vh. In print `vh` is the whole A4 page, but @page reserves 14mm
+       margins, so a 100vh box is ~28mm taller than the printable area and
+       tipped every payslip onto a second, near-empty page. */
+    min-height: 0;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    border-radius: 0;
+    aspect-ratio: auto;
+    box-shadow: none;
+    font-size: 10pt;
+  }
+  .payslips-page .ps-doc-watermark { color: rgba(217, 45, 32, 0.14) !important; }
+
+  /* Colour blocks are meaningful here (letterhead, net pay, address stripe),
+     so ask the browser to keep them rather than dropping them to white. */
+  .payslips-page .ps-doc-band-stripe,
+  .payslips-page .ps-doc-table .ps-doc-netrow th,
+  .payslips-page .ps-doc-table .ps-doc-netrow td,
+  .payslips-page .ps-doc-addrbar-stripe {
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+
+  /* No page margin: the letterhead band and the address stripe are designed
+     to bleed to the paper edge, and a 14mm margin framed them in white. The
+     body below carries the inset instead, so text still sits in from the
+     edge. */
+  @page { size: A4; margin: 0; }
+  .payslips-page .ps-doc-body { padding: 6mm 12mm 5mm !important; }
+}
+
+/* Verification block: the QR sits beside the code so a reader can scan it or
+   type it. Kept small — it only has to carry a short URL, and the printed
+   page has little room left at the foot. */
+.payslips-page .ps-doc-verify {
+  display: flex;
+  align-items: center;
+  gap: 0.45rem;
+}
+.payslips-page .ps-doc-verify > div { display: grid; gap: 0.05rem; min-width: 0; }
+.payslips-page .ps-doc-qr {
+  flex-shrink: 0;
+  width: 2.6rem;
+  height: 2.6rem;
+  /* The generator emits a pixel grid; keep the modules square-edged rather
+     than letting the browser smooth them into unreadable mush when scaled. */
+  image-rendering: pixelated;
+}
+@media print {
+  .payslips-page .ps-doc-qr { width: 17mm; height: 17mm; }
+}
+
+/* Capture geometry for Save PDF.
+   The preview sits in a narrow side panel, so capturing it at on-screen width
+   produced a magnified image that ran to a second page. A4 at 96dpi (794 x
+   1123) makes the capture page-shaped, and min-height gives the address strip
+   a foot to pin to on a short payslip instead of leaving blank paper below. */
+.payslips-page .ps-doc.is-exporting {
+  width: 794px;
+  max-width: none;
+  min-height: 1123px;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+}
+.payslips-page .ps-preview-surface.is-exporting-host {
+  max-height: none;
+  overflow: visible;
+}
+
+/* ---------------------------------------------------------------------
+   Overflow guards.
+   Everything below is data the page does not control: a long designation, a
+   long department, a bank reference, an employee name that runs on. Each of
+   these sits in a grid or flex item, whose automatic minimum size is its
+   content — so without min-width:0 they widen their container instead of
+   reflowing, and the text escapes the card at some screen width.
+   --------------------------------------------------------------------- */
+.payslips-page .ps-summary span,
+.payslips-page .ps-summary strong,
+.payslips-page .ps-summary small { min-width: 0; overflow-wrap: anywhere; }
+
+.payslips-page .ps-doc-idblock dl,
+.payslips-page .ps-doc-idblock dl > div { min-width: 0; }
+.payslips-page .ps-doc-idblock dt,
+.payslips-page .ps-doc-idblock dd { min-width: 0; overflow-wrap: anywhere; }
+
+.payslips-page .ps-doc-companyblock strong,
+.payslips-page .ps-doc-companyblock span { overflow-wrap: anywhere; }
+
+/* Only the label side. The amount already has white-space:nowrap and must
+   keep it — a figure broken across two lines misreads. */
+.payslips-page .ps-card li > span { overflow-wrap: anywhere; }
+.payslips-page .ps-card li > data { flex-shrink: 0; }

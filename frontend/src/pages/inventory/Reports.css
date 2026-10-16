@@ -1,0 +1,85 @@
+.rpt-page { padding: 1.5rem; max-width: 76rem; margin: 0 auto; }
+
+.rpt-head {
+  display: flex; flex-wrap: wrap; align-items: flex-end; justify-content: space-between;
+  gap: 1rem; margin-bottom: 1.25rem;
+}
+.rpt-head h1 {
+  margin: 0 0 .25rem; font-size: var(--font-page-title);
+  font-weight: var(--font-page-title-weight); color: var(--text-heading);
+}
+.rpt-head p { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+
+.rpt-alert {
+  display: flex; align-items: flex-start; gap: .55rem;
+  padding: .7rem .85rem; margin-bottom: 1rem;
+  border-radius: var(--radius-md); font-size: var(--font-subtitle);
+  background: var(--status-error-bg); color: var(--status-error-text);
+}
+.rpt-alert svg { flex: none; margin-top: .15rem; }
+
+.rpt-tabs { display: flex; flex-wrap: wrap; gap: .35rem; margin-bottom: .9rem; }
+.rpt-tabs button {
+  padding: .4rem .8rem; border: 1px solid var(--border-gray); border-radius: 999px;
+  background: var(--bg-white); color: var(--text-secondary);
+  font: inherit; font-size: var(--font-subtitle); font-weight: 600; cursor: pointer;
+}
+.rpt-tabs button:hover { background: var(--bg-card-hover); }
+.rpt-tabs button.is-on { border-color: var(--brand-red); background: var(--brand-red); color: #fff; }
+
+.rpt-intro {
+  display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between;
+  gap: .75rem; margin-bottom: 1rem;
+}
+.rpt-intro p { margin: 0; font-size: var(--font-subtitle); color: var(--text-secondary); }
+.rpt-param { display: flex; align-items: center; gap: .5rem; }
+.rpt-param label {
+  display: inline-flex; align-items: center; gap: .4rem;
+  font-size: var(--font-subtitle); color: var(--text-secondary);
+}
+.rpt-param input {
+  width: 5.5rem; padding: .4rem .6rem; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-md); background: var(--bg-white); color: var(--text-dark); font: inherit;
+}
+
+.rpt-empty {
+  padding: 2.5rem 1rem; text-align: center;
+  border: 1px dashed var(--border-gray); border-radius: var(--radius-lg);
+  color: var(--text-secondary); font-size: var(--font-subtitle);
+}
+
+.rpt-table-wrap {
+  overflow-x: auto; border: 1px solid var(--border-gray);
+  border-radius: var(--radius-lg); background: var(--bg-white);
+}
+.rpt-table { width: 100%; border-collapse: collapse; font-size: var(--font-subtitle); }
+.rpt-table th {
+  padding: .65rem .9rem; text-align: left; white-space: nowrap;
+  background: var(--bg-sidebar); color: var(--text-secondary);
+  font-weight: 600; border-bottom: 1px solid var(--border-gray);
+}
+.rpt-table td { padding: .6rem .9rem; border-bottom: 1px solid var(--border-gray); vertical-align: top; }
+.rpt-table tr:last-child td { border-bottom: 0; }
+.rpt-table small { display: block; color: var(--text-gray); font-size: .78rem; }
+.rpt-num { text-align: right; white-space: nowrap; }
+.rpt-bad { color: var(--status-error-text); font-weight: 600; }
+.rpt-name { display: block; color: var(--text-heading); font-weight: 600; }
+
+.rpt-tag {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: .8rem;
+  color: var(--brand-red); text-decoration: none; white-space: nowrap;
+}
+.rpt-tag:hover { text-decoration: underline; }
+
+.rpt-clickable { cursor: pointer; }
+.rpt-clickable:hover td { background: var(--bg-card-hover); }
+.rpt-sub td { background: var(--bg-sidebar); }
+.rpt-sub ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: .35rem; }
+.rpt-sub li { display: flex; flex-wrap: wrap; align-items: center; gap: .6rem; }
+.rpt-sub li small { display: inline; }
+
+.rpt-total td { background: var(--bg-sidebar); font-weight: 700; color: var(--text-heading); }
+
+/* A rejected parameter says so next to the control that produced it, rather
+   than the report quietly running on its default. */
+.rpt-param-error { flex-basis: 100%; color: var(--status-error-text); font-size: .74rem; font-weight: 600; }

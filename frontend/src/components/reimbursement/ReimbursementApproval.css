@@ -1,0 +1,138 @@
+:root {
+  --approval-section-from: rgba(255, 255, 255, 0.85);
+  --approval-section-to: rgba(255, 255, 255, 0.5);
+  --approval-section-border: rgba(255, 255, 255, 0.8);
+  --approval-section-shadow: rgba(31, 41, 55, 0.06);
+  --rejection-panel-bg: rgba(254, 226, 226, 0.5);
+  --rejection-textarea-bg: rgba(255, 255, 255, 0.7);
+}
+
+[data-theme="dark"] {
+  --approval-section-from: rgba(32, 32, 38, 0.75);
+  --approval-section-to: rgba(32, 32, 38, 0.45);
+  --approval-section-border: rgba(255, 255, 255, 0.1);
+  --approval-section-shadow: rgba(0, 0, 0, 0.3);
+  --rejection-panel-bg: rgba(239, 68, 68, 0.14);
+  --rejection-textarea-bg: rgba(255, 255, 255, 0.08);
+}
+
+.reimbursement-approval-section {
+  position: relative;
+  background: linear-gradient(135deg, var(--approval-section-from), var(--approval-section-to));
+  -webkit-backdrop-filter: blur(16px) saturate(160%);
+  backdrop-filter: blur(16px) saturate(160%);
+  border: 1px solid var(--approval-section-border);
+  border-radius: var(--card-radius);
+  box-shadow: 0 4px 20px var(--approval-section-shadow);
+  padding: var(--space-item-padding);
+  margin-bottom: var(--space-section-gap);
+  transition: box-shadow 0.25s ease, border-color 0.25s ease;
+}
+
+.reimbursement-details {
+  margin-bottom: 1rem;
+}
+
+.detail-row {
+  display: flex;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.reimbursement-approval-section .detail-label {
+  font-weight: var(--font-label-weight);
+  min-width: 140px;
+  color: var(--text-gray);
+  font-size: var(--font-label);
+}
+
+.reimbursement-approval-section .detail-value {
+  color: var(--text-dark);
+}
+
+.reimbursement-approval-section .status-badge {
+  padding: 0.3rem 0.75rem;
+  border-radius: var(--radius-full);
+  font-size: 0.8125rem;
+  font-weight: 700;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  margin-left: 8px;
+  -webkit-backdrop-filter: blur(6px);
+  backdrop-filter: blur(6px);
+}
+
+.reimbursement-approval-section .status-approved {
+  background: var(--status-success-bg);
+  color: var(--status-success-text);
+  border: 1px solid var(--status-success-border);
+}
+
+.reimbursement-approval-section .status-rejected {
+  background: var(--status-error-bg);
+  color: var(--status-error-text);
+  border: 1px solid var(--status-error-border);
+}
+
+.reimbursement-approval-section .status-pending {
+  background: var(--status-warning-bg);
+  color: var(--status-warning-text);
+  border: 1px solid var(--status-warning-border);
+}
+
+.rejection-row {
+  background: var(--rejection-panel-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border-left: 3px solid var(--brand-red);
+  padding: 0.625rem 1rem;
+  border-radius: var(--radius-sm);
+  margin-top: 0.5rem;
+}
+
+.reimbursement-approval-section .rejection-text {
+  color: var(--brand-red-dark);
+  font-weight: 500;
+  margin-left: 8px;
+}
+
+.approval-actions {
+  display: flex;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}
+
+.rejection-reason-section {
+  margin-top: 1rem;
+  background: var(--rejection-panel-bg);
+  -webkit-backdrop-filter: blur(10px);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(232, 53, 42, 0.3);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+}
+
+.rejection-reason-textarea {
+  width: 100%;
+  min-height: 60px;
+  border-radius: 12px;
+  border: 1px solid rgba(232, 53, 42, 0.3);
+  padding: 0.5rem;
+  font-size: 1.0625em;
+  margin-bottom: 1rem;
+  resize: vertical;
+  background: var(--rejection-textarea-bg);
+  outline: none !important;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.rejection-reason-textarea:focus {
+  border-color: var(--brand-red);
+  box-shadow: 0 0 0 3px var(--brand-red-soft);
+}
+
+.rejection-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+}

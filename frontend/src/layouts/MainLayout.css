@@ -1,0 +1,101 @@
+.main-layout {
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  padding-left: 192px;
+  position: relative;
+  /* No overflow-x here on purpose: the ::before/::after blobs below are
+     position:fixed, so an ancestor's overflow never clips them anyway — this
+     property wasn't doing what it looked like it did. Worse, per the CSS
+     spec, setting only overflow-x forces overflow-y to act as "auto" too,
+     which turned this flex container (min-height:100vh) into its own scroll
+     container and capped its height instead of letting it grow with content
+     — that's what produced the second, nested scrollbar. */
+  background: var(--bg-page);
+  transition: padding-left 180ms ease, background 180ms ease;
+}
+
+[data-theme="dark"] .main-layout {
+  background: var(--bg-page);
+}
+
+/* Soft ambient color blobs behind the glass cards, sitewide */
+.main-layout::before,
+.main-layout::after {
+  display: none;
+}
+
+.main-layout::before {
+  width: 480px;
+  height: 480px;
+  top: -160px;
+  right: -140px;
+  background: radial-gradient(circle, rgba(232, 53, 42, 0.14), rgba(232, 53, 42, 0) 70%);
+}
+
+[data-theme="dark"] .main-layout::before {
+  background: radial-gradient(circle, rgba(232, 53, 42, 0.2), rgba(232, 53, 42, 0) 70%);
+}
+
+.main-layout::after {
+  width: 420px;
+  height: 420px;
+  bottom: -140px;
+  left: -140px;
+  background: radial-gradient(circle, rgba(59, 130, 246, 0.1), rgba(59, 130, 246, 0) 70%);
+}
+
+[data-theme="dark"] .main-layout::after {
+  background: radial-gradient(circle, rgba(255, 107, 95, 0.14), rgba(255, 107, 95, 0) 70%);
+}
+
+.main-layout > .app-navigation {
+  position: relative;
+  z-index: 1000;
+}
+
+.main-content {
+  flex: 1;
+  padding: 1.5rem clamp(1rem, 2.4vw, 2rem) 3rem;
+  max-width: var(--content-max-width);
+  width: 100%;
+  margin: 72px auto 0;
+  position: relative;
+  /* Deliberately NO z-index and NO isolation here.
+     Either one makes this element a stacking context, which traps every
+     descendant's z-index inside it. Since .app-navigation above sits at
+     z-index 1000 in the root context, a page's modal backdrop — however high
+     its own z-index — was painted underneath the sidebar and topbar, leaving
+     them bright and clickable behind an open drawer.
+     They were originally here to stack content above the ::before/::after
+     ambient blobs, and those are `display: none`, so nothing needs isolating.
+     Overlays now use --z-overlay (above the nav); ordinary content has no
+     z-index and still paints below it. */
+}
+
+[data-sidebar="expanded"] .main-layout { padding-left: 192px; }
+[data-sidebar="collapsed"] .main-layout { padding-left: 72px; }
+
+@media (max-width: 980px) {
+  /* Must match/exceed the specificity of the [data-sidebar=...] .main-layout
+     rules above — a plain `.main-layout` selector here loses to those on
+     specificity regardless of source order, so data-sidebar="expanded"
+     (the default) kept reserving a 192px gutter on every page at mobile
+     widths, squeezing all page content and causing near-app-wide horizontal
+     overflow on narrow screens. */
+  [data-sidebar="expanded"] .main-layout,
+  [data-sidebar="collapsed"] .main-layout {
+    padding-left: 0;
+  }
+}
+
+@media (max-width: 768px) {
+  .main-content {
+    padding: 1rem;
+  }
+}
+
+
+/* Holds the content box open while a lazy route chunk is in flight. Takes the
+   same space the page will, so nothing already painted moves when it lands. */
+.main-content-loading { min-height: 60vh; }
