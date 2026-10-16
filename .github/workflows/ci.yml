@@ -1,0 +1,138 @@
+# Everything that has to be true before a change lands.
+#
+# The suite runs twice: once on in-memory SQLite, which is fast and catches
+# logic, and once against a real PostgreSQL server, which catches what SQLite
+# is too forgiving about — column types, constraint enforcement, transaction
+# behaviour, and anything the migrations do that SQLite silently tolerates.
+#
+# A test suite that only ever meets SQLite proves the code runs on SQLite.
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+jobs:
+  backend-sqlite:
+    name: Backend tests (SQLite)
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - run: pip install -r backend/requirements.txt
+      - run: python -m pytest -q
+        working-directory: backend
+        env:
+          PYTHONPATH: .
+
+  backend-postgres:
+    name: Backend tests (PostgreSQL)
+    runs-on: ubuntu-latest
+    services:
+      postgres:
+        image: postgres:16
+        env:
+          POSTGRES_USER: postgres
+          POSTGRES_PASSWORD: postgres
+          POSTGRES_DB: hrm_test
+        ports: ['5432:5432']
+        # Without this the steps start before the server accepts connections.
+        options: >-
+          --health-cmd pg_isready
+          --health-interval 10s
+          --health-timeout 5s
+          --health-retries 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+          cache: pip
+          cache-dependency-path: backend/requirements.txt
+      - run: pip install -r backend/requirements.txt
+
+      # The migrations have to build the schema on a real server, forwards and
+      # back. A migration that only ever runs forwards is a migration nobody
+      # can undo at three in the morning.
+      - name: Migrations apply, roll back, and re-apply
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hrm_test
+          SECRET_KEY: ci-only-not-a-real-secret
+        run: |
+          alembic upgrade head
+          alembic downgrade base
+          alembic upgrade head
+
+      - name: Bootstrap a fresh deployment
+        working-directory: backend
+        env:
+          DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hrm_test
+          SECRET_KEY: ci-only-not-a-real-secret
+        run: |
+          echo "" | python scripts/bootstrap.py \
+            --admin-email ci@example.com --admin-name "CI Admin"
+          # Running it twice must change nothing.
+          echo "" | python scripts/bootstrap.py \
+            --admin-email ci@example.com --admin-name "CI Admin"
+
+      - name: Test suite
+        working-directory: backend
+        env:
+          TEST_DATABASE_URL: postgresql://postgres:postgres@localhost:5432/hrm_test
+          SECRET_KEY: ci-only-not-a-real-secret
+          PYTHONPATH: .
+        run: python -m pytest -q
+
+  frontend:
+    name: Portal build and lint
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+          cache: npm
+          cache-dependency-path: frontend/package-lock.json
+      - run: npm ci
+        working-directory: frontend
+      - run: npx tsc --noEmit -p tsconfig.app.json
+        working-directory: frontend
+      - name: Build
+        working-directory: frontend
+        env:
+          # The build refuses to run without these, which is the point of
+          # them; CI proves a fresh clone can be built by someone who has
+          # only read the instructions.
+          VITE_API_BASE_URL: https://hr-api.example.com/api/v1
+          VITE_BRAND_NAME: CI Build
+          VITE_COMPANY_NAME: CI Company Limited
+          VITE_COMPANY_SHORT_NAME: CI Company
+        run: npm run build
+
+  dependencies:
+    name: Dependency audit
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Python packages with known vulnerabilities
+        run: |
+          pip install pip-audit
+          pip-audit -r backend/requirements.txt --strict || \
+            echo "::warning::pip-audit reported findings — see the log"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: npm packages with known vulnerabilities
+        working-directory: frontend
+        run: npm audit --audit-level=high || echo "::warning::npm audit reported findings"

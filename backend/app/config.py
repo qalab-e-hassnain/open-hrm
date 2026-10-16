@@ -214,7 +214,36 @@ class Settings(BaseSettings):
     def cors_origins(self) -> List[str]:
         if self.ALLOWED_ORIGINS == "*":
             return ["*"]
-        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")]
+        return [origin.strip() for origin in self.ALLOWED_ORIGINS.split(",")
+                if origin.strip()]
+
+    def unsafe_for_production(self) -> List[str]:
+        """
+        Settings that are fine on a laptop and dangerous on the internet.
+
+        Checked at startup rather than left to a warning in a document,
+        because the person deploying is rarely the person who read the
+        document, and every one of these fails silently: the system works
+        perfectly while being wide open.
+        """
+        problems = []
+        if self.ALLOWED_ORIGINS.strip() == "*":
+            problems.append(
+                "ALLOWED_ORIGINS is '*', so any website can call this API with "
+                "a signed-in employee's browser. Set it to your portal's "
+                "origin, e.g. https://hr.yourcompany.com")
+        if self.DEBUG:
+            problems.append(
+                "DEBUG is on, which returns tracebacks to callers. Set DEBUG=False")
+        if not self.SECRET_KEY or len(self.SECRET_KEY) < 32:
+            problems.append(
+                "SECRET_KEY is missing or too short to resist guessing. "
+                "Generate one: python -c \"import secrets; print(secrets.token_urlsafe(48))\"")
+        if self.PORTAL_URL.startswith("http://") and "localhost" not in self.PORTAL_URL:
+            problems.append(
+                f"PORTAL_URL is plain http ({self.PORTAL_URL}), so the links "
+                "emailed to staff are not encrypted")
+        return problems
 
 
 settings = Settings()

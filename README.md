@@ -9,7 +9,7 @@ logo, the colours, the working day, the leave entitlements and the email
 sender all come from configuration, so making it yours is filling in two
 `.env` files rather than editing source.
 
-**260 API endpoints. 490 tests. Deployable in an afternoon.**
+**260 API endpoints. 500+ tests, run against SQLite and PostgreSQL on every push. Deployable in an afternoon.**
 
 ```
 backend/     FastAPI + PostgreSQL        → your server
@@ -123,7 +123,7 @@ frontend/    React + TypeScript + Vite   → any static host
 | **Auth** | JWT access and refresh tokens, role-based access |
 | **Files** | Supabase Storage, served through the API so access follows the same permissions as everything else |
 | **Email** | Any SMTP provider (Resend, SES, Postmark, Gmail) |
-| **Tests** | 490, against an in-memory database |
+| **Tests** | 500+, run twice in CI: in-memory SQLite and a real PostgreSQL server, plus migrations up, down and up again |
 
 Four roles — employee, manager, HR, administrator — with HR holding
 admin-level reach over everything except admin accounts themselves.
@@ -194,6 +194,42 @@ portal under **HR Documents**.
 
 ---
 
+## How ready is it?
+
+Honest answer, by use:
+
+| Use | Verdict |
+|---|---|
+| **Internal HR tool, small company** | A reasonable candidate. Pilot it alongside your existing records before relying on it. |
+| **Live payroll and employment documents** | Not without the verification below. A payroll error has financial and legal consequences. |
+| **Multi-tenant SaaS** | No. This is a single-company self-hosted deployment; tenant isolation has never been designed, let alone tested. |
+
+What CI proves on every push:
+
+- the full suite against **PostgreSQL**, not only SQLite
+- migrations apply, roll back to base, and re-apply
+- `bootstrap.py` takes an empty database to a working deployment, twice, without duplicating anything
+- the portal type-checks and builds from a clean clone
+- dependency audits for Python and npm
+
+What it does **not** prove, and what you must do yourself before trusting it
+with real money or real employment records:
+
+- **Payroll correctness for your jurisdiction.** Tax, provident fund, EOBI and
+  social security are implemented against one company's reading of Pakistani
+  rules. Thresholds, exemptions and effective dates change, and they are not
+  the same anywhere else. Build fixtures for partial months, unpaid leave,
+  overtime, arrears, loans, corrections and exit settlements, and have a
+  qualified payroll professional check them. This has not been done.
+- **A security review.** Authentication, role checks, object-level
+  authorization, file access and the public verification endpoints deserve a
+  look by someone who does this for a living. They have not had one.
+- **Backup and restore.** Automate it, encrypt it, and *test a full restore* —
+  including uploaded documents, which live in object storage and not in your
+  database dump.
+- **A pilot.** Run it alongside whatever you use today and reconcile the
+  output before you switch.
+
 ## Things worth knowing before you rely on it
 
 **Background jobs run on portal traffic.** Reminder sweeps and device syncs
@@ -209,10 +245,21 @@ gets that back.
 device name. A name left ignored discards that person's punches, and nothing
 will tell you.
 
-**Tokens are held in browser storage.** An XSS bug would expose them. Moving
-them to httpOnly cookies is the known next step and is not done.
+**Tokens are held in browser storage.** An XSS bug would expose them. The
+portal ships a strict Content-Security-Policy, which narrows the ways that
+could happen, but moving tokens to httpOnly cookies with CSRF protection is
+the real fix and is not done.
+
+**Time zones are a fixed UTC offset**, not a named zone. Fine where the
+offset never changes, which covers Pakistan; wrong anywhere that observes
+daylight saving.
 
 ---
+
+## Security
+
+Known weaknesses, what has and has not been reviewed, and how to report
+something: [SECURITY.md](SECURITY.md).
 
 ## Licence
 

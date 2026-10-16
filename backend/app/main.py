@@ -40,6 +40,23 @@ from app.config import settings
 from app.api.deps import require_admin_or_hr
 from app.api.v1 import auth, users, teams, leaves, reimbursements, payroll, payroll_runs, payslips, attendance, notifications, upload, announcements, cron, time_logs, documents, onboarding, offboarding, biometric, jobs, assets, inventory, loans, settlements, probation, shifts, performance, analytics
 
+# Settings that are fine on a laptop and dangerous on the internet, reported
+# the moment the process starts.
+#
+# Every one of them fails silently: the system works perfectly while being
+# wide open, so nobody finds out until somebody else does. A log line at
+# startup is seen by whoever deployed it, which a warning in a document is
+# not.
+_unsafe = settings.unsafe_for_production()
+if _unsafe:
+    _log = logging.getLogger("app.startup")
+    _log.warning("=" * 68)
+    _log.warning("INSECURE CONFIGURATION — %d problem(s)", len(_unsafe))
+    for _problem in _unsafe:
+        _log.warning("  * %s", _problem)
+    _log.warning("=" * 68)
+
+
 app = FastAPI(
     title=settings.APP_NAME,
     description="Human Resource Management System API",

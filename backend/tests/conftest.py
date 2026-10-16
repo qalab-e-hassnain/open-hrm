@@ -8,7 +8,22 @@ fixtures; nothing here changes them.
 """
 import os
 
-os.environ.setdefault("DATABASE_URL", "sqlite://")
+# Where the tests run.
+#
+# SQLite in memory by default: fast, needs nothing installed, and fine for
+# the logic most of these tests exercise. Set TEST_DATABASE_URL to a
+# PostgreSQL connection string and the same suite runs against the database
+# production actually uses — which is the only way to catch what SQLite is
+# too forgiving about: column types, constraint enforcement, transaction
+# behaviour, and anything the migrations do that SQLite silently tolerates.
+#
+#     TEST_DATABASE_URL=postgresql://postgres:postgres@localhost:5432/hrm_test pytest
+#
+# CI runs both. See .github/workflows/ci.yml.
+TEST_DATABASE_URL = os.environ.get("TEST_DATABASE_URL", "").strip()
+USING_POSTGRES = TEST_DATABASE_URL.startswith("postgres")
+
+os.environ.setdefault("DATABASE_URL", TEST_DATABASE_URL or "sqlite://")
 os.environ.setdefault("SECRET_KEY", "testing-secret-not-a-real-one")
 
 import pytest
@@ -117,6 +132,35 @@ class Env:
         return self.Session()
 
 
+_pg_engine = None
+
+
+def _postgres_engine():
+    """One engine for the session; the schema is built once."""
+    global _pg_engine
+    if _pg_engine is None:
+        _pg_engine = create_engine(TEST_DATABASE_URL, pool_pre_ping=True)
+        from app import models as _models  # noqa: F401
+        Base.metadata.drop_all(_pg_engine)
+        Base.metadata.create_all(_pg_engine)
+    return _pg_engine
+
+
+def _truncate_all(engine) -> None:
+    """
+    Empty every table between tests, identities included.
+
+    RESTART IDENTITY matters: tests assert on ids, and a sequence that keeps
+    climbing across tests makes a passing test depend on the order it ran in.
+    """
+    from sqlalchemy import text
+    names = ", ".join(f'"{t.name}"' for t in reversed(Base.metadata.sorted_tables))
+    if not names:
+        return
+    with engine.begin() as conn:
+        conn.execute(text(f"TRUNCATE {names} RESTART IDENTITY CASCADE"))
+
+
 @pytest.fixture
 def env(monkeypatch):
     # The signed-in user is cached per process to save a round trip to a
@@ -126,10 +170,20 @@ def env(monkeypatch):
     from app.core import user_cache
     user_cache.forget()
 
-    engine = create_engine("sqlite://", connect_args={"check_same_thread": False},
-                           poolclass=StaticPool)
     from app import models as _models  # noqa: F401 — registers every table
-    Base.metadata.create_all(engine)
+
+    if USING_POSTGRES:
+        # One schema for the whole run, emptied between tests. Creating and
+        # dropping 50-odd tables per test against a real server would add
+        # minutes to the suite; TRUNCATE is quick and leaves the schema —
+        # including the constraints that are the reason for running against
+        # PostgreSQL at all — exactly as the migrations built it.
+        engine = _postgres_engine()
+        _truncate_all(engine)
+    else:
+        engine = create_engine("sqlite://", connect_args={"check_same_thread": False},
+                               poolclass=StaticPool)
+        Base.metadata.create_all(engine)
     Session = sessionmaker(bind=engine, autocommit=False, autoflush=False)
 
     # The traffic hook would otherwise fire on the first request and reach out
